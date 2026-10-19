@@ -1,0 +1,49 @@
+{
+  "name": "plango-landing",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "PlanGo landing page (built on korus-web-framework).",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "postbuild": "node scripts/normalize-vercel-csp-routes.mjs",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check",
+    "verify:profile": "node scripts/verify-site-profile-loader.mjs",
+    "verify:tracking": "node scripts/verify-runtime-tracking-activation.mjs",
+    "verify:lead": "node scripts/verify-runtime-lead-activation.mjs",
+    "verify:consent": "node scripts/verify-json-consent-consumer.mjs",
+    "verify:seo": "node scripts/verify-seo-truth.mjs",
+    "verify:landing": "node scripts/verify-landing-output.mjs",
+    "verify:local": "node scripts/verify-local-csp.mjs",
+    "verify:marketing": "node scripts/verify-vendor-neutral-marketing-contract.mjs",
+    "verify:csp": "node scripts/normalize-vercel-csp-routes.mjs --synthetic-test",
+    "verify:publisher": "node scripts/verify-local-auditor-attestation.mjs && node scripts/verify-publish-attestation-contract.mjs",
+    "verify:contracts": "node scripts/assert-local-article-draft-contract.mjs && node scripts/assert-publish-attestation-contract.mjs && node scripts/assert-ui-component-manifest-contract.mjs",
+    "verify": "npm run legal && npm run verify:profile && npm run verify:tracking && npm run verify:lead && npm run verify:consent && npm run verify:seo && npm run verify:marketing && npm run verify:csp && npm run verify:publisher && npm run verify:contracts && npm test",
+    "verify:links": "node scripts/verify-internal-links.mjs",
+    "test": "node scripts/test-lead-flow.mjs && node scripts/test-lead-form-validation.mjs",
+    "legal": "node scripts/legal/kv-legal.mjs src/content/plango-copy.ts src/content/plango-product.ts src/content/plango-pricing.ts docs/plango_landing_copy.md"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/vercel": "^11.0.7",
+    "@fontsource/mulish": "^5.3.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.2.4",
+    "tailwindcss": "^4.3.3"
+  },
+  "overrides": {
+    "path-to-regexp": "6.3.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "typescript": "^5.6.3"
+  }
+}

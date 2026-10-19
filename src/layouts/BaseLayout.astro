@@ -1,0 +1,176 @@
+---
+import siteProfile from '../config/site-profile.mjs';
+import SiteFooter from '../components/global/SiteFooter.astro';
+import '../styles/global.css';
+import '@fontsource/mulish';
+import '../styles/font-vietnamese-priority.css';
+import TrackingProvider from '../components/tracking/TrackingProvider.astro';
+import TrackingConsent from '../components/tracking/TrackingConsent.astro';
+import FloatingWidgets from '../components/global/FloatingWidgets.astro';
+import SeoHead from '../components/seo/SeoHead.astro';
+import LeadModal from '../components/global/LeadModal.astro';
+import { resolveRuntimeLeadActivation } from '../config/runtime-lead-activation.mjs';
+
+const currentLang = Astro.currentLocale || siteProfile.i18n.default_lang;
+const { navigation, page_copy: pageCopy, theme_tokens: themeTokens } = siteProfile;
+// The virtual profile is runtime-validated; retain its navigation shape here.
+const primaryLinks: ReadonlyArray<{ label: string; path: string }> = navigation.primary;
+const leadResolution = resolveRuntimeLeadActivation({ profile: siteProfile, env: {
+  LEAD_PROVIDER: import.meta.env.LEAD_PROVIDER,
+  GOOGLE_SHEET_WEBHOOK_URL: import.meta.env.GOOGLE_SHEET_WEBHOOK_URL,
+  WEBHOOK_SECRET: import.meta.env.WEBHOOK_SECRET,
+  LEAD_ALLOWED_ORIGINS: import.meta.env.LEAD_ALLOWED_ORIGINS,
+} });
+if (!leadResolution.ok && leadResolution.code !== 'lead_disabled') throw new Error(leadResolution.code);
+const leadEnabled = leadResolution.enabled;
+const themeStyle = Object.entries(themeTokens).map(([key, value]) => `--color-${key.replace('_', '-')}:${value}`).join(';');
+
+export interface Props {
+  langFallbackPaths?: Record<string, string>;
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article' | 'product';
+  price?: string;
+  sku?: string;
+}
+
+const { title = siteProfile.brand.name, description = siteProfile.brand.slogan, image, type, price, sku, langFallbackPaths } = Astro.props;
+
+const langPrefix = currentLang === siteProfile.i18n.default_lang ? '' : '/' + currentLang;
+// WP2.3: tách navigation.primary thành các nhóm riêng cho từng vị trí render,
+// thay vì render cùng một mảng ở 4 chỗ (gây trùng lặp anchor text và khiến
+// cột "Sản Phẩm" không chứa sản phẩm nào).
+// Trang hiện tại không nên tự trỏ về chính nó: đó là liên kết vô nghĩa với
+// người dùng và làm nhiễu đồ thị liên kết nội bộ. So sánh sau khi bỏ dấu gạch
+// chéo cuối vì trailingSlash:'always' khiến Astro.url.pathname là "/terms/"
+// còn navigation khai "/terms".
+const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const isCurrentPage = (path: string) => (path.replace(/\/+$/, '') || '/') === currentPath;
+---
+
+<!doctype html>
+<html lang={currentLang} class="scroll-smooth" data-theme={siteProfile.theme_id} style={themeStyle}>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" href="/favicon.ico" sizes="any" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<meta name="generator" content={Astro.generator} />
+        
+        {/* Local Fonts imported via global CSS or direct link */}
+        
+		<SeoHead 
+            title={title} 
+            description={description} 
+            image={image} 
+            type={type} 
+            price={price} 
+            sku={sku} 
+            currentLang={currentLang}
+            fallbackPaths={langFallbackPaths}
+        />
+		<TrackingProvider />
+		<slot name="head-inject" />
+	</head>
+	<body class="bg-brand-8 font-sans text-brand-3 flex flex-col min-h-screen">
+        <slot name="header-inject" />
+		<header class="bg-white border-b border-brand-5 sticky top-0 z-40 shadow-sm">
+			<div class="max-w-[1290px] mx-auto px-4 lg:px-8 h-[80px] flex items-center justify-between">
+				<!-- Logo -->
+				<a href={langPrefix + '/'} class="flex items-center">
+					<span class="text-3xl font-black text-brand-1">{siteProfile.brand.name}<span class="text-brand-10"> {pageCopy.header.brand_suffix}</span></span>
+				</a>
+
+				<!-- Desktop Nav -->
+				<nav class="hidden md:flex gap-8">
+						{primaryLinks.map((item) => (
+						isCurrentPage(item.path)
+							? <span aria-current="page" class="text-brand-1 font-bold uppercase py-8">{item.label}</span>
+							: <a href={item.path} class="text-brand-4 font-bold uppercase hover:text-brand-1 transition-colors py-8">{item.label}</a>
+					))}
+				</nav>
+
+				<!-- Header Right (CTA + menu di động) -->
+				<div class="flex items-center gap-2 sm:gap-4">
+                    {leadEnabled && (
+						<button type="button" data-korus-action="open-lead-modal" class="hidden md:block bg-brand-1 text-white px-6 py-2 font-bold uppercase text-sm hover:bg-brand-2 transition-colors">
+							{navigation.cta.label}
+						</button>
+                    )}
+
+					{/* Menu di động dùng <details> gốc: mở được bằng bàn phím và không cần JS. */}
+					<details class="md:hidden">
+						<summary aria-label="Mở menu điều hướng" class="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-lg text-brand-4 [&::-webkit-details-marker]:hidden">
+							<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="h-6 w-6">
+								<path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+							</svg>
+						</summary>
+						<nav aria-label="Điều hướng di động" class="absolute inset-x-0 top-[80px] border-b border-brand-5 bg-white p-4 shadow-lg">
+							<ul class="space-y-1">
+								{primaryLinks.map((item) => (
+									<li>
+										{isCurrentPage(item.path)
+											? <span aria-current="page" class="block rounded-lg px-3 py-3 text-[17px] font-medium text-brand-1">{item.label}</span>
+											: <a href={item.path} class="block rounded-lg px-3 py-3 text-[17px] font-medium text-brand-4 hover:bg-brand-7">{item.label}</a>}
+									</li>
+								))}
+								{leadEnabled && (
+									<li>
+										<button type="button" data-korus-action="open-lead-modal" class="block w-full rounded-lg bg-brand-1 px-3 py-3 text-left text-[17px] font-semibold text-white">{navigation.cta.label}</button>
+									</li>
+								)}
+							</ul>
+						</nav>
+					</details>
+				</div>
+			</div>
+		</header>
+
+        <div class="flex-grow">
+		    <slot />
+        </div>
+
+		{/* Footer dùng nền tối brand-10 giống footer của LandingLayout. Vàng brand-9
+		    chỉ là màu nhấn nhỏ, không bao giờ làm nền lớn hay màu chữ trên nền sáng. */}
+		<SiteFooter cookieButtonId="base-open-cookie-settings" />
+
+        <!-- Global Popups and Widgets injected at the very bottom -->
+        {leadEnabled && <LeadModal />}
+        {siteProfile.chat_widgets.enabled && <FloatingWidgets />}
+		<slot name="footer-inject" />
+		<TrackingConsent />
+
+		<script>
+			import { readConsent, hasValidConsent } from '../utils/consent';
+
+			// WP5.6 - Đọc id profile từ data-profile-id trên banner thay vì
+			// import site-profile.mjs, tránh bundle cả profile xuống client.
+			const consentBanner = document.getElementById('tracking-consent');
+			const profileId = consentBanner?.dataset.profileId;
+			if (consentBanner && profileId) {
+				const existingConsent = readConsent(profileId);
+				// Thanh này KHÔNG tự bung nữa (quyết định owner 10/09/2026), giống hệt
+				// LandingLayout. Nó là thanh cố định cao ~145px, z-50 ở đáy màn hình
+				// điện thoại, đè lên nút gọi hotline nổi — chặn đúng hành động chuyển
+				// đổi chính. Với mô hình opt-out thì cũng không có quyết định nào cần
+				// hỏi trước. Khách vẫn từ chối được bất cứ lúc nào qua "Cài đặt cookie"
+				// ở chân trang, và hasValidConsent vẫn tôn trọng lựa chọn đã lưu.
+				void hasValidConsent;
+
+				// Bỏ ẩn nút rút lại đồng ý khi đã có quyết định trước đó.
+				// Xem chú thích đầy đủ trong LandingLayout.
+				if (existingConsent) {
+					consentBanner.querySelector('[data-consent-action="revoke"]')?.classList.remove('hidden');
+				}
+
+				// Nút mở lại cài đặt Cookie ở footer
+				document.getElementById('base-open-cookie-settings')?.addEventListener('click', () => {
+					consentBanner.classList.remove('hidden');
+				});
+			}
+		</script>
+	</body>
+</html>

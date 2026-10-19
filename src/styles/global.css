@@ -1,0 +1,178 @@
+@import "tailwindcss";
+
+/* Giới hạn phạm vi Tailwind quét về đúng mã nguồn của trang.
+   Tailwind 4 tự dò cả thư mục dự án, nên nó đọc luôn markup cũ trong tài liệu
+   audit và sinh utility cho những class không trang nào dùng — trong đó có một
+   class nền trỏ tới ảnh đã bị xoá (404). CSS rác đó vẫn tải về mọi lượt xem.
+   Lưu ý: đừng viết tên class thật vào chú thích, Tailwind quét cả file này. */
+@source not "../../docs";
+@source not "../../scripts";
+
+/* WP7.5 - Các giá trị màu dưới đây KHÔNG phải màu hiển thị thực tế.
+   Tailwind 4 cần khai báo trong @theme để sinh ra các utility (bg-brand-1,
+   text-brand-4, ...), nhưng giá trị runtime bị cả hai layout ghi đè bằng
+   inline style trên <html> lấy từ theme_tokens của profile đang chọn.
+   Nguồn sự thật về màu là profile JSON; đây chỉ là hạt giống sinh utility.
+   Sửa màu thương hiệu ở src/config/profiles/*.json, không sửa ở đây. */
+@theme {
+  --color-brand-1: #e60808;
+  --color-brand-2: #b30000;
+  --color-brand-3: #38454a;
+  --color-brand-4: #0a1821;
+  --color-brand-5: #f2f2f2;
+  --color-brand-6: #f8f8f8;
+  --color-brand-7: #fafbfc;
+  --color-brand-8: #fff;
+  --color-brand-9: #03a9f4;
+  --color-brand-10: #ffd800;
+  --font-sans: Mulish, Sans-Serif;
+  --text-base: 18px;
+  --container-max: 1290px;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    color: var(--color-brand-3);
+    background-color: var(--color-brand-8);
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--color-brand-4);
+  }
+
+  /* WP7.3 - Trước đây repo không có một quy tắc :focus-visible nào, trong khi
+     outline-none xuất hiện trên 11 control. Kết quả: người dùng bàn phím không
+     nhìn thấy mình đang ở đâu. Quy tắc này áp một chỉ báo focus nhất quán cho
+     mọi phần tử tương tác và luôn thắng outline-none nhờ đặt sau trong cùng
+     layer base. Chuột và cảm ứng không bị ảnh hưởng vì :focus-visible chỉ kích
+     hoạt với điều hướng bàn phím. */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  summary:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--color-brand-4);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 6px var(--color-brand-8);
+    border-radius: 2px;
+  }
+
+  /* Vòng sáng quanh nút gọi/Zalo chạy lặp vô hạn, và cuộn mượt bật vô điều
+     kiện. Chuyển động tự khởi động kéo dài hơn 5 giây là vi phạm WCAG 2.2.2.
+     Trước bản này dự án không có một khai báo prefers-reduced-motion nào. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Tiêu đề không được để một từ lẻ rơi xuống dòng cuối ("...của hệ robot / hàn").
+   balance chia đều các dòng nên không còn từ mồ côi ở bất kỳ bề rộng nào;
+   pretty làm việc tương tự cho đoạn văn nhưng nhẹ hơn. Trình duyệt cũ bỏ qua. */
+@layer base {
+  h1, h2, h3 { text-wrap: balance; }
+  p { text-wrap: pretty; }
+}
+
+/* Style dùng chung cho form nhận tư vấn (LeadForm) và popup (LeadModal).
+   Trước đây nằm trong <style> của từng component; các selector là class toàn
+   cục (không scope), nên Astro phát ra một khối <style> NỘI TUYẾN mà hash của
+   nó lệch với hash security.csp ghi vào header CSP tĩnh → style-src-elem chặn
+   đúng khối này, làm popup vỡ giao diện. Đưa về đây để đi theo global.css →
+   bundle thành file .css NGOÀI (tải qua <link>, hợp lệ với style-src 'self'),
+   không còn <style> nội tuyến nào phải hash. */
+.lead-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid #6b7280;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  color: #111827;
+  font-size: 1rem;
+  transition: border-color 0.15s ease;
+}
+.lead-textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+.lead-input:focus-visible,
+.lead-consent:focus-visible,
+.lead-extra-summary:focus-visible {
+  outline: 2px solid var(--color-brand-4, #0a1821);
+  outline-offset: 2px;
+}
+.lead-input.is-invalid {
+  border-color: #b91c1c;
+  border-width: 2px;
+}
+.lead-required {
+  color: #b91c1c;
+}
+.lead-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.375rem;
+  margin-top: 0.375rem;
+  color: #b91c1c;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+.lead-summary {
+  display: flex;
+  color: #b91c1c;
+  background-color: #fef2f2;
+  border: 1px solid #b91c1c;
+}
+.lead-icon {
+  width: 1rem;
+  height: 1rem;
+}
+.lead-state-error {
+  color: #7f1d1d;
+  background-color: #fef2f2;
+  border: 1px solid #b91c1c;
+}
+.lead-state-unknown {
+  color: #78350f;
+  background-color: #fffbeb;
+  border: 1px solid #b45309;
+}
+.lead-error.hidden,
+.lead-summary.hidden,
+.lead-state.hidden,
+.lead-form-success.hidden {
+  display: none;
+}
+.lead-extra summary::-webkit-details-marker {
+  display: none;
+}
+.lead-extra-summary::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: 0.5rem;
+  transition: transform 0.15s ease;
+}
+.lead-extra[open] .lead-extra-summary::before {
+  transform: rotate(90deg);
+}
+.lead-trap {
+  position: absolute;
+  left: -5000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}

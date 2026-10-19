@@ -1,0 +1,84 @@
+---
+export const prerender = true;
+import LandingLayout from '../layouts/LandingLayout.astro';
+import siteProfile from '../config/site-profile.mjs';
+
+const title = "Điều khoản sử dụng - " + siteProfile.brand.name;
+const description = "Điều kiện sử dụng website, tính chất thông tin sản phẩm và giới hạn trách nhiệm.";
+const lastUpdated = "10/09/2026";
+
+const phone = siteProfile.contact?.phone;
+const hotlineEnabled = Boolean(phone?.enabled && phone?.raw);
+const hotlineDisplay = (hotlineEnabled && (phone.display || phone.raw)) || '';
+const hotlineRaw = (hotlineEnabled && phone.raw) || '';
+---
+
+<LandingLayout title={title} description={description}>
+	<main class="bg-white">
+		<div class="max-w-[760px] mx-auto px-4 lg:px-8 py-12 sm:py-16 lg:py-20">
+
+			<h1 class="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight mb-2">Điều khoản sử dụng</h1>
+			<p class="text-sm text-gray-500 mb-10">Cập nhật lần cuối: {lastUpdated}</p>
+
+			<div class="space-y-10 text-gray-700 leading-relaxed">
+
+				<section>
+					<h2 class="text-xl font-black text-gray-900 mb-3">Phạm vi</h2>
+					<p>Website này giới thiệu giải pháp robot hàn công nghiệp và tiếp nhận yêu cầu tư vấn. Khi sử dụng trang, bạn đồng ý với các điều khoản dưới đây.</p>
+				</section>
+
+				<section>
+					<h2 class="text-xl font-black text-gray-900 mb-3">Thông tin sản phẩm chỉ mang tính tham khảo</h2>
+					<p class="mb-3">Thông số kỹ thuật trên trang là cấu hình tham chiếu của Trạm robot hàn tự động AiRobot do Công Ty Cổ Phần Cơ Khí Chính Xác VN-J công bố. Cấu hình thực tế thay đổi theo vật liệu, chiều dày, sản lượng và mặt bằng của từng xưởng.</p>
+					<p>Nội dung trên trang không phải là chào bán ràng buộc. Gửi biểu mẫu không phải là đặt hàng. Giá, cấu hình, thời gian giao và chính sách bảo hành chỉ có hiệu lực khi được xác nhận bằng báo giá hoặc hợp đồng.</p>
+				</section>
+
+				<section>
+					<h2 class="text-xl font-black text-gray-900 mb-3">Khi bạn gửi thông tin</h2>
+					<p>Bạn chịu trách nhiệm về tính chính xác của thông tin mình cung cấp và cam kết chỉ gửi thông tin của chính mình hoặc thông tin bạn được phép cung cấp. Chúng tôi xử lý thông tin theo <a href="/privacy" class="inline-block -my-[13px] py-[13px] text-brand-1 font-bold hover:underline">Chính sách bảo mật</a>.</p>
+				</section>
+
+				<section>
+					<h2 class="text-xl font-black text-gray-900 mb-3">Bạn không được</h2>
+					<ul class="space-y-2 list-disc pl-5">
+						<li>Dùng trang vào mục đích trái pháp luật</li>
+						<li>Gửi biểu mẫu tự động hàng loạt hoặc gây quá tải hệ thống</li>
+						<li>Sao chép nội dung, hình ảnh trên trang cho mục đích thương mại khi chưa được đồng ý</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2 class="text-xl font-black text-gray-900 mb-3">Sở hữu trí tuệ</h2>
+					<p>Nội dung, hình ảnh và bố cục trên trang thuộc về Công Ty Cổ Phần Cơ Khí Chính Xác VN-J. Hình ảnh hệ robot trên trang là hình minh họa dựng từ bộ tư liệu sản phẩm của chúng tôi.</p>
+				</section>
+
+				<section>
+					<h2 class="text-xl font-black text-gray-900 mb-3">Giới hạn trách nhiệm</h2>
+					<p>Chúng tôi cố gắng giữ thông tin chính xác và cập nhật, nhưng không đảm bảo trang luôn hoạt động không gián đoạn hoặc hoàn toàn không có sai sót. Chúng tôi không chịu trách nhiệm cho thiệt hại phát sinh từ việc bạn dựa vào thông tin trên trang mà chưa xác nhận lại với chúng tôi. Giới hạn này không loại trừ trách nhiệm mà pháp luật không cho phép loại trừ.</p>
+				</section>
+
+				<section>
+					<h2 class="text-xl font-black text-gray-900 mb-3">Liên kết ngoài</h2>
+					<p>Trang có thể dẫn tới website của bên thứ ba. Chúng tôi không kiểm soát và không chịu trách nhiệm về nội dung của những trang đó.</p>
+				</section>
+
+				<section>
+					<h2 class="text-xl font-black text-gray-900 mb-3">Luật áp dụng</h2>
+					<p>Các điều khoản này được điều chỉnh bởi pháp luật Việt Nam. Tranh chấp phát sinh sẽ được giải quyết thông qua thương lượng; nếu không đạt kết quả, sẽ do toà án có thẩm quyền tại Việt Nam giải quyết.</p>
+				</section>
+
+				<section>
+					<h2 class="text-xl font-black text-gray-900 mb-3">Liên hệ</h2>
+					{hotlineEnabled
+						? <p>Nếu có câu hỏi về điều khoản này, hãy gọi hoặc nhắn Zalo tới <a href={`tel:${hotlineRaw}`} class="inline-block -my-[13px] py-[13px] font-bold text-brand-1 hover:underline">{hotlineDisplay}</a>.</p>
+						: <p>Nếu có câu hỏi về điều khoản này, vui lòng liên hệ qua biểu mẫu trên trang chủ.</p>}
+				</section>
+
+				<section class="pt-4 border-t border-gray-200">
+					<p class="text-sm text-gray-500">Xem thêm <a href="/privacy" class="inline-block -my-[13px] py-[13px] text-brand-1 font-bold hover:underline">Chính sách bảo mật</a>.</p>
+				</section>
+
+			</div>
+		</div>
+	</main>
+</LandingLayout>

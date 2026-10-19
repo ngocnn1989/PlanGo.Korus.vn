@@ -1,0 +1,203 @@
+{
+  "id": "landing-plango",
+  "canonical_origin": "https://plango.korus.vn",
+  "theme_id": "korus",
+  "indexable": false,
+  "brand": {
+    "name": "PlanGo",
+    "slogan": "Trợ lý AI lập kế hoạch chuyền may",
+    "logo_url": "/plango-lockup-light.png",
+    "favicon_url": "/favicon-32x32.png"
+  },
+  "company_info": {
+    "working_hours": "08:00 - 17:00"
+  },
+  "contact": {
+    "phone": {
+      "display": "0912 610 011",
+      "raw": "0912610011",
+      "enabled": true
+    },
+    "email": {
+      "value": "",
+      "enabled": false
+    }
+  },
+  "social_media": {
+    "linkedin": "",
+    "youtube": "",
+    "facebook": "",
+    "twitter": ""
+  },
+  "chat_widgets": {
+    "enabled": true,
+    "zalo": {
+      "enabled": true,
+      "url": "https://zalo.me/0912610011"
+    },
+    "messenger": {
+      "enabled": false,
+      "url": ""
+    },
+    "whatsapp": {
+      "enabled": false,
+      "url": ""
+    },
+    "line": {
+      "enabled": false,
+      "url": ""
+    },
+    "wechat": {
+      "enabled": false,
+      "qr_image_url": "",
+      "wechat_id": ""
+    },
+    "telegram": {
+      "enabled": false,
+      "url": ""
+    }
+  },
+  "i18n": {
+    "enabled": false,
+    "default_lang": "vi",
+    "supported_langs": [
+      "vi"
+    ]
+  },
+  "lead": {
+    "enabled": true,
+    "destination": "https://hook.make.com"
+  },
+  "tracking": {
+    "enabled": true,
+    "vendor": "google_tag_manager"
+  },
+  "consent": {
+    "enabled": true,
+    "vendor": "cookie_yes",
+    "ui": {
+      "title": "Cài đặt cookie",
+      "description": "Chúng tôi dùng cookie để đo hiệu quả quảng cáo và cải thiện nội dung trang.",
+      "accept_label": "Đồng ý",
+      "reject_label": "Từ chối",
+      "revoke_label": "Thay đổi lựa chọn",
+      "grant_ttl_ms": 31536000000
+    }
+  },
+  "navigation": {
+    "primary": [
+      {
+        "label": "Cách hoạt động",
+        "path": "/#cach-hoat-dong"
+      },
+      {
+        "label": "Tính năng",
+        "path": "/#tinh-nang"
+      },
+      {
+        "label": "Bảng giá",
+        "path": "/#bang-gia"
+      },
+      {
+        "label": "Câu hỏi",
+        "path": "/#hoi-dap"
+      },
+      {
+        "label": "Liên hệ",
+        "path": "/#tu-van"
+      },
+      {
+        "label": "Điều khoản sử dụng",
+        "path": "/terms"
+      },
+      {
+        "label": "Chính sách bảo mật",
+        "path": "/privacy"
+      }
+    ],
+    "cta": {
+      "label": "Đặt lịch demo",
+      "action": "lead_modal"
+    }
+  },
+  "surface": {
+    "design_system_enabled": true,
+    "proof_page_count": 0
+  },
+  "page_copy": {
+    "header": {
+      "brand_suffix": "Lập kế hoạch chuyền may",
+      "cta_label": "Đặt lịch demo"
+    },
+    "footer": {
+      "products_heading": "Nội dung trang",
+      "quick_links_heading": "Liên kết",
+      "contact_heading": "Liên hệ",
+      "hours_label": "Giờ làm việc",
+      "phone_label": "Hotline",
+      "email_label": "Email",
+      "copyright": "© 2026 Công ty Cổ phần Công nghệ KORUS"
+    },
+    "home": {
+      "title": "PlanGo — Phần mềm lập kế hoạch sản xuất may bằng chat | KORUS",
+      "description": "PlanGo giúp nhà máy may nhập đơn hàng từ Excel có kiểm duyệt, chọn phương án kế hoạch và theo dõi Gantt từng chuyền. Dữ liệu lưu tại máy của nhà máy.",
+      "hero_headline": "Lập kế hoạch chuyền may bằng chat",
+      "hero_body": "Nhập đơn từ Excel, chọn phương án, theo dõi Gantt từng chuyền.",
+      "hero_cta": "Đặt lịch demo",
+      "hero_image_alt": "Bảng Gantt tiến độ từng chuyền may trên PlanGo, dữ liệu minh họa",
+      "hero_image_src": "/favicon.svg"
+    },
+    "roi": {
+      "title": "Bảng Tính ROI (Thời Gian Thu Hồi Vốn)",
+      "description": "Tính toán nhanh lợi ích kinh tế khi đầu tư robot hàn.",
+      "welders_label": "Số thợ hàn hiện tại",
+      "salary_label": "Lương trung bình/tháng (VNĐ)",
+      "calculate_label": "Tính Toán",
+      "result_label": "Thời gian thu hồi vốn ước tính",
+      "months_label": "Tháng",
+      "savings_label": "Tiết kiệm/Năm",
+      "quote_label": "Tải báo cáo chi tiết",
+      "placeholder": "Nhập số lượng..."
+    },
+    "errors": {
+      "not_found_title": "Không tìm thấy trang",
+      "not_found_heading": "Không tìm thấy trang",
+      "not_found_body": "Trang bạn đang tìm không tồn tại.",
+      "home_label": "Về trang chủ",
+      "server_title": "Lỗi máy chủ",
+      "server_heading": "Máy chủ đang gặp sự cố",
+      "server_body": "Hệ thống đang bảo trì, vui lòng thử lại sau.",
+      "retry_label": "Thử lại"
+    },
+    "blog_list": {
+      "title": "Tin tức PlanGo",
+      "description": "Kinh nghiệm lập kế hoạch sản xuất may.",
+      "read_more_label": "Đọc tiếp"
+    },
+    "roi_defaults": {
+      "welders_default": 3,
+      "salary_default": 15000000,
+      "robot_cost": 300000000
+    },
+    "lead_modal": {
+      "title": "Đặt lịch demo PlanGo",
+      "description": "Để lại thông tin, KORUS sẽ liên hệ sắp xếp buổi demo.",
+      "name_label": "Họ và tên",
+      "phone_label": "Số điện thoại",
+      "message_label": "Nhu cầu của nhà máy",
+      "submit_label": "Gửi yêu cầu demo"
+    }
+  },
+  "theme_tokens": {
+    "brand_1": "#2563EB",
+    "brand_2": "#1D4ED8",
+    "brand_3": "#475569",
+    "brand_4": "#1F2933",
+    "brand_5": "#E2E8F0",
+    "brand_6": "#94A3B8",
+    "brand_7": "#F1F5F9",
+    "brand_8": "#FFFFFF",
+    "brand_9": "#16A34A",
+    "brand_10": "#1F2933"
+  }
+}

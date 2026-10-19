@@ -1,0 +1,161 @@
+---
+import siteProfile from '../config/site-profile.mjs';
+import SiteFooter from '../components/global/SiteFooter.astro';
+import LeadModal from '../components/global/LeadModal.astro';
+import '../styles/global.css';
+import '@fontsource/mulish';
+import '../styles/font-vietnamese-priority.css';
+import TrackingProvider from '../components/tracking/TrackingProvider.astro';
+import TrackingConsent from '../components/tracking/TrackingConsent.astro';
+import SeoHead from '../components/seo/SeoHead.astro';
+import FloatingWidgets from '../components/global/FloatingWidgets.astro';
+import { resolveRuntimeLeadActivation } from '../config/runtime-lead-activation.mjs';
+import { landingCopy } from '../content/landing-copy.ts';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  confirmationPage?: boolean;
+}
+
+const { title, description, image, confirmationPage = false } = Astro.props;
+const { theme_tokens: themeTokens } = siteProfile;
+const { header: headerCopy, footer: footerCopy } = landingCopy;
+// Anchor trong landing-copy.ts là dạng "#tu-van" (dùng trên chính trang chủ).
+// Header/footer xuất hiện trên cả /privacy và /terms nên phải trỏ tuyệt đối
+// về trang chủ, nếu không anchor sẽ trỏ tới ID không tồn tại trên trang đó.
+const homeAnchor = (href: string) => (href.startsWith('#') ? `/${href}` : href);
+const leadResolution = resolveRuntimeLeadActivation({ profile: siteProfile, env: {
+  LEAD_PROVIDER: import.meta.env.LEAD_PROVIDER,
+  GOOGLE_SHEET_WEBHOOK_URL: import.meta.env.GOOGLE_SHEET_WEBHOOK_URL,
+  WEBHOOK_SECRET: import.meta.env.WEBHOOK_SECRET,
+  LEAD_ALLOWED_ORIGINS: import.meta.env.LEAD_ALLOWED_ORIGINS,
+} });
+if (!leadResolution.ok && leadResolution.code !== 'lead_disabled') throw new Error(leadResolution.code);
+const leadEnabled = leadResolution.enabled;
+const themeStyle = Object.entries(themeTokens).map(([key, value]) => `--color-${key.replace('_', '-')}:${value}`).join(';');
+---
+
+<!doctype html>
+<html lang={siteProfile.i18n.default_lang} class="scroll-smooth" data-theme={siteProfile.theme_id} style={themeStyle}>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" href="/favicon.ico" sizes="any" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <meta name="generator" content={Astro.generator} />
+		<SeoHead title={title || siteProfile.brand.name} description={description || siteProfile.brand.slogan} image={image} />
+		<TrackingProvider />
+		<slot name="head-inject" />
+	</head>
+	<body class="bg-brand-8 font-sans text-brand-3 flex flex-col min-h-screen">
+		<header class="sticky top-0 z-40 border-b border-brand-5 bg-white/92 backdrop-blur">
+			<div class="mx-auto flex h-16 max-w-[1290px] items-center justify-between gap-4 px-4 lg:px-8">
+				<a href="/" class="flex min-h-[44px] shrink-0 items-center gap-3">
+					{/* Logo chính thức VN-J. Nền trong suốt, chữ đen — chỉ đọc được trên
+					    nền sáng, nên header dùng bản màu gốc còn footer dùng bản đảo chữ. */}
+					<img src={siteProfile.brand.logo_url} alt={`Logo ${footerCopy.legalName}`} width="59" height="37" decoding="async" class="h-[37px] w-auto" />
+					<span class="hidden h-6 w-px bg-brand-5 lg:inline-block"></span>
+					<span class="hidden text-sm text-brand-3 lg:inline">{headerCopy.tagline}</span>
+				</a>
+
+				<nav aria-label="Điều hướng chính" class="hidden items-center gap-7 md:flex">
+					{headerCopy.nav.map((item) => (
+						<a href={homeAnchor(item.href)} class="text-[15px] font-medium text-brand-3 underline-offset-4 transition-colors hover:text-brand-1 hover:underline">{item.label}</a>
+					))}
+				</nav>
+
+				<div class="flex items-center gap-2 sm:gap-4">
+					{siteProfile.contact?.phone?.enabled && siteProfile.contact?.phone?.raw && (
+						<Fragment>
+							<a href={headerCopy.hotline.href} class="hidden text-[15px] font-semibold text-brand-1 underline-offset-4 hover:underline md:inline">{headerCopy.hotline.display}</a>
+							<a href={headerCopy.hotline.href} aria-label={headerCopy.hotline.label} class="flex h-11 w-11 items-center justify-center rounded-lg text-brand-1 md:hidden">
+								<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="h-5 w-5">
+									<path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+								</svg>
+							</a>
+						</Fragment>
+					)}
+
+					{!confirmationPage && <a href={homeAnchor(headerCopy.cta.href)} data-cta="header" data-korus-action="open-lead-modal" class="inline-flex h-11 items-center rounded-lg bg-brand-1 px-4 text-sm font-semibold text-white transition-colors hover:bg-brand-2">
+						<span class="hidden sm:inline">{headerCopy.cta.label}</span>
+						<span class="sm:hidden">{headerCopy.cta.labelMobile}</span>
+					</a>}
+
+					{/* Menu di động dùng <details> gốc: mở được bằng bàn phím và không cần JS. */}
+					<details class="md:hidden">
+						<summary aria-label="Mở menu điều hướng" class="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-lg text-brand-4 [&::-webkit-details-marker]:hidden">
+							<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="h-6 w-6">
+								<path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+							</svg>
+						</summary>
+						<nav aria-label="Điều hướng di động" class="absolute inset-x-0 top-16 border-b border-brand-5 bg-white p-4 shadow-lg">
+							<ul class="space-y-1">
+								{headerCopy.nav.map((item) => (
+									<li>
+										<a href={homeAnchor(item.href)} class="block rounded-lg px-3 py-3 text-[17px] font-medium text-brand-4 hover:bg-brand-7">{item.label}</a>
+									</li>
+								))}
+							</ul>
+						</nav>
+					</details>
+				</div>
+			</div>
+		</header>
+
+        <div class="flex-grow">
+		    <slot />
+        </div>
+
+		<SiteFooter />
+
+        <!-- Floating Widgets -->
+		{!confirmationPage && <FloatingWidgets />}
+		{/* Popup "Nhận tư vấn": mọi CTA có data-korus-action mở form ngay tại chỗ,
+		    không phải cuộn tới form ở cuối trang. Form nền cuối trang vẫn giữ. */}
+		{leadEnabled && !confirmationPage && <LeadModal />}
+		<TrackingConsent />
+		<slot name="footer-inject" />
+
+		<script>
+			import { readConsent, hasValidConsent } from '../utils/consent';
+
+			// WP5.6 - Không import site-profile.mjs vào script client. Trước đây
+			// cả profile bị bundle xuống trình duyệt chỉ để đọc một trường id,
+			// kéo theo lead.destination và mọi thông tin doanh nghiệp khác.
+			// TrackingConsent.astro đã phát sẵn data-profile-id trên banner.
+			const consentBanner = document.getElementById('tracking-consent');
+			const profileId = consentBanner?.dataset.profileId;
+			if (consentBanner && profileId) {
+				const existingConsent = readConsent(profileId);
+				// Thanh này KHÔNG tự bung nữa (quyết định owner 10/09/2026: đo lường
+				// bật sẵn, phạm vi thu thập công bố tại /privacy). Hai lý do:
+				//   1. Nó là thanh cố định cao ~123px ở đáy màn hình điện thoại, đè
+				//      lên nút gọi hotline và nút gửi form — chặn đúng hai hành động
+				//      chuyển đổi chính, trên đúng phân khúc traffic chính.
+				//   2. Với mô hình opt-out thì không có quyết định nào cần hỏi trước.
+				// Khách vẫn từ chối được bất cứ lúc nào qua "Cài đặt cookie" ở chân
+				// trang, và hasValidConsent vẫn tôn trọng lựa chọn đã lưu.
+				void hasValidConsent;
+
+				// Nút rút lại đồng ý mang class 'hidden' cố định trong markup và
+				// trước đây không bao giờ được bỏ, nên quyền rút lại đồng ý là
+				// bất khả thi trên giao diện. Nghị định 13/2023/NĐ-CP yêu cầu
+				// quyền này phải thực thi được. Bỏ ẩn từ đây thay vì trong
+				// TrackingConsent.astro để giữ nguyên ràng buộc là component
+				// consent không tự đọc trạng thái đồng ý.
+				if (existingConsent) {
+					consentBanner.querySelector('[data-consent-action="revoke"]')?.classList.remove('hidden');
+				}
+
+				// Nút mở lại cài đặt Cookie ở footer
+				document.getElementById('open-cookie-settings')?.addEventListener('click', () => {
+					consentBanner.classList.remove('hidden');
+				});
+			}
+		</script>
+	</body>
+</html>

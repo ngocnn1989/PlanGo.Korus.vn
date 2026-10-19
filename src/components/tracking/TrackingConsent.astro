@@ -1,0 +1,75 @@
+---
+import siteProfile from '../../config/site-profile.mjs';
+import { resolveRuntimeTrackingActivation } from '../../config/runtime-tracking-activation.mjs';
+
+const trackingActivation = resolveRuntimeTrackingActivation({
+  profile: siteProfile,
+  env: {
+    PUBLIC_ENABLE_TRACKING: import.meta.env.PUBLIC_ENABLE_TRACKING,
+    PUBLIC_GTM_ID: import.meta.env.PUBLIC_GTM_ID,
+    PUBLIC_TRACKING_DELAY_MS: import.meta.env.PUBLIC_TRACKING_DELAY_MS,
+  },
+});
+if (!trackingActivation.ok) throw new Error('tracking_configuration_invalid');
+const consentUi = trackingActivation.enabled ? trackingActivation.profile.consent.ui : null;
+const canRenderConsent = consentUi !== null;
+
+// Thanh thông báo mảnh dưới đáy, không phải hộp chặn. Đo lường bật sẵn khi khách
+// vào trang (quy tắc nằm trong utils/consent.ts); thanh này chỉ báo cho khách biết
+// và cho họ từ chối. Phạm vi thu thập ghi đầy đủ trong /privacy.
+// Lề phải chừa chỗ để không chồng widget gọi/Zalo.
+---
+
+{canRenderConsent && (
+  <section
+    id="tracking-consent"
+    class="fixed inset-x-0 bottom-0 z-50 hidden border-t border-brand-5 bg-white/97 backdrop-blur"
+    data-consent-state="unknown"
+    data-profile-id={trackingActivation.profile.id}
+    data-grant-ttl-ms={String(consentUi.grant_ttl_ms)}
+    aria-labelledby="tracking-consent-title"
+  >
+    <div class="mx-auto flex max-w-[1290px] flex-col gap-2 px-4 py-3 pr-20 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:pr-24 lg:px-8">
+      <p class="text-sm leading-relaxed text-brand-3">
+        <span id="tracking-consent-title" class="font-semibold text-brand-4">{consentUi.title}</span>
+        <span> — </span>
+        <span>{consentUi.description}</span>
+      </p>
+      <div class="flex shrink-0 items-center gap-1">
+        <button type="button" data-consent-action="accept" class="inline-flex min-h-[44px] items-center rounded-lg bg-brand-1 px-4 text-sm font-semibold text-white transition-colors hover:bg-brand-2 cursor-pointer">{consentUi.accept_label}</button>
+        <button type="button" data-consent-action="reject" class="inline-flex min-h-[44px] items-center px-3 text-sm text-brand-3 underline-offset-4 transition-colors hover:text-brand-4 hover:underline cursor-pointer">{consentUi.reject_label}</button>
+        <button type="button" data-consent-action="revoke" class="hidden [&:not(.hidden)]:inline-flex min-h-[44px] items-center px-3 text-sm text-brand-3 underline-offset-4 transition-colors hover:text-brand-4 hover:underline cursor-pointer">{consentUi.revoke_label}</button>
+      </div>
+    </div>
+
+    <script>
+      import { grantConsent, revokeConsent } from '../../utils/consent';
+
+      const root = document.getElementById('tracking-consent');
+      if (root instanceof HTMLElement) {
+        const profileId = root.dataset.profileId;
+        const grantTtlMs = Number(root.dataset.grantTtlMs);
+
+        if (typeof profileId === 'string' && /^[a-z0-9][a-z0-9-]*$/i.test(profileId)
+          && Number.isSafeInteger(grantTtlMs) && grantTtlMs > 0) {
+          const setState = (state: 'granted' | 'revoked') => {
+            root.dataset.consentState = state;
+          };
+          const completeAction = (state: 'granted' | 'revoked') => {
+            setState(state);
+            window.location.reload();
+          };
+          root.querySelector('[data-consent-action="accept"]')?.addEventListener('click', () => {
+            if (grantConsent(profileId, Date.now() + grantTtlMs)) completeAction('granted');
+          });
+          root.querySelector('[data-consent-action="reject"]')?.addEventListener('click', () => {
+            if (revokeConsent(profileId)) completeAction('revoked');
+          });
+          root.querySelector('[data-consent-action="revoke"]')?.addEventListener('click', () => {
+            if (revokeConsent(profileId)) completeAction('revoked');
+          });
+        }
+      }
+    </script>
+  </section>
+)}

@@ -1,0 +1,74 @@
+{
+  "id": "staging",
+  "canonical_origin": "https://korus-web-framework-staging.vercel.app",
+  "theme_id": "staging",
+  "indexable": false,
+  "brand": {
+    "name": "Staging Preview",
+    "slogan": "Generic non-production preview",
+    "logo_url": "/favicon.svg",
+    "favicon_url": "/favicon.svg"
+  },
+  "company_info": {
+    "working_hours": "Not configured"
+  },
+  "contact": {
+    "phone": { "display": "", "raw": "", "enabled": false },
+    "email": { "value": "", "enabled": false }
+  },
+  "social_media": { "linkedin": "", "youtube": "", "facebook": "", "twitter": "" },
+  "chat_widgets": {
+    "enabled": false,
+    "zalo": { "enabled": false, "url": "" },
+    "messenger": { "enabled": false, "url": "" },
+    "whatsapp": { "enabled": false, "url": "" },
+    "line": { "enabled": false, "url": "" },
+    "wechat": { "enabled": false, "qr_image_url": "", "wechat_id": "" },
+    "telegram": { "enabled": false, "url": "" }
+  },
+  "i18n": { "enabled": false, "default_lang": "en", "supported_langs": ["en"] },
+  "lead": { "enabled": false, "destination": "" },
+  "tracking": { "enabled": false, "vendor": "" },
+  "consent": { "enabled": false, "vendor": "", "ui": null },
+  "navigation": {
+    "primary": [
+      { "label": "Preview Home", "path": "/" },
+      { "label": "Preview Terms", "path": "/terms" }
+    ],
+    "cta": { "label": "Preview only", "action": "lead_modal" }
+  },
+  "surface": { "design_system_enabled": false, "proof_page_count": 0 },
+  "page_copy": {
+    "header": { "brand_suffix": "Staging Preview", "cta_label": "Preview only" },
+    "footer": {
+      "products_heading": "Preview Content", "quick_links_heading": "Preview Links", "contact_heading": "Preview Contact",
+      "hours_label": "Hours",
+      "phone_label": "Phone", "email_label": "Email", "copyright": "Staging Preview"
+    },
+    "home": {
+      "title": "Staging Preview", "description": "Generic non-production preview.", "hero_headline": "Staging Preview",
+      "hero_body": "This generic preview is configured for remote staging.", "hero_cta": "Preview only",
+      "hero_image_alt": "Staging preview", "hero_image_src": "/favicon.svg"
+    },
+    "roi": {
+      "title": "Preview Calculator", "description": "Preview-only calculation labels.", "welders_label": "Input A",
+      "salary_label": "Input B", "calculate_label": "Calculate", "result_label": "Preview Result",
+      "months_label": "Months", "savings_label": "Savings", "quote_label": "Preview only",
+      "placeholder": "Enter preview values."
+    },
+    "errors": {
+      "not_found_title": "Preview Not Found", "not_found_heading": "Preview Not Found", "not_found_body": "This preview page is unavailable.", "home_label": "Preview Home",
+      "server_title": "Preview Error", "server_heading": "Preview Error", "server_body": "This preview cannot complete the request.", "retry_label": "Retry"
+    },
+    "blog_list": { "title": "Preview News", "description": "Generic staging updates and preview content.", "read_more_label": "Read more" },
+    "roi_defaults": { "welders_default": 1, "salary_default": 0, "robot_cost": 0 },
+    "lead_modal": {
+      "title": "Preview request", "description": "Generic staging preview form.", "name_label": "Name",
+      "phone_label": "Phone", "message_label": "Message", "submit_label": "Submit"
+    }
+  },
+  "theme_tokens": {
+    "brand_1": "#1D4ED8", "brand_2": "#1E40AF", "brand_3": "#1E3A8A", "brand_4": "#172554", "brand_5": "#BFDBFE",
+    "brand_6": "#DBEAFE", "brand_7": "#EFF6FF", "brand_8": "#FFFFFF", "brand_9": "#1E3A8A", "brand_10": "#FACC15"
+  }
+}

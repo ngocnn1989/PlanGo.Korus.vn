@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          # Phải >= 22.13: scripts/verify-runtime-lead-activation.mjs và
+          # scripts/test-lead-flow.mjs dùng node:module.stripTypeScriptTypes để
+          # nạp file .ts mà không cần bundler. API đó có từ Node v22.13.0.
+          # Bản 22.12 ghim trước đây thiếu đúng một bản vá và làm CI đỏ.
+          node-version: '24'
+          cache: npm
+
+      # Dùng npm install chứ không npm ci.
+      # package-lock.json được sinh trên Windows, nên nó không chứa nhánh phụ
+      # thuộc optional chỉ xuất hiện khi giải trên Linux: @img/sharp-wasm32 và
+      # @tailwindcss/oxide-wasm32-wasi cần @emnapi/runtime + @emnapi/core, và
+      # npm bỏ qua chúng khi giải trên Windows. Hệ quả là npm ci fail với
+      # EUSAGE "lock file out of sync" dù lock hoàn toàn hợp lệ ở phía Windows.
+      #
+      # Đánh đổi: npm install vẫn tôn trọng lock khi lock khớp, chỉ tự giải
+      # thêm ở nhánh optional theo nền tảng. Mất tính tái lập tuyệt đối của
+      # npm ci, nhưng đây là giới hạn của npm với optional dependency đa nền
+      # tảng, không phải lock hỏng.
+      #
+      # Cách khắc phục triệt để: sinh lại package-lock.json TRÊN LINUX rồi
+      # commit, sau đó đổi lại thành npm ci.
+      - run: npm install --no-audit --no-fund
+
+      # Các cổng kiểm chứng chuyên biệt phải chạy TRƯỚC build.
+      # Trước đây repo có 16 script kiểm chứng nhưng không có runner nào:
+      # không .github/, không script verify:* trong package.json. Repo trông
+      # như đã được kiểm chứng trong khi không cổng nào từng chạy.
+      - name: Verify contracts and lead-flow tests
+        run: npm run verify
+
+      - name: Typecheck
+        run: npm run check
+        env:
+          SITE_PROFILE: landing-plango
+
+      - name: Build
+        run: npm run build
+        env:
+          SITE_PROFILE: landing-plango
+
+      # Kiểm tra tính toàn vẹn của đồ thị liên kết nội bộ trên HTML đã build.
+      - name: Link graph integrity
+        run: node scripts/verify-internal-links.mjs
+
+      - name: Rendered landing SEO and content consistency
+        run: npm run verify:landing

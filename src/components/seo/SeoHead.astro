@@ -1,0 +1,246 @@
+---
+import siteProfile from '../../config/site-profile.mjs';
+import { landingCopySource } from '../../content/landing-copy';
+import { airobotProduct } from '../../content/airobot-product';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article' | 'product' | 'landing';
+  price?: string;
+  sku?: string;
+  currency?: string;
+  availability?: string;
+  condition?: string;
+  author?: string;
+  publishedAt?: Date | string;
+  schemaOnly?: boolean;
+  currentLang?: string;
+  fallbackPaths?: Record<string, string>;
+}
+
+const { 
+  title = siteProfile.brand.name, 
+  description = "Industrial Welding Robot Manufacturer", 
+  image,
+  type = "website",
+  price,
+  sku = "",
+  currency,
+  availability,
+  condition,
+  author,
+  publishedAt,
+  schemaOnly = false,
+  fallbackPaths = {}
+} = Astro.props;
+
+const canonicalOrigin = siteProfile.canonical_origin;
+const currentUrl = new URL(Astro.url.pathname, canonicalOrigin).toString();
+const finalCanonical = currentUrl;
+const finalImage = typeof image === 'string' && image !== '' ? new URL(image, canonicalOrigin).toString() : undefined;
+const indexable = siteProfile.indexable === true
+  && !import.meta.env.DEV && import.meta.env.VERCEL_ENV !== 'preview';
+
+const hreflangLinks: { language: string; url: string }[] = siteProfile.i18n.enabled
+  ? siteProfile.i18n.supported_langs.flatMap((language: string) => {
+    const path = fallbackPaths[language];
+    return typeof path === 'string' && path.startsWith('/')
+      ? [{ language, url: new URL(path, canonicalOrigin).toString() }]
+      : [];
+  })
+  : [];
+
+const serializeJsonLd = (value: unknown) => JSON.stringify(value)
+  .replace(/</g, '\\u003c')
+  .replace(/\u2028/g, '\\u2028')
+  .replace(/\u2029/g, '\\u2029');
+
+const hasAuthoritativeOffer = type === 'product'
+  && typeof sku === 'string' && sku.trim() !== ''
+  && typeof price === 'string' && /^\d+(?:\.\d+)?$/.test(price)
+  && typeof currency === 'string' && /^[A-Z]{3}$/.test(currency)
+  && typeof availability === 'string' && availability.startsWith('https://schema.org/')
+  && typeof condition === 'string' && condition.startsWith('https://schema.org/');
+const articleAuthor = typeof author === 'string' && author.trim() !== '' ? author.trim() : undefined;
+const articlePublishedAt = publishedAt instanceof Date
+  ? (Number.isNaN(publishedAt.valueOf()) ? undefined : publishedAt.toISOString())
+  : (typeof publishedAt === 'string' && !Number.isNaN(Date.parse(publishedAt)) ? new Date(publishedAt).toISOString() : undefined);
+const articleSchemaRequested = type === 'article' && (schemaOnly || author !== undefined || publishedAt !== undefined);
+
+// Trang chủ là bề mặt duy nhất hiển thị khối FAQ và khối cấu hình tham chiếu,
+// nên FAQPage/Product chỉ được phát ở đây để schema luôn khớp nội dung nhìn thấy.
+const isLandingSurface = type === 'landing' || Astro.url.pathname === '/' || Astro.url.pathname === '';
+
+// Dữ kiện doanh nghiệp: bảng sự thật sản phẩm có nguồn của dự án, §6 (nguồn N1, N2).
+const legalName = airobotProduct.manufacturer;
+const organizationId = `${canonicalOrigin}/#organization`;
+const productId = `${canonicalOrigin}/#airobot`;
+const organizationRef = {
+  "@type": "Organization",
+  "@id": organizationId,
+  "name": legalName,
+  "alternateName": siteProfile.brand.name,
+  "url": canonicalOrigin
+};
+
+// Cấu hình tham chiếu — chỉ các dòng đã đánh dấu dùng được ở §3 và §4.
+// Không phát sku, giá, offers, đánh giá: nguồn không công bố.
+const airobotProperties = airobotProduct.specifications;
+
+const faqItems = Array.isArray(landingCopySource?.faq?.items) ? landingCopySource.faq.items : [];
+
+let schemaData: Record<string, unknown> | undefined;
+if (articleSchemaRequested) {
+  schemaData = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": title,
+    "description": description,
+    "author": articleAuthor
+      ? { "@type": "Person", "name": articleAuthor }
+      : { "@type": "Organization", "name": siteProfile.brand.name },
+    "publisher": {
+      "@type": "Organization",
+      "name": siteProfile.brand.name,
+      "logo": { "@type": "ImageObject", "url": new URL(siteProfile.brand.logo_url, canonicalOrigin).toString() }
+    },
+    ...(finalImage ? { image: [finalImage] } : {}),
+    ...(articlePublishedAt ? { datePublished: articlePublishedAt } : {})
+  };
+} else if (hasAuthoritativeOffer) {
+  schemaData = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": title,
+    "description": description,
+    "sku": sku,
+    "offers": {
+      "@type": "Offer",
+      "url": finalCanonical,
+      "priceCurrency": currency,
+      "price": price,
+      "itemCondition": condition,
+      "availability": availability
+    },
+    ...(finalImage ? { image: finalImage } : {})
+  };
+} else {
+  schemaData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": organizationId,
+    "name": legalName,
+    "alternateName": siteProfile.brand.name,
+    "url": canonicalOrigin,
+    "logo": new URL(siteProfile.brand.logo_url, canonicalOrigin).toString(),
+    "foundingDate": "2012-03-28",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Tầng 4, số 46b LK 19A-19B",
+      "addressLocality": "Phường Dương Nội",
+      "addressRegion": "Hà Nội",
+      "addressCountry": "VN"
+    },
+    "sameAs": ["https://vn-j247.com"],
+    ...(siteProfile.contact?.phone?.raw ? {
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": siteProfile.contact.phone.raw,
+        "contactType": "customer service"
+      }
+    } : {})
+  };
+}
+
+// Product của trạm AiRobot dùng lại đúng cổng hasAuthoritativeOffer: khi cổng
+// chưa mở (chưa có giá/sku authoritative) thì phát Product không kèm offers.
+const airobotProductSchema = isLandingSurface && !hasAuthoritativeOffer
+  ? {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "@id": productId,
+    "name": airobotProduct.name,
+    "category": "Robot hàn công nghiệp",
+    "url": finalCanonical,
+    "description": `${airobotProduct.description} ${airobotProduct.referenceNote}`,
+    // VN-J công bố AiRobot trên trang của chính họ, nên chỉ khai `manufacturer`.
+    // `brand` trước đây trỏ cùng một Organization — khai hai lần là thừa.
+    "manufacturer": organizationRef,
+    "additionalProperty": airobotProperties.map((property) => ({
+      "@type": "PropertyValue",
+      "name": property.label,
+      "value": property.value
+    })),
+    ...(finalImage ? { image: finalImage } : {})
+  }
+  : undefined;
+
+// Optional machine-readable FAQ; Google retired FAQ rich results in May 2026.
+// FAQPage sinh từ landingCopySource.faq.items — cùng nội dung với khối FAQ hiển thị,
+// nhưng lấy bản gạch nối ASCII để dữ liệu có cấu trúc không mang U+2011.
+const faqSchema = isLandingSurface && faqItems.length > 0
+  ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${finalCanonical}#cau-hoi`,
+    "mainEntity": faqItems.map((item) => ({
+      "@type": "Question",
+      "name": item.q,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.a
+      }
+    }))
+  }
+  : undefined;
+
+const webPageSchema = isLandingSurface ? {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": `${finalCanonical}#webpage`,
+  "url": finalCanonical,
+  "name": title,
+  "description": description,
+  "inLanguage": siteProfile.i18n.default_lang,
+  "mainEntity": { "@id": productId },
+  "publisher": { "@id": organizationId },
+} : undefined;
+
+const schemaNodes = [schemaData, airobotProductSchema, faqSchema, webPageSchema].filter(
+  (node): node is Record<string, unknown> => node !== undefined
+);
+---
+
+{!schemaOnly && <>
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  {!indexable && <meta name="robots" content="noindex,nofollow" />}
+  <link rel="canonical" href={finalCanonical} />
+
+  {hreflangLinks.map(link => (
+    <link rel="alternate" hreflang={link.language} href={link.url} />
+  ))}
+  {hreflangLinks.length > 0 && <link rel="alternate" hreflang="x-default" href={finalCanonical} />}
+
+  <meta property="og:site_name" content={siteProfile.brand.name} />
+  <meta property="og:type" content={type === 'landing' ? 'website' : type} />
+  <meta property="og:url" content={finalCanonical} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  {finalImage && <meta property="og:image" content={finalImage} />}
+  {finalImage && isLandingSurface && <meta property="og:image:alt" content="Hình minh họa trạm robot hàn tự động AiRobot trên ray của VN-J" />}
+  {siteProfile.i18n.default_lang === 'vi' && <meta property="og:locale" content="vi_VN" />}
+
+  <meta property="twitter:card" content={finalImage ? 'summary_large_image' : 'summary'} />
+  <meta property="twitter:url" content={finalCanonical} />
+  <meta property="twitter:title" content={title} />
+  <meta property="twitter:description" content={description} />
+  {finalImage && <meta property="twitter:image" content={finalImage} />}
+  {finalImage && isLandingSurface && <meta name="twitter:image:alt" content="Hình minh họa trạm robot hàn tự động AiRobot trên ray của VN-J" />}
+</>}
+
+{schemaNodes.map((node) => (
+  <script type="application/ld+json" set:html={serializeJsonLd(node)} />
+))}

@@ -1,0 +1,160 @@
+---
+// src/components/global/FloatingWidgets.astro
+import siteProfile from '../../config/site-profile.mjs';
+import { landingCopy } from '../../content/landing-copy';
+
+// Chữ cho nhãn truy cập lấy từ landingCopy.footer.iconLabels — nguồn chữ
+// duy nhất theo docs/novabot_landing.md §15. Không viết lại bản thứ hai tại đây.
+const iconLabels = landingCopy.footer.iconLabels;
+
+const phone = siteProfile.contact?.phone;
+const zalo = siteProfile.chat_widgets?.zalo;
+
+const showPhone = Boolean(phone?.enabled && phone?.raw);
+const showZalo = Boolean(siteProfile.chat_widgets?.enabled && zalo?.enabled && zalo?.url);
+---
+
+<!-- Floating Quick Contact & Back to Top Widgets -->
+<aside aria-label="Tiện ích liên hệ nhanh và cuộn trang" class="fixed bottom-5 right-5 z-[60] flex flex-col items-center gap-3 transition-opacity duration-200">
+  {/* 1. Zalo Button */}
+  {showZalo && (
+    <a
+      href={zalo.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={iconLabels.zalo}
+      class="group relative flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#0068ff] text-white shadow-xl hover:scale-110 transition-transform duration-300"
+    >
+      {/* Slow Gentle Pulse ring */}
+      <span class="absolute inline-flex h-full w-full rounded-full bg-[#0068ff] opacity-40 slow-pulse pointer-events-none"></span>
+      
+      {/* Zalo Text Icon */}
+      <span class="font-black text-sm md:text-base tracking-tighter relative z-10">Zalo</span>
+      
+      {/* Tooltip on Desktop */}
+      <span class="pointer-events-none absolute right-16 hidden md:group-hover:flex items-center bg-gray-900 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+        {iconLabels.zalo}{phone?.display ? `: ${phone.display}` : ''}
+      </span>
+    </a>
+  )}
+
+  {/* 2. Hotline Call Button */}
+  {showPhone && (
+    <a
+      href={`tel:${phone.raw}`}
+      aria-label={iconLabels.call}
+      class="group relative flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-brand-1 text-white shadow-xl hover:scale-110 transition-transform duration-300"
+    >
+      {/* Slow Gentle Pulse ring */}
+      <span class="absolute inline-flex h-full w-full rounded-full bg-brand-1 opacity-40 slow-pulse pointer-events-none"></span>
+      
+      {/* Phone Icon */}
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+      </svg>
+
+      {/* Tooltip on Desktop */}
+      <span class="pointer-events-none absolute right-16 hidden md:group-hover:flex items-center bg-gray-900 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+        {iconLabels.call}: {phone?.display || phone.raw}
+      </span>
+    </a>
+  )}
+
+  {/* 3. Back To Top Button */}
+  <button
+    id="back-to-top-btn"
+    type="button"
+    aria-label={iconLabels.backToTop}
+    class="opacity-0 pointer-events-none translate-y-4 flex items-center justify-center w-11 h-11 md:w-12 md:h-12 rounded-full bg-gray-900/90 hover:bg-brand-1 text-white border border-gray-700 shadow-xl transition-all duration-300 cursor-pointer"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+    </svg>
+  </button>
+</aside>
+
+<script>
+  // Cụm widget cố định chiếm góc phải dưới (đo được x 307-355 ở khổ 375px). Mọi nút
+  // CTA trên mobile đều full-width nên nút nào trôi vào vùng đó cũng bị đè 7-14% bề
+  // ngang, và cú chạm rơi vào Zalo thay vì vào nút. Hit-test đã xác nhận:
+  // elementFromPoint tại mép phải nút gửi trả về nút Zalo, không phải nút submit.
+  // Lead rơi mà không có lỗi nào báo.
+  //
+  // Quy tắc: khi đã có một CTA thật nằm trong dải đáy màn hình thì lối tắt nổi là
+  // thừa — cho nó nhường chỗ. Chỉ xét dải đáy (nơi widget thực sự nằm) thay vì cả
+  // khung nhìn, để widget không chớp tắt liên tục khi cuộn qua các CTA ở giữa trang.
+  const cumWidget = document.querySelector('aside[aria-label]');
+  const cacCta = document.querySelectorAll('[data-cta], #tu-van button[type="submit"], [data-site-footer] a, [data-site-footer] button');
+
+  if (cumWidget && cacCta.length && 'IntersectionObserver' in window) {
+    const dangDe = new Set<Element>();
+    let theoDoi: IntersectionObserver | null = null;
+
+    const dungObserver = () => {
+      if (theoDoi) theoDoi.disconnect();
+      dangDe.clear();
+      // Thu gốc quan sát về đúng dải đáy cao 200px — vùng widget chiếm chỗ.
+      const daiDay = Math.max(0, window.innerHeight - 200);
+      const observer = new IntersectionObserver((cacMuc) => {
+        for (const muc of cacMuc) {
+          if (muc.isIntersecting) dangDe.add(muc.target);
+          else dangDe.delete(muc.target);
+        }
+        const nhuong = dangDe.size > 0;
+        cumWidget.classList.toggle('opacity-0', nhuong);
+        cumWidget.classList.toggle('pointer-events-none', nhuong);
+      }, { rootMargin: `-${daiDay}px 0px 0px 0px`, threshold: 0 });
+      theoDoi = observer;
+      cacCta.forEach((nut) => observer.observe(nut));
+    };
+
+    dungObserver();
+    // innerHeight đổi khi xoay máy hoặc thanh địa chỉ trên mobile thu vào/nhả ra,
+    // nên phải dựng lại gốc quan sát, nếu không dải đáy sẽ lệch.
+    let hoan: number | undefined;
+    window.addEventListener('resize', () => { window.clearTimeout(hoan); hoan = window.setTimeout(dungObserver, 150); });
+  }
+
+  const backToTopBtn = document.getElementById('back-to-top-btn');
+
+  if (backToTopBtn) {
+    const toggleBackToTop = () => {
+      if (window.scrollY > 300) {
+        backToTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+        backToTopBtn.classList.add('opacity-100', 'translate-y-0');
+      } else {
+        backToTopBtn.classList.remove('opacity-100', 'translate-y-0');
+        backToTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+      }
+    };
+
+    window.addEventListener('scroll', toggleBackToTop, { passive: true });
+
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    });
+  }
+</script>
+
+<style>
+  @keyframes slowPulse {
+    0% {
+      transform: scale(0.95);
+      opacity: 0.7;
+    }
+    50% {
+      transform: scale(1.35);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+  }
+  .slow-pulse {
+    animation: slowPulse 3.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+</style>

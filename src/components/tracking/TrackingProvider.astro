@@ -1,0 +1,59 @@
+---
+import siteProfile from '../../config/site-profile.mjs';
+import { resolveRuntimeTrackingActivation, serializeRuntimeTrackingActivation } from '../../config/runtime-tracking-activation.mjs';
+
+const trackingActivation = resolveRuntimeTrackingActivation({
+  profile: siteProfile,
+  env: {
+    PUBLIC_ENABLE_TRACKING: import.meta.env.PUBLIC_ENABLE_TRACKING,
+    PUBLIC_GTM_ID: import.meta.env.PUBLIC_GTM_ID,
+    PUBLIC_TRACKING_DELAY_MS: import.meta.env.PUBLIC_TRACKING_DELAY_MS,
+  },
+});
+if (!trackingActivation.ok) throw new Error('tracking_configuration_invalid');
+const serializedTrackingConfiguration = serializeRuntimeTrackingActivation(trackingActivation);
+---
+{trackingActivation.enabled && (
+  <>
+    <script id="tracking-consent-configuration" type="application/json" set:html={serializedTrackingConfiguration} />
+    <script>
+      import { canInitializeTracking, type ConsentProfile } from '../../utils/consent';
+
+      const configurationNode = document.getElementById('tracking-consent-configuration');
+      let configuration: { profile: ConsentProfile; gtmId: unknown; delayMs: unknown } | null = null;
+      try {
+        configuration = configurationNode?.textContent ? JSON.parse(configurationNode.textContent) : null;
+      } catch {
+        configuration = null;
+      }
+
+      if (configuration && typeof configuration.gtmId === 'string'
+        && typeof configuration.delayMs === 'number' && Number.isSafeInteger(configuration.delayMs)
+        && configuration.delayMs >= 0 && configuration.delayMs <= 60000
+        && canInitializeTracking(configuration.profile)) {
+        const { profile, gtmId, delayMs } = configuration;
+        const inject = () => {
+          if (!canInitializeTracking(profile)) return;
+
+          // KHÔNG tạo inline script ở đây. CSP của trang chỉ chứa hash sha256 của
+          // các inline script tồn tại lúc build, không có 'unsafe-inline' và không
+          // có nonce — nên mọi script sinh động bằng `.text` đều bị chặn vĩnh viễn.
+          // Bản cũ làm đúng như vậy: GTM chưa từng chạy trên production, mà
+          // trackConversion lại thoát im lặng khi thiếu dataLayer nên hỏng không
+          // ai thấy. Tự làm hai việc của snippet GTM bằng chính module này (đã
+          // được CSP cho phép), và nạp gtm.js qua `src` từ domain đã allowlist.
+          const w = window as unknown as { dataLayer?: unknown[] };
+          w.dataLayer = w.dataLayer || [];
+          w.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+
+          const gtmScript = document.createElement('script');
+          gtmScript.async = true;
+          gtmScript.src = `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(gtmId)}`;
+          document.head.appendChild(gtmScript);
+        };
+        if (delayMs === 0) inject();
+        else window.setTimeout(inject, delayMs);
+      }
+    </script>
+  </>
+)}

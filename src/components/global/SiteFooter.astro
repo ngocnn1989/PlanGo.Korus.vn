@@ -1,0 +1,60 @@
+---
+import siteProfile from '../../config/site-profile.mjs';
+import { landingCopy } from '../../content/landing-copy';
+
+interface Props { cookieButtonId?: string }
+const { cookieButtonId = 'open-cookie-settings' } = Astro.props;
+const { footer } = landingCopy;
+const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const isCurrentPage = (path: string) => (path.replace(/\/+$/, '') || '/') === currentPath;
+const navigationLinks = footer.links.filter((link) => link.href.startsWith('#') && link.href !== '#cookie-settings');
+const legalLinks = footer.links.filter((link) => link.href.startsWith('/'));
+const cookieLabel = footer.links.find((link) => link.href === '#cookie-settings')?.label;
+const { page_copy: pageCopy, contact, chat_widgets: chat } = siteProfile;
+---
+
+<footer class="bg-brand-10 pt-14 pb-28" data-site-footer>
+  <div class="mx-auto max-w-[1290px] px-4 lg:px-8">
+    <div class="grid grid-cols-2 gap-8 md:grid-cols-[1.3fr_0.8fr_1fr] md:gap-10" data-footer-columns>
+      <div class="col-span-2 md:col-span-1" data-footer-column="company">
+        <img src="/logo-vnj-ondark.png" alt={`Logo ${footer.legalName}`} width="64" height="40" loading="lazy" decoding="async" class="h-10 w-auto" />
+        <p class="mt-3 max-w-[40ch] text-[15px] font-semibold text-white">{footer.legalName}</p>
+        <p class="mt-2 max-w-[38ch] text-[15px] leading-relaxed text-brand-6">{footer.body}</p>
+      </div>
+
+      <nav aria-label={footer.navigationTitle} data-footer-column="navigation">
+        <h2 class="text-xs font-semibold uppercase tracking-[0.14em] text-brand-6">{footer.navigationTitle}</h2>
+        <ul class="mt-2">
+          {navigationLinks.map((link) => (
+            <li><a href={`/${link.href}`} data-cta={link.href === '#tu-van' ? 'footer' : undefined} class="flex min-h-[44px] items-center py-2 text-[15px] text-brand-6 underline-offset-4 hover:text-white hover:underline">{link.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      <div data-footer-column="contact">
+        <h2 class="text-xs font-semibold uppercase tracking-[0.14em] text-brand-6">{pageCopy.footer.contact_heading}</h2>
+        <p class="mt-4 max-w-[38ch] text-sm leading-relaxed text-brand-6"><span>{footer.addressLabel}:</span> {footer.address}</p>
+        <ul class="mt-2">
+          {contact.phone.enabled && <li><a href={footer.hotline.href} class="inline-flex min-h-[44px] flex-wrap items-center gap-x-1 py-2 text-[15px] font-semibold text-white underline-offset-4 hover:underline"><span>{pageCopy.footer.phone_label}:</span><span class="whitespace-nowrap">{contact.phone.display}</span></a></li>}
+          {chat?.enabled && chat.zalo?.enabled && chat.zalo.url && (
+            <li><a href={chat.zalo.url} target="_blank" rel="noopener noreferrer" class="inline-flex min-h-[44px] items-center text-[15px] text-brand-6 underline-offset-4 hover:text-white hover:underline">{footer.iconLabels.zalo}</a></li>
+          )}
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-10 flex flex-col gap-4 border-t border-white/10 pt-5 lg:flex-row lg:items-center lg:justify-between">
+      <p class="text-sm text-brand-6">{pageCopy.footer.copyright}</p>
+      <nav aria-label={footer.legalTitle}>
+        <ul class="flex flex-wrap items-center gap-x-6 gap-y-1">
+          {legalLinks.map((link) => (
+            <li>{isCurrentPage(link.href)
+              ? <span aria-current="page" class="inline-flex min-h-[44px] items-center text-sm text-white">{link.label}</span>
+              : <a href={link.href} class="inline-flex min-h-[44px] items-center text-sm text-brand-6 underline-offset-4 hover:text-white hover:underline">{link.label}</a>}</li>
+          ))}
+          <li><button type="button" id={cookieButtonId} class="inline-flex min-h-[44px] cursor-pointer items-center text-left text-sm text-brand-6 underline-offset-4 hover:text-white hover:underline">{cookieLabel}</button></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>

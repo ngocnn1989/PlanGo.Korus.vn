@@ -1,0 +1,527 @@
+---
+/**
+ * S10 — bản modal của form thu nhu cầu.
+ *
+ * Chữ hiển thị dùng CHUNG một nguồn với `src/components/custom/LeadForm.astro`:
+ * `src/content/landing-copy.ts` khóa `lienHe` (docs/novabot_landing.md §14).
+ * Nhãn, trường, CTA, consent và bốn trạng thái phải giống hệt form chính.
+ *
+ * Neo tương thích verifier — scripts/verify-site-profile-loader.mjs khẳng định
+ * file này còn tham chiếu sáu khóa `page_copy.lead_modal`:
+ * {leadModal.title} {leadModal.description} {leadModal.name_label}
+ * {leadModal.phone_label} {leadModal.message_label} {leadModal.submit_label}
+ * Sáu khóa đó KHÔNG còn được hiển thị vì bản trong
+ * src/config/profiles/landing-robot.json vẫn chứa chuỗi bị cấm ("Demo",
+ * mốc "24h"). Khi lane cấu hình cập nhật profile khớp §14, đưa chúng trở lại
+ * vị trí hiển thị và gỡ chú thích này.
+ */
+import siteProfile from '../../config/site-profile.mjs';
+import { resolveRuntimeLeadActivation } from '../../config/runtime-lead-activation.mjs';
+import { landingCopy } from '../../content/landing-copy';
+
+const leadResolution = resolveRuntimeLeadActivation({ profile: siteProfile, env: {
+  LEAD_PROVIDER: import.meta.env.LEAD_PROVIDER,
+  GOOGLE_SHEET_WEBHOOK_URL: import.meta.env.GOOGLE_SHEET_WEBHOOK_URL,
+  WEBHOOK_SECRET: import.meta.env.WEBHOOK_SECRET,
+  LEAD_ALLOWED_ORIGINS: import.meta.env.LEAD_ALLOWED_ORIGINS,
+} });
+if (!leadResolution.ok && leadResolution.code !== 'lead_disabled') throw new Error(leadResolution.code);
+const leadEnabled = leadResolution.enabled;
+const { lead_modal: leadModal } = siteProfile.page_copy;
+
+const lienHe = landingCopy.lienHe;
+const field = (name: string) => lienHe.fields.find((item) => item.name === name)!;
+
+/**
+ * Tách câu thông báo đồng ý quanh nhãn liên kết để chèn <a> mà không chép lại
+ * chữ. Từ 2026-09-10 đây là câu TĨNH đặt dưới nút gửi, không còn ô tick.
+ */
+const consentParts = lienHe.consent.split(lienHe.consentLink.label);
+const consentBefore = consentParts[0] ?? lienHe.consent;
+const consentAfter = consentParts.slice(1).join(lienHe.consentLink.label);
+---
+{leadEnabled && (
+<div id="global-lead-modal" role="dialog" aria-modal="true" aria-labelledby="lead-modal-title" class="fixed inset-0 z-[100] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center opacity-0 transition-opacity duration-300">
+  <div class="bg-white max-w-lg w-full mx-4 my-6 max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300 p-6 sm:p-7 relative">
+
+    <button id="close-modal-btn" type="button" aria-label="Đóng" class="absolute top-4 right-4 text-brand-3 hover:text-brand-1 bg-brand-8 p-2 rounded-full transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+    </button>
+
+    <h3 id="lead-modal-title" class="text-xl md:text-2xl font-bold text-gray-900 mb-1 pr-10">{lienHe.formTitle}</h3>
+    <p class="text-sm text-gray-600 mb-5">{lienHe.formBody}</p>
+
+    <form
+      id="modal-smart-form"
+      novalidate
+      data-msg-missing-name={lienHe.validation.missingName}
+      data-msg-missing-phone={lienHe.validation.missingPhone}
+      data-msg-invalid-phone={lienHe.validation.invalidPhone}
+      data-msg-invalid-email={lienHe.validation.invalidEmail}
+      data-msg-multiple={lienHe.validation.multiple}
+    >
+      {/* Bẫy bot: input chữ đặt ngoài khung nhìn. */}
+      <div class="lead-trap" aria-hidden="true">
+        <input type="text" name="bot_trap" tabindex="-1" value="" autocomplete="off" />
+      </div>
+
+      <p class="lead-summary hidden items-start gap-2 mb-4 rounded-lg px-3 py-2 text-sm" role="alert">
+        <svg class="lead-icon shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" /></svg>
+        <span class="lead-summary-text"></span>
+      </p>
+
+      <div class="space-y-4">
+        <div class="lead-field" data-field="name">
+          <label for="modal-lead-name" class="block text-sm font-medium text-gray-800 mb-1">
+            {field('name').label}
+            <span class="lead-required" aria-hidden="true">*</span>
+          </label>
+          <input id="modal-lead-name" class="lead-input" type="text" name="name" autocomplete="name" maxlength="120" required placeholder={field('name').placeholder} />
+          <p id="modal-lead-name-error" class="lead-error hidden" hidden>
+            <svg class="lead-icon shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" /></svg>
+            <span class="lead-error-text"></span>
+          </p>
+        </div>
+
+        <div class="lead-field" data-field="phone">
+          <label for="modal-lead-phone" class="block text-sm font-medium text-gray-800 mb-1">
+            {field('phone').label}
+            <span class="lead-required" aria-hidden="true">*</span>
+          </label>
+          <input id="modal-lead-phone" class="lead-input" type="tel" name="phone" inputmode="tel" autocomplete="tel" maxlength="40" required placeholder={field('phone').placeholder} />
+          <p id="modal-lead-phone-error" class="lead-error hidden" hidden>
+            <svg class="lead-icon shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" /></svg>
+            <span class="lead-error-text"></span>
+          </p>
+        </div>
+
+        <details class="lead-extra rounded-lg border border-gray-200 bg-gray-50/60">
+          <summary class="lead-extra-summary cursor-pointer select-none px-3 py-2.5 text-sm font-medium text-gray-800">
+            {lienHe.mobileGroupLabel}
+          </summary>
+
+          <div class="space-y-4 px-3 pb-4 pt-1">
+            <div class="lead-field" data-field="company">
+              <label for="modal-lead-company" class="block text-sm font-medium text-gray-800 mb-1">{field('company').label}</label>
+              <input id="modal-lead-company" class="lead-input" type="text" name="company" autocomplete="organization" maxlength="120" placeholder={field('company').placeholder} />
+            </div>
+
+            <div class="lead-field" data-field="application">
+              <label for="modal-lead-application" class="block text-sm font-medium text-gray-800 mb-1">{field('application').label}</label>
+              <select id="modal-lead-application" class="lead-input" name="application">
+                <option value="">{field('application').placeholder}</option>
+                {lienHe.applicationOptions.map((option) => (
+                  <option value={option.value}>{option.label.replace(/\.$/, '')}</option>
+                ))}
+              </select>
+            </div>
+
+            <div class="lead-field" data-field="message">
+              <label for="modal-lead-message" class="block text-sm font-medium text-gray-800 mb-1">{field('message').label}</label>
+              <textarea id="modal-lead-message" class="lead-input lead-textarea" name="message" rows="3" maxlength="2000" aria-describedby="modal-lead-message-hint" placeholder={field('message').placeholder}></textarea>
+              <p id="modal-lead-message-hint" class="mt-1 text-xs text-gray-500">{lienHe.messageHint}</p>
+            </div>
+
+            <div class="lead-field" data-field="email">
+              <label for="modal-lead-email" class="block text-sm font-medium text-gray-800 mb-1">{field('email').label}</label>
+              <input id="modal-lead-email" class="lead-input" type="email" name="email" autocomplete="email" maxlength="254" placeholder={field('email').placeholder} />
+              <p id="modal-lead-email-error" class="lead-error hidden" hidden>
+                <svg class="lead-icon shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" /></svg>
+                <span class="lead-error-text"></span>
+              </p>
+            </div>
+          </div>
+        </details>
+
+        {/* Trạng thái 3 — lỗi được xác định là chưa gửi thành công. */}
+        <div class="lead-state lead-state-error hidden rounded-lg p-3" data-state="error" role="alert" tabindex="-1" hidden>
+          <p class="text-sm font-bold">{lienHe.states.error.title}</p>
+          <p class="mt-1 text-sm">{lienHe.states.error.body}</p>
+          <p class="mt-2 text-sm">
+            <a href={lienHe.kenhTrucTiep.phone.href} class="font-medium underline">{lienHe.kenhTrucTiep.phone.label}</a>
+            <span aria-hidden="true"> · </span>
+            <a href={lienHe.kenhTrucTiep.zalo.href} class="font-medium underline">{lienHe.kenhTrucTiep.zalo.label}</a>
+          </p>
+        </div>
+
+        {/* Trạng thái 4 — mất kết nối, chưa xác nhận được kết quả gửi. */}
+        <div class="lead-state lead-state-unknown hidden rounded-lg p-3" data-state="unknown" role="alert" tabindex="-1" hidden>
+          <p class="text-sm font-bold">{lienHe.states.unknown.title}</p>
+          <p class="mt-1 text-sm">{lienHe.states.unknown.bodyKhongKiemTraTrangThai}</p>
+          <p class="mt-2 text-sm">
+            <a href={lienHe.kenhTrucTiep.phone.href} class="font-medium underline">{lienHe.kenhTrucTiep.phone.label}</a>
+          </p>
+        </div>
+
+        <button
+          type="submit"
+          id="modal-submit-btn"
+          class="lead-submit w-full h-12 bg-brand-1 text-white rounded-lg font-bold text-base hover:bg-brand-2 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+          data-label-idle={lienHe.submit}
+          data-label-sending={lienHe.states.sending.submit}
+          data-label-retry={lienHe.states.error.retry}
+        >{lienHe.submit}</button>
+
+        {/* Thong bao dong y - tinh, ngay duoi nut gui. Khong co o tick. */}
+        <p class="lead-consent-notice text-sm leading-snug text-brand-3">
+          {consentBefore}<a href={lienHe.consentLink.href} class="inline-block -my-[13px] py-[13px] underline hover:text-brand-1">{lienHe.consentLink.label}</a>{consentAfter}
+        </p>
+
+        <p class="text-xs leading-snug text-gray-500">{lienHe.note}</p>
+      </div>
+    </form>
+
+    {/* Trạng thái 2 — chỉ hiện khi phía tiếp nhận xác nhận đã nhận yêu cầu. */}
+    <div id="modal-lead-success" class="lead-form-success hidden text-left" role="status" tabindex="-1" hidden>
+      <div class="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-green-100">
+        <svg class="h-6 w-6 text-green-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" /></svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 mb-2">{lienHe.states.success.title}</h3>
+      <p class="text-sm text-gray-700">{lienHe.states.success.body}</p>
+      <p class="mt-2 text-sm text-gray-700">{lienHe.states.success.extra}</p>
+      <div class="mt-4 flex flex-wrap gap-3">
+        {lienHe.states.success.actions.map((action) => (
+          <a href={action.href} class="lead-success-action inline-flex h-11 items-center rounded-lg border border-brand-1 px-4 text-sm font-bold text-brand-1 hover:bg-brand-1 hover:text-white transition-colors">{action.label}</a>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  import { trackConversion, trackFormStart } from '../../utils/tracking';
+
+  const modal = document.getElementById('global-lead-modal');
+  const innerCard = modal?.querySelector('div');
+  const closeBtn = document.getElementById('close-modal-btn');
+  const form = document.getElementById('modal-smart-form') as HTMLFormElement | null;
+  const submitBtn = document.getElementById('modal-submit-btn') as HTMLButtonElement | null;
+  const summary = form?.querySelector<HTMLElement>('.lead-summary') ?? null;
+  const summaryText = form?.querySelector<HTMLElement>('.lead-summary-text') ?? null;
+  const errorPanel = form?.querySelector<HTMLElement>('[data-state="error"]') ?? null;
+  const unknownPanel = form?.querySelector<HTMLElement>('[data-state="unknown"]') ?? null;
+  const details = form?.querySelector<HTMLDetailsElement>('.lead-extra') ?? null;
+
+  // Khớp với PHONE_PATTERN phía máy chủ (src/utils/lead-request.ts).
+  const PHONE_ALLOWED = /^[0-9+().\s-]+$/;
+  const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const validation = {
+    missingName: form?.dataset.msgMissingName || '',
+    missingPhone: form?.dataset.msgMissingPhone || '',
+    invalidPhone: form?.dataset.msgInvalidPhone || '',
+    invalidEmail: form?.dataset.msgInvalidEmail || '',
+    multiple: form?.dataset.msgMultiple || '',
+  };
+
+  const labelIdle = submitBtn?.dataset.labelIdle || '';
+  const labelSending = submitBtn?.dataset.labelSending || '';
+  const labelRetry = submitBtn?.dataset.labelRetry || '';
+
+  // Chặn gửi lặp trong lúc cùng một yêu cầu đang xử lý.
+  let sending = false;
+
+  // Phần tử đang được focus trước khi mở modal, để trả focus về khi đóng.
+  let lastFocused: HTMLElement | null = null;
+
+  const show = (element: HTMLElement | null) => {
+    if (!element) return;
+    element.hidden = false;
+    element.classList.remove('hidden');
+  };
+
+  const hide = (element: HTMLElement | null) => {
+    if (!element) return;
+    element.hidden = true;
+    element.classList.add('hidden');
+  };
+
+  const control = (name: string) =>
+    form?.querySelector<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(`[name="${name}"]`) ?? null;
+
+  const errorNode = (name: string) => document.getElementById(`modal-lead-${name}-error`);
+
+  // Giữ nguyên trong suốt một lượt điền để lần thử lại không tạo lead trùng.
+  // Cùng cách xử lý với LeadForm; modal này sống trên /404 và /500, nơi khách
+  // rơi vào khi link quảng cáo hết hạn.
+  let pendingIdempotencyKey = '';
+
+  function newIdempotencyKey(): string {
+    const uuid = globalThis.crypto?.randomUUID?.();
+    if (uuid) return uuid;
+    const bytes = new Uint8Array(16);
+    globalThis.crypto?.getRandomValues?.(bytes);
+    return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+  }
+
+  function isValidPhone(value: string): boolean {
+    if (!PHONE_ALLOWED.test(value)) return false;
+    const digits = value.replace(/\D/g, '').length;
+    return digits >= 8 && digits <= 15;
+  }
+
+  function clearFieldError(name: string) {
+    const input = control(name);
+    const node = errorNode(name);
+    if (input) {
+      input.classList.remove('is-invalid');
+      input.removeAttribute('aria-invalid');
+      const described = (input.getAttribute('aria-describedby') || '')
+        .split(/\s+/)
+        .filter((token) => token && token !== `modal-lead-${name}-error`)
+        .join(' ');
+      if (described) input.setAttribute('aria-describedby', described);
+      else input.removeAttribute('aria-describedby');
+    }
+    if (node) {
+      const text = node.querySelector('.lead-error-text');
+      if (text) text.textContent = '';
+      hide(node);
+    }
+  }
+
+  function setFieldError(name: string, message: string) {
+    const input = control(name);
+    const node = errorNode(name);
+    if (input) {
+      input.classList.add('is-invalid');
+      input.setAttribute('aria-invalid', 'true');
+      const described = (input.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+      if (!described.includes(`modal-lead-${name}-error`)) described.push(`modal-lead-${name}-error`);
+      input.setAttribute('aria-describedby', described.join(' '));
+    }
+    if (node) {
+      const text = node.querySelector('.lead-error-text');
+      if (text) text.textContent = message;
+      show(node);
+    }
+  }
+
+  function clearAllErrors() {
+    for (const name of ['name', 'phone', 'email']) clearFieldError(name);
+    if (summaryText) summaryText.textContent = '';
+    hide(summary);
+  }
+
+  function validate(): string[] {
+    const failed: string[] = [];
+    const name = (control('name') as HTMLInputElement | null)?.value.trim() || '';
+    const phone = (control('phone') as HTMLInputElement | null)?.value.trim() || '';
+    const email = (control('email') as HTMLInputElement | null)?.value.trim() || '';
+
+    if (!name) {
+      setFieldError('name', validation.missingName);
+      failed.push('name');
+    }
+
+    if (!phone) {
+      setFieldError('phone', validation.missingPhone);
+      failed.push('phone');
+    } else if (!isValidPhone(phone)) {
+      setFieldError('phone', validation.invalidPhone);
+      failed.push('phone');
+    }
+
+    if (email && !EMAIL_PATTERN.test(email)) {
+      setFieldError('email', validation.invalidEmail);
+      failed.push('email');
+    }
+
+    return failed;
+  }
+
+  function focusFirstError(failed: string[]) {
+    const first = failed[0];
+    if (!first) return;
+    const input = control(first);
+    if (details && input && details.contains(input)) details.open = true;
+    input?.focus();
+  }
+
+  function setSending(active: boolean) {
+    sending = active;
+    if (!submitBtn) return;
+    submitBtn.disabled = active;
+    submitBtn.setAttribute('aria-busy', active ? 'true' : 'false');
+    if (active) submitBtn.textContent = labelSending;
+  }
+
+  const focusableSelector = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), summary, [tabindex]:not([tabindex="-1"])';
+  const focusableItems = (): HTMLElement[] => modal
+    ? Array.from(modal.querySelectorAll<HTMLElement>(focusableSelector))
+        // Bỏ phần tử ẩn và phần tử cố ý nằm ngoài vòng Tab (bẫy bot, panel
+        // trạng thái chỉ nhận focus bằng mã).
+        .filter((el) => el.offsetParent !== null && el.getAttribute('tabindex') !== '-1')
+    : [];
+
+  const openModal = () => {
+    if(!modal || !innerCard) return;
+    lastFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    modal.classList.remove('hidden');
+    void modal.offsetWidth;
+    modal.classList.remove('opacity-0');
+    innerCard.classList.remove('scale-95');
+    innerCard.classList.add('scale-100');
+    // Đưa focus vào trong modal, nếu không người dùng bàn phím vẫn kẹt ở trang nền.
+    focusableItems()[0]?.focus();
+  };
+
+  document.addEventListener('click', (event) => {
+    const action = event.target instanceof Element
+      ? event.target.closest('[data-korus-action="open-lead-modal"]')
+      : null;
+    if (action) {
+      // Chặn cuộn/điều hướng mặc định của thẻ CTA (nó vẫn giữ href="#tu-van"
+      // làm fallback khi không có JS) rồi mở popup ngay tại chỗ. Nhờ giữ href,
+      // data-cta và chữ nút, mọi trigger GTM bắt theo CTA vẫn khớp như cũ.
+      event.preventDefault();
+      openModal();
+    }
+  });
+
+  const closeModal = () => {
+    if(!modal || !innerCard) return;
+    modal.classList.add('opacity-0');
+    innerCard.classList.remove('scale-100');
+    innerCard.classList.add('scale-95');
+    setTimeout(() => {
+      modal.classList.add('hidden');
+    }, 300);
+    // Trả focus về nơi người dùng đã bấm để mở modal.
+    lastFocused?.focus();
+    lastFocused = null;
+  };
+
+  closeBtn?.addEventListener('click', closeModal);
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  // Sau khi gửi thành công, hai hành động dẫn đi nơi khác nên phải đóng modal.
+  modal?.querySelectorAll('.lead-success-action').forEach((link) => {
+    link.addEventListener('click', () => closeModal());
+  });
+
+  // Đóng bằng phím Escape và giữ focus quẩn trong modal (focus trap).
+  // Không có hai thứ này thì modal không dùng được bằng bàn phím: người dùng
+  // Tab ra khỏi modal vào trang nền vẫn đang bị che.
+  document.addEventListener('keydown', (event) => {
+    if (!modal || modal.classList.contains('hidden')) return;
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeModal();
+      return;
+    }
+
+    if (event.key !== 'Tab') return;
+    const items = focusableItems();
+    if (items.length === 0) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    const active = document.activeElement;
+
+    if (event.shiftKey && (active === first || !modal.contains(active))) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (sending) return;
+
+    hide(errorPanel);
+    hide(unknownPanel);
+    clearAllErrors();
+
+    // Frontend Honeypot Gate
+    const trap = form.querySelector<HTMLInputElement>('input[name="bot_trap"]');
+    if (trap && trap.value.trim().length > 0) return;
+
+    const failed = validate();
+    if (failed.length > 0) {
+      if (failed.length > 1 && summary && summaryText) {
+        summaryText.textContent = validation.multiple;
+        show(summary);
+      }
+      focusFirstError(failed);
+      return;
+    }
+
+    setSending(true);
+
+    // Không tự gửi lại sau timeout: hết thời gian chỉ chuyển sang trạng thái
+    // "chưa xác nhận được", để khách tự quyết định.
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => controller.abort(), 20000);
+
+    let response: Response | null = null;
+    try {
+      // Bắn data về API Routing Engine
+      if (!pendingIdempotencyKey) pendingIdempotencyKey = newIdempotencyKey();
+      response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: {
+          'Idempotency-Key': pendingIdempotencyKey
+        },
+        body: new FormData(form),
+        signal: controller.signal,
+      });
+    } catch {
+      // Không nhận được phản hồi: máy chủ có thể đã nhận nhưng trình duyệt
+      // không biết. Đây là trạng thái 4, không phải lỗi từ chối.
+      window.clearTimeout(timer);
+      setSending(false);
+      if (submitBtn) submitBtn.textContent = labelIdle;
+      show(unknownPanel);
+      unknownPanel?.focus();
+      return;
+    }
+    window.clearTimeout(timer);
+
+    const parsed = (await response.json().catch(() => null)) as Record<string, unknown> | null;
+    setSending(false);
+
+    // Cổng chốt: chỉ coi là đã tiếp nhận khi HTTP thành công VÀ thân phản hồi
+    // xác nhận. Không suy ra thành công từ việc đã bấm nút.
+    const result: Record<string, unknown> = response.ok && parsed ? parsed : { ...(parsed || {}), success: false };
+
+    if(result.success) {
+      pendingIdempotencyKey = '';
+      if (typeof result.receiptId === 'string' && result.receiptId.trim().length > 0) {
+        trackConversion('submit_success', {}, result.receiptId);
+      }
+      // Chuyển thẳng sang trang cảm ơn, KHÔNG hiện màn hình thành công trung
+      // gian. Sự kiện chuyển đổi đã được đẩy vào dataLayer ở trên; GA4/Meta gửi
+      // hit qua sendBeacon nên vẫn kịp trước khi trình duyệt rời trang.
+      window.location.assign('/thank-you/');
+      return;
+    }
+
+    // Máy chủ đã trả lời và từ chối: đây là lỗi xác định, giữ nguyên dữ liệu.
+    const code = result && typeof result.code === 'string' ? result.code : 'lead_unavailable';
+    errorPanel?.setAttribute('data-code', code);
+    if (submitBtn) submitBtn.textContent = labelRetry;
+    show(errorPanel);
+    errorPanel?.focus();
+  });
+
+  // Xóa lỗi ngay khi khách sửa, tránh để chữ đỏ đứng lại sai.
+  for (const name of ['name', 'phone', 'email']) {
+    control(name)?.addEventListener('input', () => clearFieldError(name));
+  }
+
+  // docs/novabot_landing.md §21 — "Form bắt đầu". Chỉ ghi nhận khi khách thực
+  // sự nhập/chọn, không phải khi mở modal hay khi chỉ focus rồi rời đi. Cờ
+  // một-lần nằm trong trackFormStart nên form nền và modal chia chung một
+  // lần bắn cho mỗi lượt tải trang. Không gắn dữ liệu khách nhập vào sự kiện.
+  const emitFormStart = () => trackFormStart();
+  form?.addEventListener('input', emitFormStart);
+  form?.addEventListener('change', emitFormStart);
+</script>
+)}

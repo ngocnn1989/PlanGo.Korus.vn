@@ -1,0 +1,92 @@
+---
+export const prerender = true;
+import LandingLayout from '../layouts/LandingLayout.astro';
+import siteProfile from '../config/site-profile.mjs';
+
+const title = "Chính sách bảo mật - " + siteProfile.brand.name;
+const description = "Chúng tôi thu thập gì, dùng để làm gì, gửi cho ai, và bạn có quyền gì với dữ liệu của mình.";
+const lastUpdated = "10/09/2026";
+
+const phone = siteProfile.contact?.phone;
+const hotlineEnabled = Boolean(phone?.enabled && phone?.raw);
+const hotlineDisplay = (hotlineEnabled && (phone.display || phone.raw)) || '';
+const hotlineRaw = (hotlineEnabled && phone.raw) || '';
+---
+
+<LandingLayout title={title} description={description}>
+	<main class="bg-white">
+		<div class="max-w-[760px] mx-auto px-4 lg:px-8 py-12 sm:py-16 lg:py-20">
+
+			<h1 class="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight mb-2">Chính sách bảo mật</h1>
+			<p class="text-sm text-gray-500 mb-10">Cập nhật lần cuối: {lastUpdated}</p>
+
+			<div class="space-y-10 text-gray-700 leading-relaxed">
+
+				<section>
+					<h2 class="text-xl font-black text-gray-900 mb-3">Chúng tôi thu thập gì</h2>
+					<p class="mb-3">Khi bạn điền biểu mẫu liên hệ, chúng tôi nhận: <strong>họ tên, số điện thoại, email</strong> (nếu bạn nhập) và <strong>nội dung yêu cầu</strong> của bạn. Chúng tôi cũng lưu thời điểm bạn đồng ý gửi thông tin.</p>
+					<p>Khi bạn vào trang, chúng tôi đo cách trang được sử dụng thông qua Google Tag Manager và các công cụ đo lường của Google, Meta: <strong>trang đã xem, nguồn truy cập, loại thiết bị, các thao tác như bấm nút liên hệ hoặc bắt đầu điền biểu mẫu</strong>. Việc đo này dùng cookie và bắt đầu ngay khi bạn mở trang.</p>
+					<p class="mt-3">Chúng tôi <strong>không</strong> gửi họ tên, số điện thoại, email hay nội dung bạn nhập vào biểu mẫu sang các công cụ đo lường đó.</p>
+					<p class="mt-3">Bạn có thể <strong>từ chối việc đo này bất cứ lúc nào</strong> bằng mục <strong>Cài đặt cookie</strong> ở chân trang. Lựa chọn của bạn được ghi nhớ trên trình duyệt này.</p>
+				</section>
+
+				<section>
+					<h2 class="text-xl font-black text-gray-900 mb-3">Dùng để làm gì</h2>
+					<p>Thông tin liên hệ dùng để liên hệ và tư vấn theo yêu cầu bạn gửi. Dữ liệu sử dụng trang dùng để đo hiệu quả quảng cáo và cải thiện nội dung. Chúng tôi <strong>không bán và không trao đổi</strong> dữ liệu của bạn.</p>
+				</section>
+
+				<section>
+					<h2 class="text-xl font-black text-gray-900 mb-3">Ai nhận được dữ liệu</h2>
+					<p class="mb-3">Chúng tôi dùng dịch vụ của bên thứ ba để vận hành trang này:</p>
+					<ul class="space-y-2 list-disc pl-5">
+						<li><strong>Google</strong> — lưu thông tin biểu mẫu và đo lường truy cập</li>
+						<li><strong>Meta</strong> — đo hiệu quả quảng cáo trên Facebook</li>
+						<li><strong>Vercel</strong> — hạ tầng lưu trữ website</li>
+					</ul>
+					<p class="mt-3">Các dịch vụ này đặt máy chủ ngoài Việt Nam, nên dữ liệu của bạn được lưu trữ và xử lý ở nước ngoài.</p>
+				</section>
+
+				<section>
+					<h2 class="text-xl font-black text-gray-900 mb-3">Lưu trong bao lâu</h2>
+					<p>Thông tin liên hệ được lưu tối đa <strong>24 tháng</strong> kể từ lần trao đổi gần nhất. Dữ liệu đo lường được lưu tối đa <strong>14 tháng</strong>. Bạn có thể yêu cầu xoá sớm hơn bất cứ lúc nào.</p>
+				</section>
+
+				<section>
+					<h2 class="text-xl font-black text-gray-900 mb-3">Quyền của bạn</h2>
+					<p class="mb-3">Theo pháp luật Việt Nam về bảo vệ dữ liệu cá nhân, bạn có quyền:</p>
+					<ul class="space-y-2 list-disc pl-5">
+						<li>Biết chúng tôi đang giữ dữ liệu gì của bạn</li>
+						<li>Yêu cầu sửa dữ liệu sai</li>
+						<li>Yêu cầu xoá dữ liệu</li>
+						<li>Rút lại sự đồng ý đã cho</li>
+						<li>Phản đối việc chúng tôi xử lý dữ liệu của bạn</li>
+						<li>Khiếu nại nếu cho rằng quyền của mình bị xâm phạm</li>
+					</ul>
+					{hotlineEnabled && (
+						<p class="mt-4">Để thực hiện các quyền trên, gọi hoặc nhắn Zalo tới <a href={`tel:${hotlineRaw}`} class="inline-block -my-[13px] py-[13px] font-bold text-brand-1 hover:underline">{hotlineDisplay}</a>. Chúng tôi phản hồi trong vòng 72 giờ.</p>
+					)}
+				</section>
+
+				<section>
+					<h2 class="text-xl font-black text-gray-900 mb-3">Từ chối việc đo lường</h2>
+					<p>Bấm <strong>Cài đặt cookie</strong> ở chân trang rồi chọn <strong>Từ chối</strong> để dừng việc đo bất cứ lúc nào. Việc này dừng thu thập dữ liệu sử dụng trang, nhưng không tự động xoá thông tin bạn đã gửi qua biểu mẫu — nếu muốn xoá, hãy liên hệ theo số ở trên.</p>
+				</section>
+
+				<section>
+					<h2 class="text-xl font-black text-gray-900 mb-3">Bảo mật</h2>
+					<p>Trang web dùng kết nối mã hoá HTTPS. Thông tin biểu mẫu được gửi qua kênh bảo mật và chỉ nhân sự phụ trách kinh doanh mới truy cập được. Nếu xảy ra sự cố ảnh hưởng tới dữ liệu của bạn, chúng tôi sẽ thông báo theo quy định.</p>
+				</section>
+
+				<section>
+					<h2 class="text-xl font-black text-gray-900 mb-3">Thay đổi chính sách</h2>
+					<p>Khi cập nhật chính sách này, chúng tôi đổi ngày ở đầu trang. Bạn nên xem lại định kỳ.</p>
+				</section>
+
+				<section class="pt-4 border-t border-gray-200">
+					<p class="text-sm text-gray-500">Xem thêm <a href="/terms" class="inline-block -my-[13px] py-[13px] text-brand-1 font-bold hover:underline">Điều khoản sử dụng</a>.</p>
+				</section>
+
+			</div>
+		</div>
+	</main>
+</LandingLayout>

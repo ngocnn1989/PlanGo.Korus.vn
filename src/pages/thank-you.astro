@@ -1,0 +1,57 @@
+---
+export const prerender = true;
+import LandingLayout from '../layouts/LandingLayout.astro';
+import siteProfile from '../config/site-profile.mjs';
+import { landingCopy, landingCopySource } from '../content/landing-copy';
+const t = landingCopy.lienHe.thankYou;
+const metadata = landingCopySource.lienHe.thankYou;
+const phone = siteProfile.contact?.phone;
+const phoneEnabled = Boolean(phone?.enabled && phone?.raw);
+const zalo = siteProfile.chat_widgets?.zalo;
+const zaloEnabled = Boolean(siteProfile.chat_widgets?.enabled && zalo?.enabled && zalo?.url);
+---
+
+<LandingLayout title={metadata.metaTitle} description={metadata.metaDescription} confirmationPage>
+  <meta name="robots" content="noindex,nofollow" slot="head-inject" />
+  <main class="bg-brand-7 px-4 py-8 sm:py-12 lg:py-16" data-thank-you>
+    <div class="mx-auto max-w-[640px] rounded-2xl border border-brand-5 bg-white p-5 shadow-sm sm:p-8 lg:p-10">
+      <div class="flex items-center gap-3">
+        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-7 text-brand-1">
+          <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" />
+          </svg>
+        </div>
+        <p class="text-xs font-bold uppercase leading-relaxed tracking-[0.08em] text-brand-1">{t.eyebrow}</p>
+      </div>
+      <h1 class="mt-5 text-2xl font-bold leading-tight tracking-tight text-brand-4 sm:text-3xl">{t.title}</h1>
+      <p class="mt-3 text-base leading-relaxed text-brand-3">{t.intro}</p>
+      <section class="mt-6 rounded-xl bg-brand-7 p-4 sm:p-5" aria-labelledby="prepare-heading">
+        <h2 id="prepare-heading" class="text-base font-semibold text-brand-4">{t.prepareHeading}</h2>
+        <p class="mt-2 text-sm leading-relaxed text-brand-3">{t.prepareBody}</p>
+        <ul class="mt-3 space-y-2">
+          {t.prepareItems.map((item) => (
+            <li class="flex items-start gap-3 text-sm leading-relaxed text-brand-3">
+              <span aria-hidden="true" class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-1"></span><span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+      {(phoneEnabled || zaloEnabled) && (
+        <section class="mt-6" aria-labelledby="contact-heading">
+          <h2 id="contact-heading" class="text-base font-semibold text-brand-4">{t.contactLead}</h2>
+          <p class="mt-1 text-sm leading-relaxed text-brand-3">{t.contactNote}</p>
+          <div class={`mt-4 grid gap-3 ${phoneEnabled && zaloEnabled ? 'sm:grid-cols-2' : ''}`} data-thank-you-actions>
+            {zaloEnabled && <a href={zalo.url} target="_blank" rel="noopener noreferrer" class="flex min-h-[48px] items-center justify-center rounded-lg bg-brand-1 px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-brand-2">{t.actions.zalo}</a>}
+            {phoneEnabled && <a href={`tel:${phone.raw}`} class={`flex min-h-[48px] flex-wrap items-center justify-center gap-x-1 rounded-lg border border-brand-1 px-4 py-3 text-center text-sm font-semibold ${zaloEnabled ? 'text-brand-1 hover:bg-brand-7' : 'bg-brand-1 text-white hover:bg-brand-2'}`}><span>{t.actions.call}:</span><span class="whitespace-nowrap">{phone.display || phone.raw}</span></a>}
+          </div>
+        </section>
+      )}
+      <div class="mt-5 border-t border-brand-5 pt-3">
+        <a href={t.actions.systemHref} class="inline-flex min-h-[44px] items-center gap-2 text-sm font-semibold text-brand-3 underline-offset-4 hover:text-brand-1 hover:underline">
+          <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m9 5-5 5 5 5M4 10h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          {t.actions.system}
+        </a>
+      </div>
+    </div>
+  </main>
+</LandingLayout>
