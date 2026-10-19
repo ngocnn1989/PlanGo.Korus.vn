@@ -2,7 +2,7 @@
   "id": "landing-plango",
   "canonical_origin": "https://plango.korus.vn",
   "theme_id": "korus",
-  "indexable": false,
+  "indexable": true,
   "brand": {
     "name": "PlanGo",
     "slogan": "Trợ lý AI lập kế hoạch chuyền may",

@@ -234,11 +234,11 @@ const schemaNodes = [schemaData, plangoProductSchema, faqSchema, webPageSchema].
   {finalImage && isLandingSurface && <meta property="og:image:alt" content="PlanGo — bảng Gantt tiến độ từng chuyền may, dữ liệu minh họa" />}
   {siteProfile.i18n.default_lang === 'vi' && <meta property="og:locale" content="vi_VN" />}
 
-  <meta property="twitter:card" content={finalImage ? 'summary_large_image' : 'summary'} />
-  <meta property="twitter:url" content={finalCanonical} />
-  <meta property="twitter:title" content={title} />
-  <meta property="twitter:description" content={description} />
-  {finalImage && <meta property="twitter:image" content={finalImage} />}
+  <meta name="twitter:card" content={finalImage ? 'summary_large_image' : 'summary'} />
+  <meta name="twitter:url" content={finalCanonical} />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  {finalImage && <meta name="twitter:image" content={finalImage} />}
   {finalImage && isLandingSurface && <meta name="twitter:image:alt" content="PlanGo — bảng Gantt tiến độ từng chuyền may, dữ liệu minh họa" />}
 </>}
 
