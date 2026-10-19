@@ -10,6 +10,9 @@ const OUT = resolve(HERE, '../src/assets/plango');
 const CHROME = process.env.CHROME
   || ['C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'].find(existsSync);
 
+// Chụp ở mật độ 2x (ảnh ra gấp đôi kích thước khai báo) để nét trên màn hình Retina/2K.
+const SCALE = Number(process.env.RENDER_SCALE || 2);
+
 export const ASSETS = {
   dashboard: [1600, 1000],
   'step-chat': [960, 720],
@@ -27,9 +30,9 @@ for (const name of names) {
   const [w, h] = ASSETS[name];
   const out = join(OUT, `${name}.png`);
   execFileSync(CHROME, [
-    '--headless=new', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=1',
+    '--headless=new', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=' + SCALE,
     '--allow-file-access-from-files', '--virtual-time-budget=2000',
     `--window-size=${w},${h}`, `--screenshot=${out}`, pathToFileURL(join(HERE, `${name}.html`)).href,
   ], { stdio: 'ignore' });
-  console.log(`${name}: ${w}x${h} → ${out}`);
+  console.log(`${name}: ${w * SCALE}x${h * SCALE} (${SCALE}x) → ${out}`);
 }

@@ -39,7 +39,9 @@ const consentParts = lienHe.consent.split(lienHe.consentLink.label);
 const consentBefore = consentParts[0] ?? lienHe.consent;
 const consentAfter = consentParts.slice(1).join(lienHe.consentLink.label);
 ---
-{leadEnabled && (
+{/* Luôn dựng popup để mọi nút "Đặt lịch demo" mở được form; data-lead-enabled
+    quyết định có gửi tới /api/leads hay hiện ngay hotline/Zalo. */}
+{(
 <div id="global-lead-modal" role="dialog" aria-modal="true" aria-labelledby="lead-modal-title" class="fixed inset-0 z-[100] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center opacity-0 transition-opacity duration-300">
   <div class="bg-white max-w-lg w-full mx-4 my-6 max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300 p-6 sm:p-7 relative">
 
@@ -53,6 +55,7 @@ const consentAfter = consentParts.slice(1).join(lienHe.consentLink.label);
     <form
       id="modal-smart-form"
       novalidate
+      data-lead-enabled={String(leadEnabled)}
       data-msg-missing-name={lienHe.validation.missingName}
       data-msg-missing-phone={lienHe.validation.missingPhone}
       data-msg-invalid-phone={lienHe.validation.invalidPhone}
@@ -449,6 +452,15 @@ const consentAfter = consentParts.slice(1).join(lienHe.consentLink.label);
         show(summary);
       }
       focusFirstError(failed);
+      return;
+    }
+
+    // Kênh nhận lead chưa cấu hình (thiếu biến LEAD_* — vd. chạy local): không gọi API,
+    // hiện ngay bảng lỗi kèm hotline/Zalo để khách vẫn liên hệ được.
+    if (form.dataset.leadEnabled !== "true") {
+      errorPanel?.setAttribute("data-code", "lead_disabled");
+      show(errorPanel);
+      errorPanel?.focus();
       return;
     }
 

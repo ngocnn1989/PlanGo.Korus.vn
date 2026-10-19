@@ -116,7 +116,7 @@ const themeStyle = Object.entries(themeTokens).map(([key, value]) => `--color-${
 		{!confirmationPage && <FloatingWidgets />}
 		{/* Popup "Nhận tư vấn": mọi CTA có data-korus-action mở form ngay tại chỗ,
 		    không phải cuộn tới form ở cuối trang. Form nền cuối trang vẫn giữ. */}
-		{leadEnabled && !confirmationPage && <LeadModal />}
+		{!confirmationPage && <LeadModal />}
 		<TrackingConsent />
 		<slot name="footer-inject" />
 

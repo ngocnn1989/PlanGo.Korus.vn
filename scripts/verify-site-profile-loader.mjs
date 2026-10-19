@@ -219,7 +219,9 @@ try {
   assert.match(leadModalSource, /if \(!leadResolution\.ok && leadResolution\.code !== 'lead_disabled'\) throw new Error\(leadResolution\.code\);/);
   assert.match(leadModalSource, /const leadEnabled = leadResolution\.enabled;/);
   assert.doesNotMatch(leadModalSource, /const leadEnabled = siteProfile\.lead\.enabled;/);
-  assert.match(leadModalSource, /\{leadEnabled && \(/);
+  // PlanGo 19/10/2026: popup luôn dựng; cờ data-lead-enabled quyết định gửi API hay hiện hotline/Zalo.
+  assert.match(leadModalSource, /data-lead-enabled=\{String\(leadEnabled\)\}/);
+  assert.match(leadModalSource, /form\.dataset\.leadEnabled !== "true"/);
   assert.match(leadModalSource, /fetch\('\/api\/leads'/);
   assert.match(leadModalSource, /if\(result\.success\)/);
   assert.match(leadModalSource, /typeof result\.code === 'string'/);

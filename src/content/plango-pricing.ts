@@ -1,9 +1,9 @@
 /**
  * Gói dịch vụ và khung giá PlanGo — owner duyệt 19/10/2026
- * (KE-HOACH-LANDING-PLANGO.md §5, decision D-01).
+ * (KE-HOACH-LANDING-PLANGO.md §5; D-01, sửa D-07: phí theo THÁNG).
  *
- * Mọi số tiền là VNĐ, chưa gồm VAT. Landing hiển thị mức "từ" (cận dưới);
- * khoảng đầy đủ dùng cho báo giá nội bộ và công cụ ước tính.
+ * Mọi số tiền là VNĐ, chưa gồm VAT. Landing hiển thị mức "từ … triệu/tháng"
+ * do owner chốt: Cơ bản 3, Tiêu chuẩn 5, Nâng cao 9.
  */
 
 export interface PriceRange {
@@ -19,7 +19,8 @@ export interface PlanGoPlan {
   lines: { min: number; max: number | null };
   workshops: string;
   licensedMachines: string;
-  annualFee: PriceRange | null;
+  /** Phí thuê bao "từ", triệu đồng/tháng. null = báo giá riêng. */
+  monthlyFrom: number | null;
   setupFee: PriceRange | null;
   /** Phí thêm mỗi chuyền ngoài hạn mức, nghìn đồng/chuyền/tháng. */
   extraLinePerMonth: PriceRange | null;
@@ -36,7 +37,7 @@ export const plangoPlans: readonly PlanGoPlan[] = [
     lines: { min: 1, max: 5 },
     workshops: '1 phân xưởng',
     licensedMachines: '1 máy',
-    annualFee: { min: 24, max: 36 },
+    monthlyFrom: 3,
     setupFee: { min: 8, max: 12 },
     extraLinePerMonth: { min: 300, max: 400 },
     support: 'Zalo, điện thoại, email trong giờ hành chính',
@@ -49,7 +50,7 @@ export const plangoPlans: readonly PlanGoPlan[] = [
     lines: { min: 6, max: 15 },
     workshops: 'Đến 4 phân xưởng',
     licensedMachines: '1 máy',
-    annualFee: { min: 60, max: 84 },
+    monthlyFrom: 5,
     setupFee: { min: 20, max: 30 },
     extraLinePerMonth: { min: 250, max: 350 },
     support: 'Như gói Cơ bản, thêm hỗ trợ điều khiển từ xa',
@@ -63,7 +64,7 @@ export const plangoPlans: readonly PlanGoPlan[] = [
     lines: { min: 16, max: 40 },
     workshops: 'Không giới hạn trong một nhà máy',
     licensedMachines: '2 máy',
-    annualFee: { min: 120, max: 180 },
+    monthlyFrom: 9,
     setupFee: { min: 40, max: 60 },
     extraLinePerMonth: { min: 200, max: 300 },
     support: 'Như gói Tiêu chuẩn, thêm đào tạo tại nhà máy và xử lý ưu tiên',
@@ -76,7 +77,7 @@ export const plangoPlans: readonly PlanGoPlan[] = [
     lines: { min: 41, max: null },
     workshops: 'Nhiều nhà máy',
     licensedMachines: 'Theo thỏa thuận',
-    annualFee: null,
+    monthlyFrom: null,
     setupFee: null,
     extraLinePerMonth: null,
     support: 'Theo thỏa thuận',
@@ -112,9 +113,9 @@ export const plangoFeatureMatrix: readonly PlanGoFeatureRow[] = [
 
 export const plangoPricingNotes = {
   model:
-    'Phí bản quyền thuê bao theo năm (cài trên máy của nhà máy) và phí triển khai một lần gồm khảo sát, khai báo xưởng/chuyền, chuyển mẫu Excel và đào tạo.',
+    'Phí bản quyền thuê bao tính theo tháng (cài trên máy của nhà máy) và phí triển khai một lần gồm khảo sát, khai báo xưởng/chuyền, chuyển mẫu Excel và đào tạo.',
   perpetual:
-    'Có phương án mua bản quyền một lần: khoảng 2,5 lần phí năm, từ năm thứ hai trả 20% mỗi năm cho bảo trì và cập nhật.',
+    'Có phương án mua bản quyền một lần: khoảng 30 tháng phí thuê bao, từ năm thứ hai trả 20% mỗi năm cho bảo trì và cập nhật.',
   vat: 'Giá chưa gồm VAT.',
   estimate: 'Mức phí trên trang là khoảng tham khảo; báo giá chính thức gửi sau buổi khảo sát nhà máy.',
 } as const;

@@ -1,14 +1,14 @@
 # Project Checkpoint — PlanGo Landing
 
 - Project/root: `HUNG-NHAN/PlanGo`
-- Updated at/owner/trigger: `2026-10-19` / Claude (Direct mode) / G3 + G5 hoàn thành, chờ owner duyệt bản dựng
+- Updated at/owner/trigger: `2026-10-19` / Claude (Direct mode) / Sửa theo góp ý owner: ảnh 2x, giá theo tháng, form/popup + trang cảm ơn, kênh lead Sheet riêng
 - Freshness: `current`
 - Overall state: `on_track`
 
 ## Authority
 
 1. Rule: `rule.md`
-2. Plan: `KE-HOACH-LANDING-PLANGO.md` (PLANGO-LP-01 r3, APPROVED 19/10/2026)
+2. Plan: `KE-HOACH-LANDING-PLANGO.md` (PLANGO-LP-01 r4, APPROVED 19/10/2026)
 3. Board: Direct mode (không board)
 4. Framework source: `Landing/landing1` commit `6838630`; nội dung gốc AiRobot lưu ở `docs/_framework-origin/`
 5. Repo: `github.com/ngocnn1989/PlanGo.Korus.vn` (branch `main`)
@@ -37,8 +37,11 @@ Critical path: owner duyệt bản dựng → B-01 hạ tầng → G6 lead test 
 | D-03 | Decision | 4 lợi ích định tính gắn cơ chế; số liệu chờ đo thí điểm G9 | Owner 19/10/2026 |
 | D-04 | Decision | Repo chỉ chứa landing | Owner 19/10/2026 |
 | D-05 | Decision | Landing không sản xuất video; giữ `video-src/` làm dự phòng | Owner 19/10/2026 |
+| D-07 | Decision | Phí thuê bao theo THÁNG: Cơ bản từ 3, Tiêu chuẩn từ 5, Nâng cao từ 9 triệu/tháng (thay khung phí năm) | Owner 19/10/2026 |
+| D-08 | Decision | Lead dùng Google Sheet + Apps Script như landing1 nhưng FILE SHEET RIÊNG cho PlanGo (`docs/HUONG_DAN_LEAD_SHEET.md`, script `plango-2026-10-19`) | Owner 19/10/2026 |
+| D-09 | Tech | Form + popup luôn hiển thị; thiếu cấu hình lead thì bấm gửi hiện hotline/Zalo (cờ `data-lead-enabled`) | 19/10/2026 |
 | D-06 | Tech | Trường lead `application` = gói quan tâm; quy mô ghi trong `message` (không đổi schema Sheet) | 19/10/2026 |
-| B-01 | Blocker (G7) | Cần Vercel, DNS plango.korus.vn, Google Sheet/Apps Script, GTM ID | Owner |
+| B-01 | Blocker (G6/G7) | Owner tạo Sheet PlanGo + deploy Apps Script + đặt biến Vercel theo `docs/HUONG_DAN_LEAD_SHEET.md`; DNS plango.korus.vn; GTM ID | Owner |
 | O-01 | Open | §8.2–8.7: mua đứt, chi phí AI, dịch vụ demo, nhắc Hưng Nhân, khóa gói trong license | Owner |
 
 ## Next actions
@@ -52,5 +55,6 @@ Critical path: owner duyệt bản dựng → B-01 hạ tầng → G6 lead test 
 - Verifier kế thừa đã sửa: regex CSP thiếu origin CAPI (`verify-runtime-tracking-activation.mjs`).
 - `verify-landing-output.mjs` viết lại cho PlanGo (lợi ích, AggregateOffer = giá hiển thị, FAQ/llms, không còn thương hiệu framework).
 - Bài học mobile 19/10: bảng `min-width` (kể cả trong khung cuộn) và lớp `blur` làm Chrome mobile thu nhỏ trang → bảng ma trận co theo màn hình dưới `sm`.
+- Ảnh: `design-src/render.mjs` chụp 2x (RENDER_SCALE), srcset tới 2560/3200w, AVIF quality 80.
 - Legal gate: `scripts/legal/` (kv-legal lexicon 1.7.1), chạy trong `npm run verify`.
 - Profile `indexable: false` tới G7 (sitemap rỗng có chủ đích).

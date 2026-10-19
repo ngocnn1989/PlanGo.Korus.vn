@@ -71,16 +71,17 @@ assert.equal(page.mainEntity['@id'], app['@id']);
 assert.equal(page.publisher['@id'], organization['@id']);
 for (const key of ['review', 'aggregateRating']) assert.equal(key in app, false, `no unverified ${key}`);
 
-// Giá: AggregateOffer khớp đúng mức "Từ … triệu/năm" đang hiển thị.
-const priced = plangoPlans.filter((plan) => plan.annualFee);
+// Giá: AggregateOffer khớp đúng mức "Từ … triệu/tháng" đang hiển thị (owner 19/10: 3/5/9).
+const priced = plangoPlans.filter((plan) => plan.monthlyFrom);
 assert.equal(app.offers['@type'], 'AggregateOffer');
 assert.equal(app.offers.priceCurrency, 'VND');
-assert.equal(Number(app.offers.lowPrice), Math.min(...priced.map((p) => p.annualFee.min)) * 1e6);
-assert.equal(Number(app.offers.highPrice), Math.max(...priced.map((p) => p.annualFee.max)) * 1e6);
+assert.equal(Number(app.offers.lowPrice), Math.min(...priced.map((p) => p.monthlyFrom)) * 1e6);
+assert.equal('highPrice' in app.offers, false, 'no invented price ceiling');
+assert.equal(app.offers.priceSpecification.unitText, 'tháng');
 for (const plan of plangoPlans) {
   assert.ok(visible.includes(plan.name), `plan card: ${plan.name}`);
-  if (plan.annualFee) {
-    assert.ok(visible.includes(`${plan.annualFee.min.toLocaleString('vi-VN')} triệu`), `visible price: ${plan.name}`);
+  if (plan.monthlyFrom) {
+    assert.ok(visible.includes(`${plan.monthlyFrom.toLocaleString('vi-VN')} triệu`) && visible.includes('/tháng'), `visible monthly price: ${plan.name}`);
     assert.ok(html.includes(`data-ung-dung="${plan.id}"`), `pricing CTA prefills plan: ${plan.id}`);
   }
 }
@@ -136,4 +137,4 @@ assert.match(thankYou, /name="robots"[^>]*content="noindex,nofollow"/, 'thank-yo
 assert.equal(thankYou.includes('data-cta="header"'), false, 'no repeat-request CTA on confirmation page');
 assert.ok(html.includes('data-cta="header"') && html.includes('back-to-top-btn'), 'homepage controls present');
 assert.ok(thankYou.includes('data-thank-you-actions'), 'contact actions present');
-console.log(`verify-landing-output: PASS (H1/metadata/OG; ${plangoProduct.benefits.length} benefits; 6 criteria; ${plangoProduct.claims.length} llms claims; SoftwareApplication+AggregateOffer = visible prices; ${plangoPlans.length} plans + estimator; FAQ parity; footer on 5 pages without framework-origin brand; sitemap; production CSP; thank-you noindex)`);
+console.log(`verify-landing-output: PASS (H1/metadata/OG; ${plangoProduct.benefits.length} benefits; 6 criteria; ${plangoProduct.claims.length} llms claims; SoftwareApplication+AggregateOffer = visible monthly prices; ${plangoPlans.length} plans + estimator; FAQ parity; footer on 5 pages without framework-origin brand; sitemap; production CSP; thank-you noindex)`);

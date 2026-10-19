@@ -1,6 +1,6 @@
 # Kế hoạch xây dựng Landing PlanGo — bản chờ owner duyệt
 
-- Mã kế hoạch: `PLANGO-LP-01` · Phiên bản: r3 (19/10/2026: video chuyển cho session hungnhan-garment; G3+G5 hoàn thành) · trước đó r2 · Ngày: 19/10/2026 · Trạng thái: **APPROVED** (owner duyệt r1 + khung giá §5 nguyên trạng, 19/10/2026; lệnh: bắt đầu G1 + G2). Các mục §8.2–8.7 vẫn mở, mặc định áp dụng cho tới khi owner chốt: hiển thị "từ … triệu/năm"; không nêu tên Hưng Nhân; CTA "Đặt lịch demo"; không quảng cáo dùng thử.
+- Mã kế hoạch: `PLANGO-LP-01` · Phiên bản: r4 (19/10/2026: phí theo tháng 3/5/9 triệu; ảnh 2x; kênh lead Sheet riêng PlanGo) · r3 (video chuyển cho session hungnhan-garment; G3+G5 hoàn thành) · trước đó r2 · Ngày: 19/10/2026 · Trạng thái: **APPROVED** (owner duyệt r1 + khung giá §5 nguyên trạng, 19/10/2026; lệnh: bắt đầu G1 + G2). Các mục §8.2–8.7 vẫn mở, mặc định áp dụng cho tới khi owner chốt: hiển thị "từ … triệu/năm"; không nêu tên Hưng Nhân; CTA "Đặt lịch demo"; không quảng cáo dùng thử.
 - Chế độ thực thi: Direct mode (một session, không board). Kế hoạch này + `project_checkpoint.md` là authority vận hành.
 - Thư mục landing: `HUNG-NHAN/PlanGo/` · Domain dự kiến: `PlanGo.korus.vn`
 - Framework nền: `C:\Data\1.Projects\Landing\landing1` (korus-web-framework, Astro 7 + Tailwind 4 + Vercel)
@@ -127,9 +127,9 @@ Phối hợp: thư mục `marketing-video/` thuộc session *Dự án hungnhan-g
 
 ### 5.2 Mô hình tính phí
 
-- **Phí bản quyền thuê bao theo năm** (license theo máy, thanh toán năm) + **phí triển khai một lần** (khảo sát, khai báo xưởng/chuyền, chuyển mẫu Excel, đào tạo).
+- **r4 (owner 19/10/2026): phí bản quyền thuê bao TÍNH THEO THÁNG** (license theo máy) + **phí triển khai một lần** (khảo sát, khai báo xưởng/chuyền, chuyển mẫu Excel, đào tạo).
 - Tiêu chí phân gói: (1) số chuyền, (2) số phân xưởng, (3) nhóm chức năng, (4) mức hỗ trợ.
-- Tùy chọn **mua đứt** cho nhà máy không muốn thuê bao: ≈ 2,5 × phí năm + 20 %/năm bảo trì cập nhật (từ năm 2).
+- Tùy chọn **mua đứt** cho nhà máy không muốn thuê bao: ≈ 30 tháng phí thuê bao + 20 %/năm bảo trì cập nhật (từ năm 2).
 
 ### 5.3 Ba gói + gói doanh nghiệp
 
@@ -139,11 +139,11 @@ Phối hợp: thư mục `marketing-video/` thuộc session *Dự án hungnhan-g
 | Số chuyền | đến 5 | 6–15 | 16–40 | > 40 hoặc nhiều nhà máy |
 | Số phân xưởng | 1 | đến 4 | không giới hạn trong 1 nhà máy | nhiều nhà máy |
 | Máy cài đặt (license) | 1 | 1 | 2 | theo thỏa thuận |
-| **Phí năm (đề xuất)** | **24–36 triệu** (≈ 2–3 tr/tháng) | **60–84 triệu** (≈ 5–7 tr/tháng) | **120–180 triệu** (≈ 10–15 tr/tháng) | Báo giá riêng |
+| **Phí thuê bao (owner chốt r4)** | **từ 3 triệu/tháng** | **từ 5 triệu/tháng** | **từ 9 triệu/tháng** | Báo giá riêng |
 | **Phí triển khai 1 lần** | 8–12 triệu | 20–30 triệu | 40–60 triệu | Báo giá riêng |
 | Thêm chuyền ngoài hạn mức | 300–400 nghìn/chuyền/tháng | 250–350 nghìn | 200–300 nghìn | — |
 
-Ví dụ đối chiếu: nhà máy cỡ Hưng Nhân (4 phân xưởng, 9 chuyền) → gói Tiêu chuẩn, 60–84 triệu/năm + 20–30 triệu triển khai.
+Ví dụ đối chiếu: nhà máy cỡ Hưng Nhân (4 phân xưởng, 9 chuyền) → gói Tiêu chuẩn, từ 5 triệu/tháng + 20–30 triệu triển khai.
 
 ### 5.4 Ma trận chức năng (theo tính năng đã có trong sản phẩm)
 
@@ -167,8 +167,8 @@ Ví dụ đối chiếu: nhà máy cỡ Hưng Nhân (4 phân xưởng, 9 chuyề
 
 ### 5.5 Hiển thị trên landing
 
-- Hiển thị dạng **"từ … triệu/năm"** (mức thấp của khoảng) + nút "Nhận báo giá chi tiết" mở form với gói đã chọn sẵn.
-- Công cụ ước tính: nhập số chuyền + số phân xưởng → gợi ý gói và khoảng phí năm (chỉ ước tính, ghi chú "báo giá chính thức sau khảo sát").
+- Hiển thị dạng **"từ … triệu/tháng"** (r4) + nút "Nhận báo giá chi tiết" mở form với gói đã chọn sẵn.
+- Công cụ ước tính: nhập số chuyền + số phân xưởng → gợi ý gói và mức phí "từ … triệu/tháng" (chỉ ước tính, ghi chú "báo giá chính thức sau khảo sát").
 - Không dùng "miễn phí", "giảm giá có hạn", "cam kết"; nếu có dùng thử, ghi "Dùng thử 14 ngày trên dữ liệu mẫu" (cần owner xác nhận dịch vụ có thật).
 
 ## 6. Lead, tracking, SEO

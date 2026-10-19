@@ -86,11 +86,10 @@ const organizationRef = {
   "url": canonicalOrigin
 };
 
-// Khung giá công khai trên trang (plango-pricing.ts, owner duyệt 19/10/2026):
-// phát AggregateOffer khớp đúng các mức "từ … triệu/năm" đang hiển thị.
-const pricedPlans = plangoPlans.filter((plan) => plan.annualFee);
-const lowPrice = Math.min(...pricedPlans.map((plan) => plan.annualFee!.min)) * 1_000_000;
-const highPrice = Math.max(...pricedPlans.map((plan) => plan.annualFee!.max)) * 1_000_000;
+// Khung giá công khai trên trang (plango-pricing.ts, owner 19/10/2026): mức "từ … triệu/tháng".
+// AggregateOffer chỉ khai giá thấp nhất (giá "từ"), kèm đơn vị tháng; không bịa giá trần.
+const pricedPlans = plangoPlans.filter((plan) => plan.monthlyFrom);
+const lowPrice = Math.min(...pricedPlans.map((plan) => plan.monthlyFrom!)) * 1_000_000;
 
 const faqItems = Array.isArray(landingCopySource?.faq?.items) ? landingCopySource.faq.items : [];
 
@@ -167,8 +166,13 @@ const plangoProductSchema = isLandingSurface && !hasAuthoritativeOffer
       "@type": "AggregateOffer",
       "priceCurrency": "VND",
       "lowPrice": String(lowPrice),
-      "highPrice": String(highPrice),
-      "offerCount": String(pricedPlans.length)
+      "offerCount": String(pricedPlans.length),
+      "priceSpecification": {
+        "@type": "UnitPriceSpecification",
+        "price": String(lowPrice),
+        "priceCurrency": "VND",
+        "unitText": "tháng"
+      }
     },
     ...(finalImage ? { image: finalImage } : {})
   }

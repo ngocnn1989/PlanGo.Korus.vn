@@ -14,7 +14,8 @@ const zaloEnabled = Boolean(siteProfile.chat_widgets?.enabled && zalo?.enabled &
 <LandingLayout title={metadata.metaTitle} description={metadata.metaDescription} confirmationPage>
   <meta name="robots" content="noindex,nofollow" slot="head-inject" />
   <main class="bg-brand-7 px-4 py-8 sm:py-12 lg:py-16" data-thank-you>
-    <div class="mx-auto max-w-[640px] rounded-2xl border border-brand-5 bg-white p-5 shadow-sm sm:p-8 lg:p-10">
+    <div class="mx-auto max-w-[720px] rounded-2xl border border-brand-5 bg-white p-5 shadow-sm sm:p-8 lg:p-10">
+      <img src="/plango-lockup-light.png" alt="PlanGo by KORUS" width="137" height="48" class="mb-6 h-12 w-auto" />
       <div class="flex items-center gap-3">
         <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-7 text-brand-1">
           <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
@@ -25,6 +26,17 @@ const zaloEnabled = Boolean(siteProfile.chat_widgets?.enabled && zalo?.enabled &
       </div>
       <h1 class="mt-5 text-2xl font-bold leading-tight tracking-tight text-brand-4 sm:text-3xl">{t.title}</h1>
       <p class="mt-3 text-base leading-relaxed text-brand-3">{t.intro}</p>
+      <section class="mt-8" aria-labelledby="next-heading">
+        <h2 id="next-heading" class="text-base font-semibold text-brand-4">{t.nextHeading}</h2>
+        <ol class="mt-4 grid gap-4 sm:grid-cols-2">
+          {t.nextSteps.map((step, index) => (
+            <li class="flex gap-3">
+              <span aria-hidden="true" class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-1 text-sm font-bold text-white">{index + 1}</span>
+              <div><p class="text-[15px] font-semibold text-brand-4">{step.title}</p><p class="mt-1 text-sm leading-relaxed text-brand-3">{step.body}</p></div>
+            </li>
+          ))}
+        </ol>
+      </section>
       <section class="mt-6 rounded-xl bg-brand-7 p-4 sm:p-5" aria-labelledby="prepare-heading">
         <h2 id="prepare-heading" class="text-base font-semibold text-brand-4">{t.prepareHeading}</h2>
         <p class="mt-2 text-sm leading-relaxed text-brand-3">{t.prepareBody}</p>
@@ -46,11 +58,12 @@ const zaloEnabled = Boolean(siteProfile.chat_widgets?.enabled && zalo?.enabled &
           </div>
         </section>
       )}
-      <div class="mt-5 border-t border-brand-5 pt-3">
+      <div class="mt-5 flex flex-wrap items-center justify-between gap-x-6 border-t border-brand-5 pt-3">
         <a href={t.actions.systemHref} class="inline-flex min-h-[44px] items-center gap-2 text-sm font-semibold text-brand-3 underline-offset-4 hover:text-brand-1 hover:underline">
           <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m9 5-5 5 5 5M4 10h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
           {t.actions.system}
         </a>
+        <a href={t.actions.pricingHref} class="inline-flex min-h-[44px] items-center text-sm font-semibold text-brand-1 underline-offset-4 hover:underline">{t.actions.pricing}</a>
       </div>
     </div>
   </main>

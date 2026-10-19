@@ -87,7 +87,7 @@ Chọn hướng phù hợp với tình hình xưởng: **Ít xáo trộn kế ho
 - **Bản quyền theo máy** — Phần mềm kiểm tra bản quyền và tính toàn vẹn mỗi khi chạy.
 
 ### S07 · Bảng giá — *Chọn gói theo số chuyền của nhà máy*
-Phí thuê bao theo năm cộng phí triển khai một lần. Thêm chuyền ngoài hạn mức tính theo tháng.
+Phí thuê bao theo tháng cộng phí triển khai một lần. Thêm chuyền ngoài hạn mức tính thêm theo tháng. *(r4 — owner 19/10/2026)*
 
 | | Cơ bản | **Tiêu chuẩn** *(phù hợp nhà máy vừa)* | Nâng cao | Doanh nghiệp |
 |---|---|---|---|---|
@@ -95,8 +95,7 @@ Phí thuê bao theo năm cộng phí triển khai một lần. Thêm chuyền ng
 | Số chuyền | 1–5 | 6–15 | 16–40 | trên 40 |
 | Phân xưởng | 1 | đến 4 | không giới hạn trong một nhà máy | nhiều nhà máy |
 | Máy cài đặt | 1 | 1 | 2 | theo thỏa thuận |
-| **Hiển thị trên trang** | **Từ 24 triệu/năm** | **Từ 60 triệu/năm** | **Từ 120 triệu/năm** | **Báo giá riêng** |
-| Khoảng phí năm (nội bộ/ước tính) | 24–36 triệu | 60–84 triệu | 120–180 triệu | — |
+| **Hiển thị trên trang** | **Từ 3 triệu/tháng** | **Từ 5 triệu/tháng** | **Từ 9 triệu/tháng** | **Báo giá riêng** |
 | Triển khai một lần | từ 8 triệu | từ 20 triệu | từ 40 triệu | — |
 | Thêm chuyền | 300–400 nghìn/chuyền/tháng | 250–350 nghìn | 200–300 nghìn | — |
 | Hỗ trợ | Zalo, điện thoại, email giờ hành chính | + điều khiển từ xa | + đào tạo tại nhà máy, xử lý ưu tiên | theo thỏa thuận |
@@ -104,11 +103,11 @@ Phí thuê bao theo năm cộng phí triển khai một lần. Thêm chuyền ng
 Ma trận chức năng: theo `plangoFeatureMatrix` (12 dòng, như §5.4 kế hoạch).
 
 Ghi chú dưới bảng:
-- Phí bản quyền thuê bao theo năm (cài trên máy của nhà máy) và phí triển khai một lần gồm khảo sát, khai báo xưởng/chuyền, chuyển mẫu Excel và đào tạo.
-- Có phương án mua bản quyền một lần: khoảng 2,5 lần phí năm, từ năm thứ hai trả 20% mỗi năm cho bảo trì và cập nhật.
+- Phí bản quyền thuê bao tính theo tháng (cài trên máy của nhà máy) và phí triển khai một lần gồm khảo sát, khai báo xưởng/chuyền, chuyển mẫu Excel và đào tạo.
+- Có phương án mua bản quyền một lần: khoảng 30 tháng phí thuê bao, từ năm thứ hai trả 20% mỗi năm cho bảo trì và cập nhật.
 - Giá chưa gồm VAT. Mức phí trên trang là khoảng tham khảo; báo giá chính thức gửi sau buổi khảo sát nhà máy.
 
-Công cụ ước tính: nhập *Số chuyền may* + *Số phân xưởng* → *Gói gợi ý* + *Phí năm tham khảo* → nút **Nhận báo giá chi tiết**.
+Công cụ ước tính: nhập *Số chuyền may* + *Số phân xưởng* → *Gói gợi ý* + *Phí thuê bao tham khảo (từ … triệu/tháng)* → nút **Nhận báo giá chi tiết**.
 
 ### S08 · Triển khai tại nhà máy
 KORUS cùng phòng kế hoạch đi từng bước, dùng chính file Excel nhà máy đang có.

@@ -14,10 +14,12 @@ import { landingCopy } from '../../content/landing-copy';
 export interface Props {
   title?: string;
   subtitle?: string;
+  /** Kênh nhận lead đã cấu hình chưa (resolveRuntimeLeadActivation ở trang gọi). */
+  leadEnabled?: boolean;
 }
 
 const lienHe = landingCopy.lienHe;
-const { title = lienHe.formTitle, subtitle = lienHe.formBody } = Astro.props;
+const { title = lienHe.formTitle, subtitle = lienHe.formBody, leadEnabled = false } = Astro.props;
 
 /** Tra nhãn/placeholder theo tên trường, giữ một nguồn chữ. */
 const field = (name: string) => lienHe.fields.find((item) => item.name === name)!;
@@ -41,6 +43,7 @@ const id = (suffix: string) => `${formId}-${suffix}`;
   <form
     id={formId}
     novalidate
+    data-lead-enabled={String(leadEnabled)}
     class="lead-card w-full bg-white rounded-2xl p-5 sm:p-6 md:p-7 text-left shadow-xl"
     data-msg-missing-name={lienHe.validation.missingName}
     data-msg-missing-phone={lienHe.validation.missingPhone}
@@ -508,6 +511,15 @@ const id = (suffix: string) => `${formId}-${suffix}`;
           show(summary);
         }
         focusFirstError(failed);
+        return;
+      }
+
+      // Kênh nhận lead chưa cấu hình (thiếu biến LEAD_* — vd. chạy local): không gọi API,
+      // hiện ngay bảng lỗi kèm hotline/Zalo để khách vẫn liên hệ được.
+      if (form.dataset.leadEnabled !== "true") {
+        errorPanel?.setAttribute("data-code", "lead_disabled");
+        show(errorPanel);
+        errorPanel?.focus();
         return;
       }
 

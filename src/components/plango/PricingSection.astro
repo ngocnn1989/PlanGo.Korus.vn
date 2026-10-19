@@ -15,7 +15,7 @@ const linesText = (plan: (typeof plangoPlans)[number]) =>
 const cell = (value: boolean | string) => value;
 // Dữ liệu cho công cụ ước tính (client) — chỉ gửi các số cần thiết.
 const estimatorData = plangoPlans.map((plan) => ({
-  id: plan.id, name: plan.name, max: plan.lines.max, fee: plan.annualFee,
+  id: plan.id, name: plan.name, max: plan.lines.max, fee: plan.monthlyFrom,
 }));
 ---
 <section id={bangGia.anchor} class="scroll-mt-24 bg-brand-7 py-16 lg:py-24">
@@ -36,11 +36,11 @@ const estimatorData = plangoPlans.map((plan) => ({
           <h3 class="text-xl font-bold text-brand-4">{plan.name}</h3>
           <p class="mt-1 text-[15px] text-brand-3">{plan.audience}</p>
           <p class="mt-5 text-brand-4">
-            {plan.annualFee ? (
+            {plan.monthlyFrom ? (
               <>
                 <span class="text-sm font-semibold text-brand-3">{bangGia.fromLabel} </span>
-                <span class="text-3xl font-extrabold tracking-tight">{formatMillion(plan.annualFee.min)}</span>
-                <span class="text-base font-semibold text-brand-3">{bangGia.perYear}</span>
+                <span class="text-3xl font-extrabold tracking-tight">{formatMillion(plan.monthlyFrom)}</span>
+                <span class="text-base font-semibold text-brand-3">{bangGia.perMonth}</span>
               </>
             ) : (
               <span class="text-3xl font-extrabold tracking-tight">{bangGia.contactPrice}</span>
@@ -63,7 +63,7 @@ const estimatorData = plangoPlans.map((plan) => ({
               'mt-auto inline-flex min-h-[48px] items-center justify-center rounded-lg px-5 text-base font-semibold transition-colors',
               'mt-6',
               plan.highlighted ? 'bg-brand-1 text-white hover:bg-brand-2' : 'border border-brand-1 text-brand-1 hover:bg-brand-1 hover:text-white',
-            ]} aria-label={plan.cta}>{plan.annualFee ? "Nhận báo giá" : plan.cta}</a>
+            ]} aria-label={plan.cta}>{plan.monthlyFrom ? "Nhận báo giá" : plan.cta}</a>
         </article>
       ))}
     </div>
@@ -85,7 +85,7 @@ const estimatorData = plangoPlans.map((plan) => ({
       <div class="flex flex-col justify-between gap-4 rounded-xl bg-brand-7 p-5 lg:col-span-4" aria-live="polite">
         <div>
           <p class="text-sm text-brand-3">{bangGia.estimator.resultLabel}: <strong class="text-brand-4" data-est-plan>Tiêu chuẩn</strong></p>
-          <p class="mt-1 text-sm text-brand-3">{bangGia.estimator.feeLabel}: <strong class="text-lg text-brand-4" data-est-fee>60–84 triệu/năm</strong></p>
+          <p class="mt-1 text-sm text-brand-3">{bangGia.estimator.feeLabel}: <strong class="text-lg text-brand-4" data-est-fee>Từ 5 triệu/tháng</strong></p>
         </div>
         <a href="#tu-van" data-cta="estimator" data-ung-dung="tieu-chuan" data-lead-message="Quy mô: 9 chuyền, 4 phân xưởng." data-est-cta
           class="inline-flex min-h-[48px] items-center justify-center rounded-lg bg-brand-1 px-5 text-base font-semibold text-white transition-colors hover:bg-brand-2">{bangGia.estimator.cta}</a>
@@ -135,7 +135,7 @@ const estimatorData = plangoPlans.map((plan) => ({
 </section>
 
 <script>
-  type EstPlan = { id: string; name: string; max: number | null; fee: { min: number; max: number } | null };
+  type EstPlan = { id: string; name: string; max: number | null; fee: number | null };
   const root = document.querySelector<HTMLElement>('[data-estimator]');
   const dataEl = document.querySelector('[data-estimator-plans]');
   if (root && dataEl) {
@@ -153,7 +153,7 @@ const estimatorData = plangoPlans.map((plan) => ({
       let plan = plans.find((p) => p.max !== null && lines <= p.max) ?? plans[plans.length - 1];
       if (plan.id === 'co-ban' && workshops > 1) plan = plans.find((p) => p.id === 'tieu-chuan') ?? plan;
       planOut.textContent = plan.name;
-      feeOut.textContent = plan.fee ? `${fmt(plan.fee.min)}–${fmt(plan.fee.max)} triệu/năm` : 'Báo giá riêng';
+      feeOut.textContent = plan.fee ? `Từ ${fmt(plan.fee)} triệu/tháng` : 'Báo giá riêng';
       cta.dataset.ungDung = plan.id;
       cta.dataset.leadMessage = `Quy mô: ${lines} chuyền, ${workshops} phân xưởng.`;
       if (!tracked) {

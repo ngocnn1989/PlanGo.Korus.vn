@@ -36,7 +36,7 @@ export function GET() {
     '',
     '## Gói và khung giá tham khảo (VNĐ, chưa gồm VAT)',
     '',
-    ...plangoPlans.map((plan) => `- ${plan.name} (${plan.audience}): ${plan.annualFee ? `từ ${formatMillion(plan.annualFee.min)}/năm, triển khai từ ${formatMillion(plan.setupFee!.min)}` : 'báo giá riêng'}`),
+    ...plangoPlans.map((plan) => `- ${plan.name} (${plan.audience}): ${plan.monthlyFrom ? `từ ${formatMillion(plan.monthlyFrom)}/tháng, triển khai từ ${formatMillion(plan.setupFee!.min)}` : 'báo giá riêng'}`),
     '',
     '## Câu hỏi thường gặp',
     '',
