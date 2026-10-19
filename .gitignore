@@ -13,13 +13,13 @@ yarn-error.log*
 pnpm-debug.log*
 
 
-# environment variables
+# environment variables — KHÔNG commit bí mật (WEBHOOK_SECRET, URL webhook…)
 .env
-.env.production
+.env.*
+!.env.example
 
 # macOS-specific files
 .DS_Store
 
-# jetbrains setting folder
+# Vercel build output
 .vercel/
-.env*
