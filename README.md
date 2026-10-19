@@ -21,6 +21,7 @@ Dựng trên korus-web-framework (Astro 7 + Tailwind 4 + Vercel), sao chép từ
 | `src/content/landing-copy.ts` | Lớp ghép cho component dùng chung của framework |
 | `src/config/profiles/landing-plango.json` | Brand, màu, liên hệ, SEO, `indexable` |
 | `design-src/*.html` → `src/assets/plango/*.png` | Ảnh minh họa code-native (`node design-src/render.mjs`) |
+| `design-src/favicon.mjs` | Bộ favicon từ logo tròn KORUS |
 | `public/media/` | Video do session hungnhan-garment giao (`docs/VIDEO_HANDOFF.md`) |
 
 ## Lệnh
@@ -35,6 +36,10 @@ npm run legal
 ```
 
 Windows (cmd): `set SITE_PROFILE=landing-plango&& npm run build`.
+
+## Triển khai
+
+Xem `docs/RUNBOOK_DEPLOY_PLANGO.md` (Vercel, domain, go-live) và `docs/HUONG_DAN_LEAD_SHEET.md` (Google Sheet + Apps Script).
 
 ## Lead
 
