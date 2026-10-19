@@ -1,6 +1,6 @@
 # Hướng dẫn cấu hình kênh nhận lead PlanGo (Google Sheet + Apps Script)
 
-Cơ chế giống landing1: form → `/api/leads` (Vercel, kiểm tra origin + chống bot + idempotency) → Apps Script Web App → ghi vào **Google Sheet riêng của PlanGo** + gửi mail báo lead. Script: `docs/apps-script/lead-webhook.gs` (bản `plango-2026-10-19.2`).
+Cơ chế giống landing1: form → `/api/leads` (Vercel, kiểm tra origin + chống bot + idempotency) → Apps Script Web App → ghi vào **Google Sheet riêng của PlanGo** + gửi mail báo lead. Script: `docs/apps-script/lead-webhook.gs` (bản `plango-2026-10-19.3`).
 
 > Không dùng chung Sheet/webhook với landing1 (weldbot) — lead PlanGo sẽ lẫn vào lead robot hàn.
 
@@ -13,7 +13,7 @@ Cơ chế giống landing1: form → `/api/leads` (Vercel, kiểm tra origin + c
 | Thời gian | Họ tên | Số điện thoại | Tỉnh/Thành | Nhà máy | Gói quan tâm | Email | Quy mô & nhu cầu | Đồng ý lúc | Idempotency Key |
 |---|---|---|---|---|---|---|---|---|---|
 
-"Tỉnh/Thành" ghi tên tỉnh mới (34 đơn vị từ 01/07/2025); để trống khi khách không chọn. Sheet đã tạo từ bản trước: script tự thêm cột "Tỉnh/Thành" vào cuối hàng tiêu đề, dữ liệu cũ giữ nguyên — có thể kéo cột về sau "Số điện thoại" bằng tay.
+"Tỉnh/Thành" ghi tên tỉnh mới (34 đơn vị từ 01/07/2025); để trống khi khách không chọn. Sheet đã tạo từ bản trước: script tự thêm cột "Tỉnh/Thành" vào cuối hàng tiêu đề ở lần ghi lead đầu tiên, dữ liệu cũ giữ nguyên. Muốn thêm ngay (URL webhook báo `"missingColumns":["Tỉnh/Thành"]`): trong trình soạn Apps Script chọn hàm `themCotThieu` → Run. Có thể kéo cột về sau "Số điện thoại" bằng tay — script ghi theo tên cột nên không lệch dữ liệu.
 
 "Gói quan tâm" hiển thị tiếng Việt (Gói Cơ bản / Tiêu chuẩn / Nâng cao / Doanh nghiệp / Chưa xác định). "Quy mô & nhu cầu" chứa số chuyền, số phân xưởng do công cụ ước tính điền sẵn.
 
@@ -31,7 +31,7 @@ Cơ chế giống landing1: form → `/api/leads` (Vercel, kiểm tra origin + c
 3. Chạy tay **`kiemTraMail`** một lần → bấm **Authorize** (cấp quyền gửi mail) → kiểm hộp thư (cả Spam).
 4. Chạy tay **`kiemTraNhanh`** → log phải có `{"result":"success","row":N}`, Sheet có dòng "KIỂM TRA", hộp thư có mail `[PlanGo - Tự động] Lead mới: …`. Xoá dòng kiểm tra.
 5. **Deploy → New deployment → Web app**: Execute as **Me**, Who has access **Anyone** → Deploy → chép **Web app URL** dạng `https://script.google.com/macros/s/<ID>/exec`.
-6. Mở URL đó bằng trình duyệt: phải thấy `"version":"plango-2026-10-19.2"`, `"sheetFound":true`, `"secretConfigured":true`, `"notifyConfigured":true`.
+6. Mở URL đó bằng trình duyệt: phải thấy `"version":"plango-2026-10-19.3"`, `"sheetFound":true`, `"secretConfigured":true`, `"notifyConfigured":true`.
 7. Mỗi lần sửa script: **Deploy → Manage deployments → Edit → Version: New version** (chỉ Save là bản cũ vẫn chạy). URL giữ nguyên.
 
 ## 3. Cấu hình Vercel (project PlanGo)

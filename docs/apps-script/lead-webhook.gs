@@ -22,6 +22,9 @@
  * Đừng bao giờ thêm trường debug/warning vào phản hồi thành công.
  *
 
+ * Bản plango-2026-10-19.3: thêm themCotThieu() — chạy tay để thêm cột thiếu
+ *   (vd "Tỉnh/Thành") ngay, không chờ lead đầu tiên.
+ *
  * (Lịch sử dưới đây là của bản gốc landing1/weldbot, giữ để tra cứu.)
  * Bản 2026-10-09.1: sửa guiMailLeadMoi chạy 1–6 phút và hết giờ — leadSheetName()
  *   đọc Script property cho từng ô (~10.000 lần/lần chạy); nay đọc một lần. Thêm
@@ -121,7 +124,7 @@ var PROVINCE_LABELS = {
   'ca-mau':      'Cà Mau'
 };
 
-var SCRIPT_VERSION = 'plango-2026-10-19.2';
+var SCRIPT_VERSION = 'plango-2026-10-19.3';
 var SITE_NAME = 'PlanGo.korus.vn';
 /**
  * Tab nhận lead, chọn theo TÊN chứ không theo vị trí: Web App không có "sheet
@@ -301,7 +304,7 @@ function buildRow(header, data) {
  * nhưng quên Deploy → New version, nên bản đang phục vụ vẫn là bản cũ.
  *
  * Kỳ vọng khi mở URL:
- *   {"version":"plango-2026-10-19.2","sheetFound":true,"missingColumns":[],"notifyConfigured":true,...}
+ *   {"version":"plango-2026-10-19.3","sheetFound":true,"missingColumns":[],"notifyConfigured":true,...}
  *   Lỗi "Script function not found: doGet"        ← ĐANG CHẠY BẢN CŨ, phải deploy lại
  *
  * Không trả dữ liệu lead, địa chỉ mail hay secret, nên mở công khai vẫn an toàn.
@@ -961,8 +964,32 @@ function doPost(e) {
 }
 
 /**
+ * Chạy tay khi URL webhook báo "missingColumns" khác [] (vd sheet tạo từ bản
+ * trước, chưa có cột "Tỉnh/Thành"). Thêm cột thiếu vào CUỐI hàng tiêu đề ngay,
+ * không cần chờ lead đầu tiên; dữ liệu cũ giữ nguyên. Chạy lại nhiều lần vô hại.
+ * Muốn đặt cột ngay sau "Số điện thoại": kéo cả cột bằng tay — script ghi theo
+ * tên cột nên không lệch dữ liệu.
+ */
+function themCotThieu() {
+  var sheet = getLeadSheet();
+  if (!sheet) { Logger.log('Không thấy tab ' + leadSheetName() + '.'); return; }
+  var lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    var before = missingLabels(readHeader(sheet));
+    ensureHeader(sheet);
+    var after = missingLabels(readHeader(sheet));
+    Logger.log(before.length === 0
+      ? 'Đã đủ cột, không thêm gì.'
+      : 'Đã thêm: ' + before.join(', ') + ' — còn thiếu: ' + (after.length ? after.join(', ') : 'không'));
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/**
  * Chạy tay một lần sau khi dán script, để kiểm mà không cần gửi lead thật.
- * Kỳ vọng log: {"result":"success","row":<số>} và sheet có đủ 9 cột.
+ * Kỳ vọng log: {"result":"success","row":<số>} và sheet có đủ 10 cột.
  */
 function kiemTraNhanh() {
   var secret = PropertiesService.getScriptProperties().getProperty('WEBHOOK_SECRET');
