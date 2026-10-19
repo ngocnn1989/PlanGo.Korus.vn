@@ -1,5 +1,7 @@
 # Giao video cho landing PlanGo
 
+> **Tạm ngưng (owner 19/10/2026, D-13):** landing đã bỏ toàn bộ video (hero, demo S04, S09). Ba video v3.1 bản web được giữ dự phòng ở `media-archive/` (ngoài `public/`, không deploy). Component `VideoSlot.astro` vẫn còn nhưng không được trang nào dùng. Muốn bật lại: chuyển file về `public/media/` và gắn lại khe trong `src/pages/index.astro` (xem commit bỏ video để khôi phục).
+
 Video do session **Dự án hungnhan-garment** sản xuất (`HUNG-NHAN/marketing-video/`). Landing chỉ nhúng file đã giao; không sửa thư mục nguồn video. Khung dự phòng nội bộ: `video-src/` (chưa dùng).
 
 Đặt file vào `public/media/` đúng tên dưới đây rồi build lại. Component `src/components/plango/VideoSlot.astro` tự nhận file lúc build; thiếu file thì trang dùng ảnh tĩnh, không lỗi.

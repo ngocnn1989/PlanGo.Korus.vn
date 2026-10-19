@@ -31,7 +31,6 @@ export const plangoCopy = {
     ctaPrimary: { label: 'Đặt lịch demo', href: '#tu-van' },
     ctaSecondary: { label: 'Xem bảng giá', href: '#bang-gia' },
     microcopy: 'Giữ Excel quen thuộc · Số liệu do hệ thống tính · Dữ liệu lưu tại máy của nhà máy',
-    videoLabel: 'Video minh họa PlanGo với dữ liệu demo',
     imageAlt: 'Bảng Gantt tiến độ từng chuyền may trên PlanGo, dữ liệu minh họa',
   },
 
@@ -213,18 +212,6 @@ export const plangoCopy = {
       { step: 'Bước 4', title: 'Đào tạo và vận hành', body: 'Hướng dẫn giám đốc sản xuất, quản đốc thao tác hằng ngày; hỗ trợ trong quá trình chạy.' },
     ],
     cta: { label: 'Đặt lịch khảo sát', href: '#tu-van' },
-  },
-
-  // S09 — Video ngắn.
-  video: {
-    anchor: 'video',
-    h2: 'Xem PlanGo trong 30 giây',
-    items: [
-      { id: 'v1', title: '23:55 — Khách hỏi ngày giao' },
-      { id: 'v2', title: 'Một đơn gấp' },
-      { id: 'v3', title: 'Trợ lý AI của phòng kế hoạch' },
-    ],
-    note: 'Video dùng giao diện minh họa với dữ liệu demo.',
   },
 
   // S10 — FAQ.

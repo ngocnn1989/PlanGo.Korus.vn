@@ -1,11 +1,8 @@
 ---
 export const prerender = true;
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
 import LandingLayout from '../layouts/LandingLayout.astro';
 import LeadForm from '../components/custom/LeadForm.astro';
 import Icon from '../components/plango/Icon.astro';
-import VideoSlot from '../components/plango/VideoSlot.astro';
 import PricingSection from '../components/plango/PricingSection.astro';
 import siteProfile from '../config/site-profile.mjs';
 import { resolveRuntimeLeadActivation } from '../config/runtime-lead-activation.mjs';
@@ -24,7 +21,7 @@ import beforeAfterImg from '../assets/plango/before-after.png';
 import ogSource from '../assets/plango/og.png';
 
 const { home } = siteProfile.page_copy;
-const { hero, loiIch, danhChoAi, vanDe, cachCuCachMoi, cachHoatDong, toiUu, bienDong, tinhNang, tinCay, loTrinh, video, faq, lienHe } = landingCopy;
+const { hero, loiIch, danhChoAi, vanDe, cachCuCachMoi, cachHoatDong, toiUu, bienDong, tinhNang, tinCay, loTrinh, faq, lienHe } = landingCopy;
 
 const benefitIcons = { b1: 'clock', b2: 'target', b3: 'gauge', b4: 'trend' } as const;
 const featureIcons = { s1: 'gantt', s5: 'alert', f1: 'chat', f2: 'report', f3: 'sheet', f4: 'search', f5: 'layout', f6: 'target', f9: 'calendar', f10: 'check', f11: 'clock', f13: 'users' } as const;
@@ -32,10 +29,6 @@ const featureByClaim = new Map(tinhNang.items.map((item) => [item.claim, item]))
 const trustIcons = ['factory', 'cpu', 'check', 'shield', 'report'] as const;
 const situationIcons = ['alert', 'users', 'calendar', 'chat'] as const;
 const stepImages = [stepChatImg, stepOptionsImg, stepConfirmImg];
-
-// S09 chỉ hiện khi đã có ít nhất một video ngắn được giao (docs/VIDEO_HANDOFF.md).
-const shortVideos = video.items.map((item) => ({ ...item, file: `plango-${item.id}-9x16.mp4`, poster: `plango-${item.id}-9x16.jpg` }));
-const hasShortVideos = shortVideos.some((item) => existsSync(join(process.cwd(), 'public', 'media', item.file)));
 
 const leadResolution = resolveRuntimeLeadActivation({ profile: siteProfile, env: {
   LEAD_PROVIDER: import.meta.env.LEAD_PROVIDER,
@@ -83,7 +76,7 @@ const arrow = 'M4 10h11m0 0-4-4m4 4-4 4';
 					</div>
 					<figure class="lg:col-span-7">
 						<div class="aspect-[16/10] overflow-hidden rounded-xl border border-white/10 bg-white shadow-2xl shadow-black/40">
-							<VideoSlot file="plango-hero-16x9.mp4" poster="plango-hero-16x9.jpg" label={hero.imageAlt} ambient fallback={dashboardImg} fallbackSizes="(min-width: 1024px) 58vw, 100vw" eager />
+							<Image src={dashboardImg} alt={hero.imageAlt} widths={[640, 960, 1280, 1920, 2560, 3200]} sizes="(min-width: 1024px) 58vw, 100vw" format="avif" quality={80} loading="eager" fetchpriority="high" class="h-full w-full object-cover" />
 						</div>
 					</figure>
 				</div>
@@ -193,13 +186,6 @@ const arrow = 'M4 10h11m0 0-4-4m4 4-4 4';
 						</li>
 					))}
 				</ol>
-				{existsSync(join(process.cwd(), 'public', 'media', 'plango-demo-16x9.mp4')) && (
-					<figure class="mx-auto mt-10 max-w-4xl">
-						<div class="aspect-video overflow-hidden rounded-2xl border border-brand-5 bg-brand-4">
-							<VideoSlot file="plango-demo-16x9.mp4" poster="plango-demo-16x9.jpg" label="Video demo lập kế hoạch bằng chat, dữ liệu minh họa" />
-						</div>
-					</figure>
-				)}
 				<div class="mt-10"><a href={cachHoatDong.cta.href} data-cta="cach-hoat-dong" data-korus-action="open-lead-modal" class={ctaPrimary}>{cachHoatDong.cta.label}</a></div>
 			</div>
 		</section>
@@ -330,26 +316,6 @@ const arrow = 'M4 10h11m0 0-4-4m4 4-4 4';
 				<div class="mt-12 md:text-center"><a href={loTrinh.cta.href} data-cta="trien-khai" data-korus-action="open-lead-modal" class={ctaPrimary}>{loTrinh.cta.label}</a></div>
 			</div>
 		</section>
-
-		{/* S09 — Video ngắn (chỉ hiện khi đã có video giao) */}
-		{hasShortVideos && (
-			<section id={video.anchor} class="scroll-mt-24 bg-brand-4 py-16 lg:py-24">
-				<div class={sectionWrap}>
-					<h2 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">{video.h2}</h2>
-					<div class="mt-10 grid gap-6 sm:grid-cols-3">
-						{shortVideos.map((item) => (
-							<figure>
-								<div class="aspect-[9/16] overflow-hidden rounded-2xl border border-white/10 bg-black">
-									<VideoSlot file={item.file} poster={item.poster} label={item.title} />
-								</div>
-								<figcaption class="mt-3 text-[15px] font-semibold text-white">{item.title}</figcaption>
-							</figure>
-						))}
-					</div>
-					<p class="mt-6 text-sm text-brand-6">{video.note}</p>
-				</div>
-			</section>
-		)}
 
 		{/* S10 — FAQ */}
 		<section id={faq.anchor} class="scroll-mt-24 bg-brand-7 py-16 lg:py-24">

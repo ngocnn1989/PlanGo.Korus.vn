@@ -185,7 +185,7 @@ Ví dụ đối chiếu: nhà máy cỡ Hưng Nhân (4 phân xưởng, 9 chuyề
 | G1 | Bootstrap `PlanGo/`: copy framework, `rule.md`, `project_checkpoint.md`, profile `landing-plango`, chạy được trang trống | — | `npm run check` 0 lỗi, `npm run build` qua | 0,5 ngày |
 | G2 | Copy toàn trang + product facts + pricing data; 3 phương án hook/CTA, legal gate | kr-copywriting | `docs/plango_landing_copy.md`, `plango-copy.ts`, `plango-pricing.ts` → **owner duyệt copy** | 1 ngày |
 | G3 | Tài sản hình ảnh D1–D9 | kr-design | `src/assets/plango/*`, contact sheet → **owner duyệt hình** | 1–1,5 ngày |
-| G4 | **r3 (owner 19/10):** landing KHÔNG sản xuất video; chỉ nhận file giao vào `public/media/` theo `docs/VIDEO_HANDOFF.md` | — | Khe video tự nhận file lúc build | — |
+| G4 | **r3 (owner 19/10):** landing KHÔNG sản xuất video. **Cập nhật 19/10 (D-13):** bỏ video khỏi landing; file giữ ở `media-archive/` | — | — | — |
 | G5 | Dựng trang: section S01–S11, component Pricing/Estimator/Video/BeforeAfter, form mở rộng, CSP media | — | Trang chạy local; kiểm tra 375 px / 768 px / 1440 px | 1,5 ngày |
 | G6 | Kiểm tra: `npm run verify`, `verify:landing`, link nội bộ, Lighthouse (mục tiêu ≥ 90 hiệu năng mobile), test gửi lead thật vào Sheet thử | sb-ads-tracking-seo-standard | Báo cáo QA | 0,5 ngày |
 | G7 | Triển khai Vercel preview → owner duyệt → trỏ `PlanGo.korus.vn`, bật index | — | URL preview, rồi URL chính | 0,5 ngày (sau khi có DNS/Vercel) |
