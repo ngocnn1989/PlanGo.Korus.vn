@@ -1,0 +1,167 @@
+---
+/**
+ * S07 — Bảng giá PlanGo: thẻ gói, ma trận chức năng, công cụ ước tính.
+ * Dữ liệu: src/content/plango-pricing.ts (owner duyệt 19/10/2026, D-01).
+ * Nút báo giá nhảy tới form #tu-van và điền sẵn gói qua data-ung-dung.
+ */
+import Icon from './Icon.astro';
+import { plangoCopy } from '../../content/plango-copy';
+import { plangoPlans, plangoFeatureMatrix, formatMillion } from '../../content/plango-pricing';
+
+const { bangGia } = plangoCopy;
+const sectionWrap = 'mx-auto max-w-[1290px] px-4 lg:px-8';
+const linesText = (plan: (typeof plangoPlans)[number]) =>
+  plan.lines.max === null ? `Trên ${plan.lines.min - 1} chuyền` : plan.lines.min === 1 ? `Đến ${plan.lines.max} chuyền` : `${plan.lines.min}–${plan.lines.max} chuyền`;
+const cell = (value: boolean | string) => value;
+// Dữ liệu cho công cụ ước tính (client) — chỉ gửi các số cần thiết.
+const estimatorData = plangoPlans.map((plan) => ({
+  id: plan.id, name: plan.name, max: plan.lines.max, fee: plan.annualFee,
+}));
+---
+<section id={bangGia.anchor} class="scroll-mt-24 bg-brand-7 py-16 lg:py-24">
+  <div class={sectionWrap}>
+    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand-1">{bangGia.label}</p>
+    <h2 class="mt-3 max-w-[36ch] text-2xl font-bold tracking-tight text-brand-4 sm:text-3xl">{bangGia.h2}</h2>
+    <p class="mt-4 max-w-[65ch] text-[17px] leading-relaxed text-brand-3">{bangGia.body}</p>
+
+    <div class="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+      {plangoPlans.map((plan) => (
+        <article class:list={[
+          'relative flex flex-col rounded-2xl border bg-white p-6',
+          plan.highlighted ? 'border-brand-1 shadow-[0_18px_40px_rgba(37,99,235,0.18)] ring-1 ring-brand-1' : 'border-brand-5',
+        ]}>
+          {plan.highlighted && (
+            <span class="absolute -top-3 left-6 rounded-full bg-brand-1 px-3 py-1 text-xs font-bold text-white">{bangGia.popularLabel}</span>
+          )}
+          <h3 class="text-xl font-bold text-brand-4">{plan.name}</h3>
+          <p class="mt-1 text-[15px] text-brand-3">{plan.audience}</p>
+          <p class="mt-5 text-brand-4">
+            {plan.annualFee ? (
+              <>
+                <span class="text-sm font-semibold text-brand-3">{bangGia.fromLabel} </span>
+                <span class="text-3xl font-extrabold tracking-tight">{formatMillion(plan.annualFee.min)}</span>
+                <span class="text-base font-semibold text-brand-3">{bangGia.perYear}</span>
+              </>
+            ) : (
+              <span class="text-3xl font-extrabold tracking-tight">{bangGia.contactPrice}</span>
+            )}
+          </p>
+          {plan.setupFee && (
+            <p class="mt-1 text-sm text-brand-3">{bangGia.setupLabel} {formatMillion(plan.setupFee.min)}</p>
+          )}
+          <dl class="mt-6 space-y-3 border-t border-brand-5 pt-5 text-[15px]">
+            <div class="flex justify-between gap-4"><dt class="text-brand-3">{bangGia.linesLabel}</dt><dd class="text-right font-semibold text-brand-4">{linesText(plan)}</dd></div>
+            <div class="flex justify-between gap-4"><dt class="text-brand-3">{bangGia.workshopsLabel}</dt><dd class="text-right font-semibold text-brand-4">{plan.workshops}</dd></div>
+            <div class="flex justify-between gap-4"><dt class="text-brand-3">{bangGia.machinesLabel}</dt><dd class="text-right font-semibold text-brand-4">{plan.licensedMachines}</dd></div>
+            {plan.extraLinePerMonth && (
+              <div class="flex justify-between gap-4"><dt class="text-brand-3">{bangGia.extraLineLabel}</dt><dd class="text-right font-semibold text-brand-4"><span class="whitespace-nowrap">{plan.extraLinePerMonth.min}–{plan.extraLinePerMonth.max} nghìn</span><span class="block text-xs font-normal text-brand-3">/chuyền/tháng</span></dd></div>
+            )}
+          </dl>
+          <p class="mt-5 flex gap-2 text-[15px] leading-relaxed text-brand-3"><Icon name="chat" class="mt-0.5 h-5 w-5 shrink-0 text-brand-1" />{plan.support}</p>
+          <a href="#tu-van" data-cta={`pricing-${plan.id}`} data-ung-dung={plan.id}
+            class:list={[
+              'mt-auto inline-flex min-h-[48px] items-center justify-center rounded-lg px-5 text-base font-semibold transition-colors',
+              'mt-6',
+              plan.highlighted ? 'bg-brand-1 text-white hover:bg-brand-2' : 'border border-brand-1 text-brand-1 hover:bg-brand-1 hover:text-white',
+            ]} aria-label={plan.cta}>{plan.annualFee ? "Nhận báo giá" : plan.cta}</a>
+        </article>
+      ))}
+    </div>
+
+    {/* Công cụ ước tính */}
+    <div class="mt-10 grid gap-6 rounded-2xl border border-brand-5 bg-white p-6 lg:grid-cols-12 lg:p-8" data-estimator>
+      <div class="lg:col-span-4">
+        <h3 class="text-xl font-bold text-brand-4">{bangGia.estimator.title}</h3>
+        <p class="mt-2 text-[15px] leading-relaxed text-brand-3">{bangGia.notes.estimate}</p>
+      </div>
+      <div class="grid gap-4 sm:grid-cols-2 lg:col-span-4">
+        <label class="block text-sm font-semibold text-brand-4">{bangGia.estimator.linesLabel}
+          <input type="number" inputmode="numeric" min="1" max="200" value="9" data-est-lines class="mt-2 block h-12 w-full rounded-lg border border-brand-6 px-3 text-lg font-semibold text-brand-4 focus:border-brand-1 focus:outline-none focus:ring-2 focus:ring-brand-1/30" />
+        </label>
+        <label class="block text-sm font-semibold text-brand-4">{bangGia.estimator.workshopsLabel}
+          <input type="number" inputmode="numeric" min="1" max="50" value="4" data-est-workshops class="mt-2 block h-12 w-full rounded-lg border border-brand-6 px-3 text-lg font-semibold text-brand-4 focus:border-brand-1 focus:outline-none focus:ring-2 focus:ring-brand-1/30" />
+        </label>
+      </div>
+      <div class="flex flex-col justify-between gap-4 rounded-xl bg-brand-7 p-5 lg:col-span-4" aria-live="polite">
+        <div>
+          <p class="text-sm text-brand-3">{bangGia.estimator.resultLabel}: <strong class="text-brand-4" data-est-plan>Tiêu chuẩn</strong></p>
+          <p class="mt-1 text-sm text-brand-3">{bangGia.estimator.feeLabel}: <strong class="text-lg text-brand-4" data-est-fee>60–84 triệu/năm</strong></p>
+        </div>
+        <a href="#tu-van" data-cta="estimator" data-ung-dung="tieu-chuan" data-lead-message="Quy mô: 9 chuyền, 4 phân xưởng." data-est-cta
+          class="inline-flex min-h-[48px] items-center justify-center rounded-lg bg-brand-1 px-5 text-base font-semibold text-white transition-colors hover:bg-brand-2">{bangGia.estimator.cta}</a>
+      </div>
+    </div>
+
+    {/* Ma trận chức năng */}
+    {/* Bảng KHÔNG được ép min-width trên mobile: Chrome mobile tính cả phần cuộn ngang
+        vào bề rộng trang và thu nhỏ toàn trang (đo 19/10: scale 0,63 ở 375px). */}
+    <div class="mt-10 min-w-0 rounded-2xl border border-brand-5 bg-white">
+      <h3 class="p-6 pb-2 text-xl font-bold text-brand-4">{bangGia.matrixTitle}</h3>
+      <div class="max-w-full overflow-x-auto px-2 pb-4 sm:px-6">
+        <table class="w-full border-collapse text-left text-[13px] sm:min-w-[640px] sm:text-[15px]">
+          <thead>
+            <tr class="border-b border-brand-5 text-brand-4">
+              <th scope="col" class="py-3 pr-4 font-semibold">Chức năng</th>
+              <th scope="col" class="w-[18%] py-3 text-center font-semibold">Cơ bản</th>
+              <th scope="col" class="w-[18%] bg-brand-1/5 py-3 text-center font-semibold text-brand-1">Tiêu chuẩn</th>
+              <th scope="col" class="w-[18%] py-3 text-center font-semibold">Nâng cao</th>
+            </tr>
+          </thead>
+          <tbody>
+            {plangoFeatureMatrix.map((row) => (
+              <tr class="border-b border-brand-5/70">
+                <th scope="row" class="py-3 pr-2 font-normal text-brand-3 sm:pr-4">{row.feature}</th>
+                {[row.coBan, row.tieuChuan, row.nangCao].map((value, index) => (
+                  <td class:list={['py-3 text-center', index === 1 && 'bg-brand-1/5']}>
+                    {value === true ? <span class="inline-flex text-brand-9"><Icon name="check" class="h-5 w-5" /><span class="sr-only">Có</span></span>
+                      : value === false ? <span class="text-brand-6" aria-label="Không có">—</span>
+                      : <span class="text-xs font-semibold text-brand-4 sm:text-sm">{cell(value)}</span>}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <ul class="mt-6 max-w-[80ch] space-y-1 text-sm leading-relaxed text-brand-3">
+      <li>{bangGia.notes.model}</li>
+      <li>{bangGia.notes.perpetual}</li>
+      <li>{bangGia.notes.vat}</li>
+    </ul>
+  </div>
+  <script type="application/json" data-estimator-plans set:html={JSON.stringify(estimatorData)} />
+</section>
+
+<script>
+  type EstPlan = { id: string; name: string; max: number | null; fee: { min: number; max: number } | null };
+  const root = document.querySelector<HTMLElement>('[data-estimator]');
+  const dataEl = document.querySelector('[data-estimator-plans]');
+  if (root && dataEl) {
+    const plans = JSON.parse(dataEl.textContent || '[]') as EstPlan[];
+    const linesInput = root.querySelector<HTMLInputElement>('[data-est-lines]')!;
+    const workshopsInput = root.querySelector<HTMLInputElement>('[data-est-workshops]')!;
+    const planOut = root.querySelector<HTMLElement>('[data-est-plan]')!;
+    const feeOut = root.querySelector<HTMLElement>('[data-est-fee]')!;
+    const cta = root.querySelector<HTMLAnchorElement>('[data-est-cta]')!;
+    const fmt = (n: number) => n.toLocaleString('vi-VN');
+    let tracked = false;
+    const update = () => {
+      const lines = Math.max(1, Math.round(Number(linesInput.value) || 1));
+      const workshops = Math.max(1, Math.round(Number(workshopsInput.value) || 1));
+      let plan = plans.find((p) => p.max !== null && lines <= p.max) ?? plans[plans.length - 1];
+      if (plan.id === 'co-ban' && workshops > 1) plan = plans.find((p) => p.id === 'tieu-chuan') ?? plan;
+      planOut.textContent = plan.name;
+      feeOut.textContent = plan.fee ? `${fmt(plan.fee.min)}–${fmt(plan.fee.max)} triệu/năm` : 'Báo giá riêng';
+      cta.dataset.ungDung = plan.id;
+      cta.dataset.leadMessage = `Quy mô: ${lines} chuyền, ${workshops} phân xưởng.`;
+      if (!tracked) {
+        tracked = true;
+        (window as unknown as { dataLayer?: unknown[] }).dataLayer?.push({ event: 'estimator_use' });
+      }
+    };
+    linesInput.addEventListener('input', update);
+    workshopsInput.addEventListener('input', update);
+  }
+</script>

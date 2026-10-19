@@ -1,7 +1,7 @@
-/** Shared contact copy; machine field values remain stable. */
+/** Shared contact copy (form demo PlanGo); machine field values remain stable. */
 import siteProfile from '../config/site-profile.mjs';
 
-// Số liên hệ lấy từ site profile (nguồn duy nhất), không viết cứng.
+// Số liên hệ lấy từ site profile (nguồn chuẩn), không viết cứng.
 const phone = siteProfile.contact?.phone;
 const phoneRaw = (phone?.enabled && phone.raw) || '';
 const phoneDisplay = (phone?.enabled && (phone.display || phone.raw)) || '';
@@ -10,12 +10,12 @@ const zaloUrl = (siteProfile.chat_widgets?.enabled && zalo?.enabled && zalo?.url
 
 export const landingContact = {
     anchor: 'tu-van',
-    h2: 'Nhận tư vấn ứng dụng AiRobot cho nhà xưởng',
-    body: 'Để lại thông tin liên hệ và mô tả ngắn công đoạn cần tự động hóa. Bản vẽ và yêu cầu kỹ thuật có thể bổ sung trong bước trao đổi tiếp theo.',
+    h2: 'Đặt lịch demo PlanGo',
+    body: 'Để lại thông tin và quy mô nhà máy. KORUS liên hệ để sắp xếp buổi demo và gửi báo giá theo số chuyền.',
     cauHoTro:
-      'Mô tả ngắn về công đoạn đang quan tâm là điểm bắt đầu.',
-    formTitle: 'Nhận tư vấn AiRobot',
-    formBody: 'Để lại thông tin liên hệ và nhu cầu của bạn.',
+      'Có thể demo trên dữ liệu mẫu, hoặc trên file Excel đơn hàng của nhà máy nếu bạn muốn.',
+    formTitle: 'Đặt lịch demo PlanGo',
+    formBody: 'Điền thông tin, KORUS sẽ gọi lại để hẹn lịch.',
     fields: [
       {
         name: 'name',
@@ -31,56 +31,49 @@ export const landingContact = {
       },
       {
         name: 'company',
-        label: 'Doanh nghiệp',
+        label: 'Nhà máy / doanh nghiệp',
         required: false,
-        placeholder: 'Tên doanh nghiệp hoặc xưởng',
+        placeholder: 'Tên nhà máy may',
       },
       {
         name: 'application',
-        label: 'Nhóm ứng dụng',
+        label: 'Gói quan tâm',
         required: false,
-        placeholder: 'Chọn nhóm ứng dụng',
+        placeholder: 'Chọn gói',
       },
       {
         name: 'message',
-        label: 'Nhu cầu của bạn',
+        label: 'Quy mô và nhu cầu',
         required: false,
-        placeholder: 'Ví dụ: loại chi tiết, vật liệu, chiều dày và sản lượng dự kiến',
+        placeholder: 'Ví dụ: 9 chuyền, 4 phân xưởng; muốn lập kế hoạch tháng và theo dõi tiến độ hằng ngày',
       },
       {
         name: 'email',
-        label: 'Email nhận thông tin',
+        label: 'Email nhận báo giá',
         required: false,
-        placeholder: 'Email nếu bạn muốn nhận thông tin qua email',
+        placeholder: 'Email nếu bạn muốn nhận báo giá qua email',
       },
     ],
-    // Nhãn của option trong dropdown là nhãn UI, không mang dấu chấm cuối câu.
+    // Mã gói khớp plango-pricing.ts và LEAD_APPLICATIONS trong lead-request.ts.
     applicationOptions: [
-      { value: 'shipbuilding', label: 'Đóng tàu & kết cấu lớn' },
-      { value: 'structural-steel', label: 'Kết cấu thép' },
-      { value: 'precision-fabrication', label: 'Chi tiết cơ khí theo lô' },
-      { value: 'other', label: 'Ứng dụng khác' },
+      { value: 'co-ban', label: 'Cơ bản (đến 5 chuyền)' },
+      { value: 'tieu-chuan', label: 'Tiêu chuẩn (6–15 chuyền)' },
+      { value: 'nang-cao', label: 'Nâng cao (16–40 chuyền)' },
+      { value: 'doanh-nghiep', label: 'Doanh nghiệp (trên 40 chuyền)' },
       { value: 'undecided', label: 'Chưa xác định' },
     ],
-    messageHint: 'Chưa cần gửi bản vẽ ở bước này.',
-    // Gợi ý định dạng đặt ngay dưới ô, để khách biết trước thay vì đoán rồi bị báo lỗi.
+    messageHint: 'Số chuyền và số phân xưởng giúp KORUS báo giá sát hơn.',
     phoneHint: 'Ví dụ: 0912 345 678 · 0912.345.678 · +84 912 345 678',
-    mobileGroupLabel: 'Bổ sung thông tin về chi tiết',
-    // Không còn ô tick: đây là dòng thông báo tĩnh đặt ngay dưới nút gửi.
-    // Giữ nguyên tên khóa `consent` để LeadForm/LeadModal không phải đổi
-    // đường dẫn chữ, và để câu này vẫn có đúng một nguồn.
+    mobileGroupLabel: 'Bổ sung quy mô nhà máy',
+    // Dòng thông báo tĩnh đặt ngay dưới nút gửi (không có ô tick).
     consent:
-      'Bằng việc gửi thông tin, bạn đồng ý để VN-J liên hệ và tư vấn theo Chính sách bảo mật.',
+      'Bằng việc gửi thông tin, bạn đồng ý để KORUS liên hệ và tư vấn theo Chính sách bảo mật.',
     consentLink: { label: 'Chính sách bảo mật', href: '/privacy' },
-    submit: 'Gửi yêu cầu tư vấn AiRobot',
-    // Câu thận trọng duy nhất của S10, đặt cuối khối form.
-    note: 'Cấu hình, chi phí và phạm vi cung cấp được xác định theo nhu cầu thực tế.',
+    submit: 'Gửi yêu cầu demo',
+    note: 'Báo giá chính thức gửi sau buổi khảo sát, theo số chuyền và gói chức năng của nhà máy.',
     validation: {
       missingName: 'Vui lòng nhập họ tên để tiện xưng hô khi liên hệ.',
       missingPhone: 'Vui lòng nhập số điện thoại để liên hệ lại.',
-      // Mỗi nguyên nhân một câu riêng. Bản cũ dùng chung 'Vui lòng kiểm tra lại
-      // số điện thoại.' cho mọi trường hợp, nên khách không biết mình sai chỗ nào
-      // và thường bỏ cuộc thay vì sửa.
       invalidPhone: 'Vui lòng kiểm tra lại số điện thoại.',
       phoneHasLetters: 'Số điện thoại chỉ gồm chữ số. Ví dụ: 0912 345 678',
       phoneTooShort: 'Số điện thoại còn thiếu chữ số. Số di động Việt Nam có 10 chữ số, ví dụ 0912 345 678.',
@@ -90,62 +83,60 @@ export const landingContact = {
     },
     states: {
       sending: {
-        submit: 'Đang gửi nhu cầu…',
+        submit: 'Đang gửi yêu cầu…',
       },
       success: {
-        title: 'VN-J đã nhận được nhu cầu của bạn',
-        body: 'Cảm ơn bạn đã chia sẻ. Thông tin liên hệ vừa gửi dùng để trao đổi thêm về nhu cầu này.',
+        title: 'KORUS đã nhận yêu cầu demo của bạn',
+        body: 'Cảm ơn bạn. KORUS sẽ gọi lại theo số điện thoại vừa gửi để hẹn lịch demo PlanGo.',
         extra:
-          'Chuẩn bị thêm ảnh chi tiết, vật liệu và yêu cầu sản xuất thì cuộc trao đổi tới sẽ nhanh hơn.',
+          'Nếu tiện, chuẩn bị sẵn một file Excel đơn hàng và danh sách chuyền để buổi demo sát với nhà máy hơn.',
         actions: [
-          { label: 'Gọi VN-J', href: `tel:${phoneRaw}` },
-          { label: 'Xem lại hệ thống', href: '/#he-thong' },
+          { label: 'Gọi KORUS', href: `tel:${phoneRaw}` },
+          { label: 'Xem lại bảng giá', href: '/#bang-gia' },
         ],
       },
       error: {
-        title: 'Chưa gửi được nhu cầu',
-        body: 'Vui lòng thử lại. Thông tin bạn đã nhập vẫn được giữ trên trang này. Bạn cũng có thể gọi VN-J hoặc trao đổi qua Zalo.',
+        title: 'Chưa gửi được yêu cầu',
+        body: 'Vui lòng thử lại. Thông tin bạn đã nhập vẫn được giữ trên trang này. Bạn cũng có thể gọi KORUS hoặc nhắn qua Zalo.',
         retry: 'Thử gửi lại',
       },
       unknown: {
         title: 'Chưa xác nhận được trạng thái gửi',
-        body: 'Kết nối vừa bị gián đoạn. Vui lòng kiểm tra trạng thái trước khi gửi lại để tránh tạo yêu cầu trùng. Bạn có thể gọi VN-J nếu cần trao đổi ngay.',
+        body: 'Kết nối vừa bị gián đoạn. Vui lòng kiểm tra trạng thái trước khi gửi lại để tránh tạo yêu cầu trùng. Bạn có thể gọi KORUS nếu cần trao đổi ngay.',
         /** Dùng khi trang chưa có cơ chế kiểm tra trạng thái yêu cầu. */
         bodyKhongKiemTraTrangThai:
-          'Kết nối vừa bị gián đoạn nên chưa rõ yêu cầu đã tới nơi hay chưa. Bạn có thể gọi VN-J để trao đổi hoặc kiểm tra lại yêu cầu.',
+          'Kết nối vừa bị gián đoạn nên chưa rõ yêu cầu đã tới nơi hay chưa. Bạn có thể gọi KORUS để trao đổi hoặc kiểm tra lại yêu cầu.',
       },
     },
     kenhTrucTiep: {
-      title: 'Muốn trao đổi trực tiếp?',
-      phone: { label: `Gọi VN-J: ${phoneDisplay}`, href: `tel:${phoneRaw}` },
-      zalo: { label: 'Trao đổi qua Zalo', href: zaloUrl },
+      title: 'Muốn trao đổi ngay?',
+      phone: { label: `Hotline: ${phoneDisplay}`, href: `tel:${phoneRaw}` },
+      zalo: { label: `Nhắn Zalo: ${phoneDisplay}`, href: zaloUrl },
     },
-    // Nội dung trang cảm ơn /thank-you — trang xác nhận sau khi gửi form.
-    // Trang này noindex, nhưng vẫn giữ chuẩn về cấu trúc: một H1 duy nhất,
-    // tiêu đề/mô tả rõ ràng. Các kênh liên hệ lấy từ site-profile.
+    // Trang cảm ơn /thank-you (noindex).
     thankYou: {
-      metaTitle: 'Cảm ơn bạn đã liên hệ VN-J — Tư vấn trạm robot hàn AiRobot',
+      metaTitle: 'Cảm ơn bạn đã đăng ký demo PlanGo',
       metaDescription:
-        'Xác nhận tiếp nhận yêu cầu tư vấn AiRobot và các kênh liên hệ với VN-J.',
+        'Xác nhận tiếp nhận yêu cầu demo PlanGo và các kênh liên hệ với KORUS.',
       eyebrow: 'Gửi yêu cầu thành công',
       title: 'Cảm ơn bạn đã liên hệ!',
       intro:
-        'VN-J đã nhận được yêu cầu tư vấn AiRobot. Chúng tôi sẽ liên hệ theo thông tin bạn đã cung cấp để trao đổi nhu cầu hàn.',
-      prepareHeading: 'Để trao đổi cụ thể hơn',
+        'KORUS đã nhận yêu cầu demo PlanGo. Chúng tôi sẽ gọi lại theo thông tin bạn cung cấp để hẹn lịch.',
+      prepareHeading: 'Để buổi demo sát với nhà máy',
       prepareBody:
         'Nếu tiện, bạn có thể chuẩn bị:',
       prepareItems: [
-        'Ảnh hoặc bản vẽ chi tiết cần hàn',
-        'Vật liệu, chiều dày và yêu cầu mối hàn',
-        'Sản lượng dự kiến',
+        'Danh sách phân xưởng, chuyền và số lao động mỗi chuyền',
+        'Một file Excel đơn hàng đang dùng',
+        'Mẫu kế hoạch hoặc báo cáo tiến độ hiện tại',
       ],
-      contactLead: 'Muốn trao đổi thêm với VN-J?',
+      contactLead: 'Muốn trao đổi thêm với KORUS?',
       contactNote: 'Chọn kênh liên hệ thuận tiện cho bạn.',
       actions: {
-        system: 'Xem lại hệ thống AiRobot',
-        systemHref: '/#he-thong',
-        call: 'Gọi VN-J',
-        zalo: 'Trao đổi qua Zalo',
+        system: 'Xem lại PlanGo',
+        systemHref: '/#cach-hoat-dong',
+        call: 'Gọi KORUS',
+        zalo: 'Nhắn Zalo',
       },
     },
   } as const;

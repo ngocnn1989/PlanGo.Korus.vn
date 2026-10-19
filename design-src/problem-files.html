@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><link rel="stylesheet" href="shared.css">
+<style>
+  .sheet { position: absolute; width: 330px; background: #fff; border: 1px solid #CBD5E1; border-radius: 10px; box-shadow: 0 14px 34px rgba(15,23,42,.16); overflow: hidden; }
+  .sheet .t { background: #E8F5EC; color: #166534; font-size: 13px; font-weight: 800; padding: 8px 12px; display: flex; gap: 8px; align-items: center; }
+  .sheet .t i { width: 16px; height: 16px; border-radius: 3px; background: #16A34A; display: inline-block; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  td { border: 1px solid #E2E8F0; padding: 6px 8px; color: #475569; height: 28px; }
+  td.h { background: #F8FAFC; font-weight: 700; color: #1F2933; }
+  td.bad { background: #FEE2E2; color: #B91C1C; font-weight: 800; }
+  .q { position: absolute; font-size: 54px; font-weight: 900; color: #DC2626; opacity: .9; }
+  .link { position: absolute; border-top: 3px dashed #F59E0B; transform-origin: 0 0; }
+</style></head>
+<body><div class="canvas bg-soft">
+  <div class="link" style="left:330px;top:250px;width:150px;transform:rotate(12deg)"></div>
+  <div class="link" style="left:420px;top:470px;width:140px;transform:rotate(-20deg)"></div>
+  <div class="sheet" style="left:60px;top:70px;transform:rotate(-5deg)">
+    <div class="t"><i></i>Don_hang_T11_v3.xlsx</div>
+    <table><tr><td class="h">Mã hàng</td><td class="h">SL</td><td class="h">Ngày giao</td></tr>
+    <tr><td>A-102</td><td>4.800</td><td>28/11</td></tr><tr><td>B-215</td><td class="bad">3.200</td><td>20/11</td></tr><tr><td>C-031</td><td>2.600</td><td>?</td></tr></table>
+  </div>
+  <div class="sheet" style="left:500px;top:110px;transform:rotate(4deg)">
+    <div class="t"><i></i>Nang_suat_chuyen.xlsx</div>
+    <table><tr><td class="h">Chuyền</td><td class="h">LĐ</td><td class="h">SP/ngày</td></tr>
+    <tr><td>M1K1</td><td>32</td><td>520</td></tr><tr><td>M1K2</td><td class="bad">#REF!</td><td>480</td></tr><tr><td>M2K1</td><td>28</td><td class="bad">?</td></tr></table>
+  </div>
+  <div class="sheet" style="left:250px;top:390px;transform:rotate(-2deg)">
+    <div class="t"><i></i>KH_thang11_final_moi.xlsx</div>
+    <table><tr><td class="h">Chuyền</td><td class="h">Đơn</td><td class="h">Bắt đầu</td></tr>
+    <tr><td>M1K2</td><td>B-215</td><td class="bad">2.800</td></tr><tr><td>M1K3</td><td>—</td><td>—</td></tr><tr><td>M2K1</td><td>C-031</td><td>12/11</td></tr></table>
+  </div>
+  <div class="q" style="left:860px;top:60px">?</div>
+  <div class="q" style="left:40px;top:560px;font-size:44px">?</div>
+  <div class="demo-tag">Minh họa</div>
+</div></body></html>

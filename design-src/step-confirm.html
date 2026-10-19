@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><link rel="stylesheet" href="shared.css"><script src="shared.js"></script>
+<style>
+  .win { left: 40px; top: 40px; right: 40px; height: 430px; }
+  .gw { padding: 10px 14px; }
+  .dlg { position: absolute; left: 230px; right: 230px; bottom: 50px; padding: 22px 24px; border: 1px solid #CBD5E1; box-shadow: 0 24px 60px rgba(15,23,42,.25); }
+  .dlg h3 { font-size: 19px; font-weight: 800; margin-bottom: 6px; }
+  .dlg p { font-size: 14px; color: #475569; line-height: 1.5; }
+  .acts { display: flex; gap: 10px; margin-top: 16px; justify-content: flex-end; }
+  .btn { font-size: 15px; font-weight: 800; padding: 10px 18px; border-radius: 10px; border: 1px solid #CBD5E1; color: #475569; background: #fff; }
+  .btn.pri { background: #2563EB; color: #fff; border-color: #2563EB; }
+  .file { position: absolute; right: 60px; top: 12px; z-index: 2; }
+</style></head>
+<body><div class="canvas bg-soft">
+  <div class="win">
+    <div class="win-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">Phương án B · Xem trước</span><span class="chip green" style="margin-left:auto">Không xung đột tải chuyền</span></div>
+    <div class="gw"><div id="g" class="gantt"></div></div>
+  </div>
+  <div class="card dlg">
+    <h3>Xác nhận lưu phương án B?</h3>
+    <p>Kế hoạch 8 chuyền · 14 đơn hàng. Đơn đang chạy được giữ nguyên. Sau khi lưu có thể xuất KHSX ra Excel.</p>
+    <div class="acts"><span class="btn">Xem lại</span><span class="btn pri">Xác nhận và lưu</span></div>
+  </div>
+  <div class="demo-tag">Dữ liệu minh họa</div>
+</div>
+<script>
+renderGantt(document.getElementById('g'), {
+  lines: ['M1K1','M1K2','M1K3','M1K4','M2K1','M2K2','M2K3','M2K4'], days: 30, dayW: 26.4, rowH: 44, labelW: 64,
+  bars: [
+    ['M1K1',1,12,'--c1','Khách A'],['M1K1',13,17,'--c3','Khách C','fc'],
+    ['M1K2',1,11,'--c2','Khách B'],['M1K2',12,18,'--c5','Khách E','fc'],
+    ['M1K3',1,13,'--c4','Khách D'],['M1K3',14,16,'--c1','Khách A','fc'],
+    ['M1K4',1,10,'--c3','Khách C'],['M1K4',11,19,'--c2','Khách B','fc'],
+    ['M2K1',1,12,'--c5','Khách E'],['M2K1',13,17,'--c4','Khách D','fc'],
+    ['M2K2',1,11,'--c1','Khách A'],['M2K2',12,18,'--c3','Khách C','fc'],
+    ['M2K3',1,12,'--c3','Khách C'],['M2K3',13,17,'--c4','Khách D','fc'],
+    ['M2K4',1,12,'--c2','Khách B'],['M2K4',13,17,'--c1','Khách A','fc'],
+  ],
+});
+</script></body></html>

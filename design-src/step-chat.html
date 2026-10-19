@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><link rel="stylesheet" href="shared.css">
+<style>
+  .win { left: 70px; top: 60px; right: 70px; bottom: 60px; }
+  .chat { padding: 26px 30px; display: flex; flex-direction: column; gap: 18px; height: calc(100% - 40px); background: #F8FAFC; }
+  .msg { max-width: 78%; padding: 14px 18px; border-radius: 16px; font-size: 18px; line-height: 1.5; }
+  .me { align-self: flex-end; background: #2563EB; color: #fff; border-bottom-right-radius: 4px; font-weight: 600; }
+  .ai { align-self: flex-start; background: #fff; border: 1px solid #E2E8F0; border-bottom-left-radius: 4px; box-shadow: 0 4px 12px rgba(15,23,42,.06); }
+  .ai .who { font-size: 13px; font-weight: 800; color: #2563EB; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .ai .who img { height: 18px; }
+  .row { display: flex; gap: 10px; align-items: center; font-size: 16px; margin-top: 8px; }
+  .row b { width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center; color: #fff; font-size: 14px; }
+  .input { margin-top: auto; display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid #CBD5E1; border-radius: 12px; padding: 12px 14px; font-size: 16px; color: #94A3B8; }
+  .send { margin-left: auto; width: 34px; height: 34px; border-radius: 9px; background: #2563EB; display: grid; place-items: center; }
+</style></head>
+<body><div class="canvas bg-soft">
+  <div class="win">
+    <div class="win-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">Trợ lý kế hoạch PlanGo</span></div>
+    <div class="chat">
+      <div class="msg me">Lập kế hoạch tháng 11 cho toàn nhà máy</div>
+      <div class="msg ai">
+        <div class="who"><img src="../public/plango-mark-light.png" alt="">PlanGo</div>
+        Đã nhập 14 đơn hàng, 8 chuyền đủ dữ liệu. Hệ thống tính được 3 phương án:
+        <div class="row"><b style="background:#94A3B8">A</b>Ít xáo trộn kế hoạch đang chạy</div>
+        <div class="row"><b style="background:#2563EB">B</b>Cân bằng tải toàn phân xưởng <span class="chip green" style="margin-left:6px">Đề xuất</span></div>
+        <div class="row"><b style="background:#16A34A">C</b>Ưu tiên kịp hạn giao</div>
+      </div>
+      <div class="input">Nhập yêu cầu…<span class="send"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    </div>
+  </div>
+  <div class="demo-tag">Dữ liệu minh họa</div>
+</div></body></html>

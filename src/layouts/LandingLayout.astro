@@ -55,9 +55,9 @@ const themeStyle = Object.entries(themeTokens).map(([key, value]) => `--color-${
 		<header class="sticky top-0 z-40 border-b border-brand-5 bg-white/92 backdrop-blur">
 			<div class="mx-auto flex h-16 max-w-[1290px] items-center justify-between gap-4 px-4 lg:px-8">
 				<a href="/" class="flex min-h-[44px] shrink-0 items-center gap-3">
-					{/* Logo chính thức VN-J. Nền trong suốt, chữ đen — chỉ đọc được trên
-					    nền sáng, nên header dùng bản màu gốc còn footer dùng bản đảo chữ. */}
-					<img src={siteProfile.brand.logo_url} alt={`Logo ${footerCopy.legalName}`} width="59" height="37" decoding="async" class="h-[37px] w-auto" />
+					{/* Logo PlanGo by KORUS (lockup 1000×350, nền trong suốt). Header nền sáng
+					    dùng bản sáng; footer nền tối dùng plango-lockup-dark.png. */}
+					<img src={siteProfile.brand.logo_url} alt={`Logo ${headerCopy.wordmark}`} width="126" height="44" decoding="async" class="h-11 w-auto" />
 					<span class="hidden h-6 w-px bg-brand-5 lg:inline-block"></span>
 					<span class="hidden text-sm text-brand-3 lg:inline">{headerCopy.tagline}</span>
 				</a>

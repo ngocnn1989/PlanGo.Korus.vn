@@ -43,9 +43,10 @@ var COLUMNS = [
 
 /** Đổi mã nhóm ứng dụng sang tiếng Việt cho người đọc sheet. */
 var APPLICATION_LABELS = {
-  'shipbuilding':          'Đóng tàu & kết cấu lớn',
-  'structural-steel':      'Kết cấu thép & cơ khí chế tạo',
-  'precision-fabrication': 'Cơ khí chính xác & chi tiết yêu cầu cao',
+  'co-ban':                'Gói Cơ bản',
+  'tieu-chuan':            'Gói Tiêu chuẩn',
+  'nang-cao':              'Gói Nâng cao',
+  'doanh-nghiep':          'Gói Doanh nghiệp',
   'other':                 'Bài toán khác',
   'undecided':             'Chưa xác định'
 };
@@ -257,7 +258,7 @@ function kiemTraNhanh() {
       name:            'KIỂM TRA — xoá dòng này',
       phone:           '0900000000',
       company:         'Công ty kiểm tra',
-      application:     'shipbuilding',
+      application:     'tieu-chuan',
       email:           'kiemtra@example.com',
       message:         'Dòng do kiemTraNhanh() tạo.',
       consent_at:      new Date().toISOString(),

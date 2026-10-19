@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><link rel="stylesheet" href="shared.css"><script src="shared.js"></script>
+<style>
+  .win { left: 40px; top: 40px; right: 40px; bottom: 40px; }
+  .body { display: grid; grid-template-columns: 220px 1fr; height: calc(100% - 40px); }
+  .side { background: #1F2933; color: #CBD5E1; padding: 18px 14px; font-size: 14px; }
+  .side img { height: 44px; margin: 0 0 22px -6px; }
+  .side .it { padding: 9px 12px; border-radius: 8px; margin-bottom: 4px; font-weight: 600; }
+  .side .it.on { background: #2563EB; color: #fff; }
+  .side .grp { margin: 18px 0 8px; font-size: 11px; letter-spacing: .08em; color: #64748B; text-transform: uppercase; }
+  .main { padding: 18px 22px; background: #F8FAFC; display: flex; flex-direction: column; gap: 14px; }
+  .top { display: flex; align-items: center; gap: 10px; }
+  .top h1 { font-size: 20px; font-weight: 800; margin-right: auto; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .gwrap { padding: 8px 10px 4px; flex: 1; }
+  .legend { display: flex; gap: 16px; font-size: 12px; color: #475569; padding: 6px 10px 10px; }
+  .legend b { display: inline-block; width: 22px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: middle; }
+</style></head>
+<body><div class="canvas bg-soft">
+  <div class="win">
+    <div class="win-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">Bảng tiến độ · Tháng 11</span></div>
+    <div class="body">
+      <aside class="side">
+        <img src="../public/plango-lockup-dark.png" alt="">
+        <div class="it on">Bảng tiến độ</div><div class="it">Đơn hàng</div><div class="it">Kế hoạch</div><div class="it">Sản lượng thực tế</div><div class="it">Báo cáo</div>
+        <div class="grp">Phân xưởng</div>
+        <div class="it">Toàn nhà máy</div><div class="it">M1</div><div class="it">M2</div>
+      </aside>
+      <section class="main">
+        <div class="top"><h1>Toàn nhà máy · Tháng 11</h1><span class="chip green">Kế hoạch đã chốt</span><span class="chip gray">Xuất KHSX Excel</span></div>
+        <div class="kpis">
+          <div class="card kpi"><div class="k">Chuyền có việc</div><div class="v">8 / 8</div></div>
+          <div class="card kpi"><div class="k">Đơn đang chạy</div><div class="v">14</div></div>
+          <div class="card kpi"><div class="k">Sản lượng hôm nay</div><div class="v">6.420</div></div>
+          <div class="card kpi"><div class="k">Cảnh báo tải chuyền</div><div class="v" style="color:#16A34A">0</div></div>
+        </div>
+        <div class="card gwrap"><div id="g" class="gantt"></div>
+          <div class="legend"><span><b style="background:#2563EB"></b>Thực tế</span><span><b style="background:#93C5FD;background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.4) 0 4px,transparent 4px 8px)"></b>Dự báo</span><span><b style="background:#DC2626;width:2px"></b>Hôm nay</span></div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <div class="demo-tag">Dữ liệu minh họa</div>
+</div>
+<script>
+renderGantt(document.getElementById('g'), {
+  lines: ['M1K1','M1K2','M1K3','M1K4','M2K1','M2K2','M2K3','M2K4'], days: 30, dayW: 38.2, rowH: 75, labelW: 80, today: 12,
+  bars: [
+    ['M1K1',1,11,'--c1','Khách A · Áo khoác'],['M1K1',12,9,'--c1','','fc'],['M1K1',21,10,'--c3','Khách C · Quần','fc'],
+    ['M1K2',1,8,'--c2','Khách B · Sơ mi'],['M1K2',9,3,'--c2'],['M1K2',12,14,'--c5','Khách E · Váy','fc'],
+    ['M1K3',1,11,'--c4','Khách D · Áo polo'],['M1K3',12,6,'--c4','','fc'],['M1K3',18,13,'--c1','Khách A · Áo khoác','fc'],
+    ['M1K4',1,6,'--c3','Khách C'],['M1K4',7,5,'--c2','Khách B · Sơ mi'],['M1K4',12,19,'--c2','Khách B · Sơ mi','fc'],
+    ['M2K1',1,11,'--c5','Khách E · Váy'],['M2K1',12,8,'--c5','','fc'],['M2K1',20,11,'--c4','Khách D','fc'],
+    ['M2K2',1,11,'--c1','Khách A · Quần'],['M2K2',12,12,'--c3','Khách C · Áo thun','fc'],['M2K2',24,7,'--c2','Khách B','fc'],
+    ['M2K3',1,9,'--c3','Khách C · Áo thun'],['M2K3',10,2,'--c4'],['M2K3',12,15,'--c4','Khách D · Áo polo','fc'],
+    ['M2K4',1,11,'--c2','Khách B · Sơ mi'],['M2K4',12,10,'--c1','Khách A','fc'],['M2K4',22,9,'--c5','Khách E','fc'],
+  ],
+});
+</script></body></html>

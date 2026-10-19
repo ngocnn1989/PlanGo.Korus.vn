@@ -268,15 +268,9 @@ const id = (suffix: string) => `${formId}-${suffix}`;
   const PHONE_ALLOWED = /^[0-9+().\s-]+$/;
   const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // Prefill nhóm ứng dụng: chấp nhận cả slug tiếng Anh trong copy lẫn slug
-  // tiếng Việt mà thẻ ứng dụng có thể dùng.
+  // Prefill gói quan tâm: data-ung-dung / ?ung-dung= mang mã gói trong
+  // plango-pricing.ts (co-ban, tieu-chuan, nang-cao, doanh-nghiep).
   const APPLICATION_ALIASES: Record<string, string> = {
-    'dong-tau': 'shipbuilding',
-    'ket-cau-lon': 'shipbuilding',
-    'ket-cau-thep': 'structural-steel',
-    'co-khi-che-tao': 'structural-steel',
-    'co-khi-chinh-xac': 'precision-fabrication',
-    'khac': 'other',
     'chua-xac-dinh': 'undecided',
   };
 
@@ -489,6 +483,10 @@ const id = (suffix: string) => `${formId}-${suffix}`;
       if (Array.from(applicationSelect.options).some((option) => option.value === value)) {
         applicationSelect.value = value;
       }
+      // Công cụ ước tính bảng giá gửi kèm quy mô nhà máy; chỉ điền khi ô còn trống.
+      const presetMessage = trigger.getAttribute('data-lead-message');
+      const messageField = form.querySelector<HTMLTextAreaElement>('textarea[name="message"]');
+      if (presetMessage && messageField && !messageField.value.trim()) messageField.value = presetMessage;
       if (details) details.open = true;
     });
 

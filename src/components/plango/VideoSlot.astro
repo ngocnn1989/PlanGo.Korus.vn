@@ -1,0 +1,81 @@
+---
+/**
+ * Khe video: video do session sản xuất video giao vào public/media/ theo tên
+ * trong docs/VIDEO_HANDOFF.md. Lúc build, nếu file có mặt thì nhúng <video>,
+ * nếu chưa có thì hiển thị ảnh dự phòng (hoặc không hiển thị gì).
+ *
+ * - `ambient`: tự chạy, tắt tiếng, lặp, không điều khiển (video nền hero).
+ * - còn lại: có nút điều khiển, preload="none", chỉ tải khi người xem bấm.
+ * prefers-reduced-motion: video ambient bị dừng, chỉ còn poster.
+ */
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  file: string;
+  poster?: string;
+  label: string;
+  ambient?: boolean;
+  fallback?: ImageMetadata;
+  fallbackSizes?: string;
+  eager?: boolean;
+  class?: string;
+}
+
+const { file, poster, label, ambient = false, fallback, fallbackSizes = '100vw', eager = false, class: className = '' } = Astro.props;
+const mediaDir = join(process.cwd(), 'public', 'media');
+const hasVideo = existsSync(join(mediaDir, file));
+const hasPoster = poster ? existsSync(join(mediaDir, poster)) : false;
+---
+{hasVideo ? (
+  ambient ? (
+    <video
+      class={`plango-ambient h-full w-full object-cover ${className}`}
+      src={`/media/${file}`}
+      poster={hasPoster ? `/media/${poster}` : undefined}
+      autoplay muted loop playsinline
+      preload="metadata"
+      aria-label={label}
+      data-video={file}
+    ></video>
+  ) : (
+    <video
+      class={`h-full w-full bg-brand-4 object-contain ${className}`}
+      src={`/media/${file}`}
+      poster={hasPoster ? `/media/${poster}` : undefined}
+      controls playsinline
+      preload="none"
+      aria-label={label}
+      data-video={file}
+    ></video>
+  )
+) : fallback ? (
+  <Image
+    src={fallback}
+    alt={label}
+    widths={[480, 768, 1024, 1440]}
+    sizes={fallbackSizes}
+    format="avif"
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : undefined}
+    class={`h-full w-full object-cover ${className}`}
+  />
+) : null}
+
+<script>
+  // Tôn trọng prefers-reduced-motion: dừng video nền, giữ poster.
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    for (const video of document.querySelectorAll<HTMLVideoElement>('video.plango-ambient')) {
+      video.removeAttribute('autoplay');
+      video.pause();
+    }
+  }
+  // Đo lượt xem video (dataLayer qua GTM nếu tracking bật).
+  for (const video of document.querySelectorAll<HTMLVideoElement>('video[controls][data-video]')) {
+    video.addEventListener('play', () => {
+      (window as unknown as { dataLayer?: unknown[] }).dataLayer?.push({ event: 'video_play', video: video.dataset.video });
+    }, { once: true });
+  }
+</script>

@@ -10,10 +10,9 @@
  * file này còn tham chiếu sáu khóa `page_copy.lead_modal`:
  * {leadModal.title} {leadModal.description} {leadModal.name_label}
  * {leadModal.phone_label} {leadModal.message_label} {leadModal.submit_label}
- * Sáu khóa đó KHÔNG còn được hiển thị vì bản trong
- * src/config/profiles/landing-robot.json vẫn chứa chuỗi bị cấm ("Demo",
- * mốc "24h"). Khi lane cấu hình cập nhật profile khớp §14, đưa chúng trở lại
- * vị trí hiển thị và gỡ chú thích này.
+ * Sáu khóa đó không hiển thị: modal dùng chung chữ với form chính
+ * (landing-contact.ts) để hai nơi luôn giống nhau. Profile landing-plango.json
+ * vẫn khai báo đủ sáu khóa cho schema.
  */
 import siteProfile from '../../config/site-profile.mjs';
 import { resolveRuntimeLeadActivation } from '../../config/runtime-lead-activation.mjs';

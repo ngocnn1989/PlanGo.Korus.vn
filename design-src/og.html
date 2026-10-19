@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><link rel="stylesheet" href="shared.css"><script src="shared.js"></script>
+<style>
+  .logo { position: absolute; left: 64px; top: 52px; height: 74px; }
+  h1 { position: absolute; left: 70px; top: 170px; width: 560px; font-size: 54px; line-height: 1.12; font-weight: 900; color: #fff; letter-spacing: -.01em; }
+  h1 em { font-style: normal; color: #60A5FA; }
+  .sub { position: absolute; left: 72px; top: 420px; width: 520px; font-size: 22px; color: #CBD5E1; line-height: 1.45; }
+  .url { position: absolute; left: 72px; bottom: 52px; font-size: 20px; font-weight: 800; color: #fff; }
+  .url span { color: #4ADE80; margin-left: 14px; }
+  .panel { position: absolute; right: 48px; top: 110px; width: 470px; padding: 12px 14px; border-radius: 14px; background: #fff; box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+</style></head>
+<body><div class="canvas bg-dark">
+  <img class="logo" src="../public/plango-lockup-dark.png" alt="">
+  <h1>Lập kế hoạch chuyền may trong <em>một lệnh chat</em></h1>
+  <div class="sub">Nhập đơn từ Excel · Chọn phương án · Gantt từng chuyền</div>
+  <div class="url">PlanGo.korus.vn<span>0912 610 011</span></div>
+  <div class="panel"><div id="g" class="gantt"></div></div>
+</div>
+<script>
+renderGantt(document.getElementById('g'), { lines: ['M1K1','M1K2','M1K3','M1K4','M2K1','M2K2','M2K3'], days: 20, dayW: 19.5, rowH: 50, labelW: 52, today: 8, showDays: false,
+  bars: [['M1K1',1,7,'--c1'],['M1K1',8,13,'--c1','','fc'],['M1K2',1,5,'--c2'],['M1K2',6,15,'--c5','','fc'],['M1K3',1,9,'--c4'],['M1K3',10,11,'--c3','','fc'],['M1K4',1,7,'--c3'],['M1K4',8,13,'--c2','','fc'],['M2K1',1,7,'--c5'],['M2K1',8,13,'--c4','','fc'],['M2K2',1,4,'--c1'],['M2K2',5,16,'--c3','','fc'],['M2K3',1,7,'--c2'],['M2K3',8,13,'--c1','','fc']] });
+</script></body></html>

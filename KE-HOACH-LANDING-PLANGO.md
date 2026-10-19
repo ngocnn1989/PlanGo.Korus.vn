@@ -1,6 +1,6 @@
 # Kế hoạch xây dựng Landing PlanGo — bản chờ owner duyệt
 
-- Mã kế hoạch: `PLANGO-LP-01` · Phiên bản: r2 · Ngày: 19/10/2026 · Trạng thái: **APPROVED** (owner duyệt r1 + khung giá §5 nguyên trạng, 19/10/2026; lệnh: bắt đầu G1 + G2). Các mục §8.2–8.7 vẫn mở, mặc định áp dụng cho tới khi owner chốt: hiển thị "từ … triệu/năm"; không nêu tên Hưng Nhân; CTA "Đặt lịch demo"; không quảng cáo dùng thử.
+- Mã kế hoạch: `PLANGO-LP-01` · Phiên bản: r3 (19/10/2026: video chuyển cho session hungnhan-garment; G3+G5 hoàn thành) · trước đó r2 · Ngày: 19/10/2026 · Trạng thái: **APPROVED** (owner duyệt r1 + khung giá §5 nguyên trạng, 19/10/2026; lệnh: bắt đầu G1 + G2). Các mục §8.2–8.7 vẫn mở, mặc định áp dụng cho tới khi owner chốt: hiển thị "từ … triệu/năm"; không nêu tên Hưng Nhân; CTA "Đặt lịch demo"; không quảng cáo dùng thử.
 - Chế độ thực thi: Direct mode (một session, không board). Kế hoạch này + `project_checkpoint.md` là authority vận hành.
 - Thư mục landing: `HUNG-NHAN/PlanGo/` · Domain dự kiến: `PlanGo.korus.vn`
 - Framework nền: `C:\Data\1.Projects\Landing\landing1` (korus-web-framework, Astro 7 + Tailwind 4 + Vercel)
@@ -110,8 +110,8 @@ Hạn mức trang: tổng ảnh tải lần đầu < 500 KB (theo `SPEC_ANH_THIE
 | V1 | "Rải rác nhiều file" 15 s | 9:16 | Session *Dự án hungnhan-garment* đang làm → landing chỉ **nhận file giao** |
 | V2 | "Lập kế hoạch bằng chat" 30 s | 9:16 | như trên |
 | V3 | "Cách cũ · Cách mới" 15 s | 9:16 | như trên |
-| V4 | **Hero loop landing** 12–20 s, không chữ dày, lặp mượt (`loop: true`) | 16:9 + 4:5 (mobile) | **Mới** — làm trong PlanGo bằng KV storyboard, tái dùng block Gantt/UI mock |
-| V5 | Bản 16:9 của V2 (demo 30 s) cho mục S04/YouTube | 16:9 | Mới — re-layout từ V2 |
+| V4 | **Hero loop landing** 12–20 s, không chữ dày, lặp mượt (`loop: true`) | 16:9 | **r3: do session hungnhan-garment sản xuất**; landing chỉ có khe nhúng `plango-hero-16x9.mp4` (`docs/VIDEO_HANDOFF.md`); khung dự phòng `video-src/v4-hero-loop` |
+| V5 | Bản 16:9 của V2 (demo 30 s) cho mục S04/YouTube | 16:9 | **r3: như V4**; khe `plango-demo-16x9.mp4`; dự phòng `video-src/v5-chat-demo` |
 
 Giao file: `_social.mp4` (H.264) + `_small.mp4` + poster; trên landing nhúng bản ≤ 3–4 MB, `preload="none"` (trừ hero `preload="metadata"`), `muted playsinline`, có nút dừng, tôn trọng `prefers-reduced-motion` (chỉ hiện poster).
 
@@ -185,7 +185,7 @@ Ví dụ đối chiếu: nhà máy cỡ Hưng Nhân (4 phân xưởng, 9 chuyề
 | G1 | Bootstrap `PlanGo/`: copy framework, `rule.md`, `project_checkpoint.md`, profile `landing-plango`, chạy được trang trống | — | `npm run check` 0 lỗi, `npm run build` qua | 0,5 ngày |
 | G2 | Copy toàn trang + product facts + pricing data; 3 phương án hook/CTA, legal gate | kr-copywriting | `docs/plango_landing_copy.md`, `plango-copy.ts`, `plango-pricing.ts` → **owner duyệt copy** | 1 ngày |
 | G3 | Tài sản hình ảnh D1–D9 | kr-design | `src/assets/plango/*`, contact sheet → **owner duyệt hình** | 1–1,5 ngày |
-| G4 | Video V4 (hero loop) + V5 (16:9 demo); nhận V1–V3 từ session hungnhan-garment | kr-motion-video, kr-video-vertical, kr-video-score | mp4 + poster, `qa.mjs`/`deliver.mjs` exit 0 | 1–1,5 ngày (song song G3) |
+| G4 | **r3 (owner 19/10):** landing KHÔNG sản xuất video; chỉ nhận file giao vào `public/media/` theo `docs/VIDEO_HANDOFF.md` | — | Khe video tự nhận file lúc build | — |
 | G5 | Dựng trang: section S01–S11, component Pricing/Estimator/Video/BeforeAfter, form mở rộng, CSP media | — | Trang chạy local; kiểm tra 375 px / 768 px / 1440 px | 1,5 ngày |
 | G6 | Kiểm tra: `npm run verify`, `verify:landing`, link nội bộ, Lighthouse (mục tiêu ≥ 90 hiệu năng mobile), test gửi lead thật vào Sheet thử | sb-ads-tracking-seo-standard | Báo cáo QA | 0,5 ngày |
 | G7 | Triển khai Vercel preview → owner duyệt → trỏ `PlanGo.korus.vn`, bật index | — | URL preview, rồi URL chính | 0,5 ngày (sau khi có DNS/Vercel) |

@@ -1,7 +1,8 @@
 ---
 import siteProfile from '../../config/site-profile.mjs';
 import { landingCopySource } from '../../content/landing-copy';
-import { airobotProduct } from '../../content/airobot-product';
+import { plangoProduct } from '../../content/plango-product';
+import { plangoPlans } from '../../content/plango-pricing';
 
 export interface Props {
   title?: string;
@@ -74,9 +75,9 @@ const articleSchemaRequested = type === 'article' && (schemaOnly || author !== u
 const isLandingSurface = type === 'landing' || Astro.url.pathname === '/' || Astro.url.pathname === '';
 
 // Dữ kiện doanh nghiệp: bảng sự thật sản phẩm có nguồn của dự án, §6 (nguồn N1, N2).
-const legalName = airobotProduct.manufacturer;
+const legalName = plangoProduct.vendor;
 const organizationId = `${canonicalOrigin}/#organization`;
-const productId = `${canonicalOrigin}/#airobot`;
+const productId = `${canonicalOrigin}/#plango`;
 const organizationRef = {
   "@type": "Organization",
   "@id": organizationId,
@@ -85,9 +86,11 @@ const organizationRef = {
   "url": canonicalOrigin
 };
 
-// Cấu hình tham chiếu — chỉ các dòng đã đánh dấu dùng được ở §3 và §4.
-// Không phát sku, giá, offers, đánh giá: nguồn không công bố.
-const airobotProperties = airobotProduct.specifications;
+// Khung giá công khai trên trang (plango-pricing.ts, owner duyệt 19/10/2026):
+// phát AggregateOffer khớp đúng các mức "từ … triệu/năm" đang hiển thị.
+const pricedPlans = plangoPlans.filter((plan) => plan.annualFee);
+const lowPrice = Math.min(...pricedPlans.map((plan) => plan.annualFee!.min)) * 1_000_000;
+const highPrice = Math.max(...pricedPlans.map((plan) => plan.annualFee!.max)) * 1_000_000;
 
 const faqItems = Array.isArray(landingCopySource?.faq?.items) ? landingCopySource.faq.items : [];
 
@@ -135,15 +138,7 @@ if (articleSchemaRequested) {
     "alternateName": siteProfile.brand.name,
     "url": canonicalOrigin,
     "logo": new URL(siteProfile.brand.logo_url, canonicalOrigin).toString(),
-    "foundingDate": "2012-03-28",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Tầng 4, số 46b LK 19A-19B",
-      "addressLocality": "Phường Dương Nội",
-      "addressRegion": "Hà Nội",
-      "addressCountry": "VN"
-    },
-    "sameAs": ["https://vn-j247.com"],
+    "sameAs": [plangoProduct.vendorUrl],
     ...(siteProfile.contact?.phone?.raw ? {
       "contactPoint": {
         "@type": "ContactPoint",
@@ -154,25 +149,27 @@ if (articleSchemaRequested) {
   };
 }
 
-// Product của trạm AiRobot dùng lại đúng cổng hasAuthoritativeOffer: khi cổng
-// chưa mở (chưa có giá/sku authoritative) thì phát Product không kèm offers.
-const airobotProductSchema = isLandingSurface && !hasAuthoritativeOffer
+// SoftwareApplication PlanGo — cùng dữ kiện với các khối hiển thị trên trang.
+const plangoProductSchema = isLandingSurface && !hasAuthoritativeOffer
   ? {
     "@context": "https://schema.org",
-    "@type": "Product",
+    "@type": "SoftwareApplication",
     "@id": productId,
-    "name": airobotProduct.name,
-    "category": "Robot hàn công nghiệp",
+    "name": plangoProduct.name,
+    "applicationCategory": "BusinessApplication",
+    "applicationSubCategory": plangoProduct.category,
+    "operatingSystem": plangoProduct.operatingSystem,
     "url": finalCanonical,
-    "description": `${airobotProduct.description} ${airobotProduct.referenceNote}`,
-    // VN-J công bố AiRobot trên trang của chính họ, nên chỉ khai `manufacturer`.
-    // `brand` trước đây trỏ cùng một Organization — khai hai lần là thừa.
-    "manufacturer": organizationRef,
-    "additionalProperty": airobotProperties.map((property) => ({
-      "@type": "PropertyValue",
-      "name": property.label,
-      "value": property.value
-    })),
+    "description": description,
+    "featureList": plangoProduct.claims.map((claim) => claim.text),
+    "publisher": organizationRef,
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "VND",
+      "lowPrice": String(lowPrice),
+      "highPrice": String(highPrice),
+      "offerCount": String(pricedPlans.length)
+    },
     ...(finalImage ? { image: finalImage } : {})
   }
   : undefined;
@@ -208,7 +205,7 @@ const webPageSchema = isLandingSurface ? {
   "publisher": { "@id": organizationId },
 } : undefined;
 
-const schemaNodes = [schemaData, airobotProductSchema, faqSchema, webPageSchema].filter(
+const schemaNodes = [schemaData, plangoProductSchema, faqSchema, webPageSchema].filter(
   (node): node is Record<string, unknown> => node !== undefined
 );
 ---
@@ -230,7 +227,7 @@ const schemaNodes = [schemaData, airobotProductSchema, faqSchema, webPageSchema]
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
   {finalImage && <meta property="og:image" content={finalImage} />}
-  {finalImage && isLandingSurface && <meta property="og:image:alt" content="Hình minh họa trạm robot hàn tự động AiRobot trên ray của VN-J" />}
+  {finalImage && isLandingSurface && <meta property="og:image:alt" content="PlanGo — bảng Gantt tiến độ từng chuyền may, dữ liệu minh họa" />}
   {siteProfile.i18n.default_lang === 'vi' && <meta property="og:locale" content="vi_VN" />}
 
   <meta property="twitter:card" content={finalImage ? 'summary_large_image' : 'summary'} />
@@ -238,7 +235,7 @@ const schemaNodes = [schemaData, airobotProductSchema, faqSchema, webPageSchema]
   <meta property="twitter:title" content={title} />
   <meta property="twitter:description" content={description} />
   {finalImage && <meta property="twitter:image" content={finalImage} />}
-  {finalImage && isLandingSurface && <meta name="twitter:image:alt" content="Hình minh họa trạm robot hàn tự động AiRobot trên ray của VN-J" />}
+  {finalImage && isLandingSurface && <meta name="twitter:image:alt" content="PlanGo — bảng Gantt tiến độ từng chuyền may, dữ liệu minh họa" />}
 </>}
 
 {schemaNodes.map((node) => (

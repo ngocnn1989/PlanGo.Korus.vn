@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><link rel="stylesheet" href="shared.css"><script src="shared.js"></script>
+<style>
+  .col { position: absolute; top: 40px; bottom: 40px; width: 540px; padding: 18px 16px; }
+  .l { left: 40px; } .r { right: 40px; }
+  .ttl { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 800; margin-bottom: 12px; }
+  .l .gantt .bar { filter: saturate(.25); }
+  .notes { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+</style></head>
+<body><div class="canvas bg-soft">
+  <div class="card col l"><div class="ttl"><span class="chip gray">Cách cũ</span>Xếp tay trên nhiều file</div><div id="a" class="gantt"></div>
+    <div class="notes"><span class="chip red">Chuyền chờ việc</span><span class="chip red">Chuyền quá tải</span><span class="chip red">Trễ hạn giao</span></div></div>
+  <div class="card col r"><div class="ttl"><span class="chip">PlanGo</span>Hệ thống xếp theo công suất</div><div id="b" class="gantt"></div>
+    <div class="notes"><span class="chip green">Lấp khoảng trống</span><span class="chip green">Cân bằng tải</span><span class="chip green">Kịp hạn giao</span></div></div>
+  <div class="demo-tag">Dữ liệu minh họa</div>
+</div>
+<script>
+const lines = ['M1K1','M1K2','M1K3','M1K4','M2K1','M2K2'];
+renderGantt(document.getElementById('a'), { lines, days: 30, dayW: 15.2, rowH: 88, labelW: 58, showDays: false,
+  gaps: [['M1K2',9,9],['M1K4',14,16],['M2K2',6,10]],
+  bars: [['M1K1',1,22,'--c1'],['M1K1',19,12,'--c3','','warn'],['M1K2',1,8,'--c2'],['M1K2',18,10,'--c5'],['M1K3',1,30,'--c4','','warn'],['M1K4',1,13,'--c3'],['M2K1',1,18,'--c5'],['M2K1',19,12,'--c2'],['M2K2',1,5,'--c1'],['M2K2',16,12,'--c4']] });
+renderGantt(document.getElementById('b'), { lines, days: 30, dayW: 15.2, rowH: 88, labelW: 58, showDays: false,
+  bars: [['M1K1',1,22,'--c1'],['M1K1',23,8,'--c2'],['M1K2',1,8,'--c2'],['M1K2',9,13,'--c3'],['M1K2',22,9,'--c5'],['M1K3',1,17,'--c4'],['M1K3',18,13,'--c5'],['M1K4',1,13,'--c3'],['M1K4',14,17,'--c4'],['M2K1',1,18,'--c5'],['M2K1',19,12,'--c2'],['M2K2',1,5,'--c1'],['M2K2',6,14,'--c3'],['M2K2',20,11,'--c4']] });
+</script></body></html>

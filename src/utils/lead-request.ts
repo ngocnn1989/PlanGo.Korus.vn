@@ -35,14 +35,14 @@ const FIELD_LENGTHS = new Map<string, number>([
   ['message', MAX_MESSAGE_LENGTH],
 ]);
 
-// Nhóm ứng dụng khớp đúng applicationOptions trong src/content/landing-copy.ts.
+// Gói quan tâm (trường `application`) khớp đúng applicationOptions trong src/content/landing-contact.ts.
 // Giá trị ngoài danh sách bị bỏ đi (coi như chưa chọn) chứ không từ chối lead:
 // một lead thật quan trọng hơn một trường phân loại.
 const LEAD_APPLICATIONS = [
-  'shipbuilding',
-  'structural-steel',
-  'precision-fabrication',
-  'other',
+  'co-ban',
+  'tieu-chuan',
+  'nang-cao',
+  'doanh-nghiep',
   'undecided',
 ] as const;
 

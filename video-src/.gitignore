@@ -1,0 +1,14 @@
+# Bản render và file trung gian nặng — chỉ giữ mã nguồn, storyboard, README.
+*.mp4
+*.mov
+*.webm
+*.wav
+*.mp3
+*.jpg
+*.png
+!**/assets/**/*.png
+frames/
+stills/
+qa/
+out/
+node_modules/

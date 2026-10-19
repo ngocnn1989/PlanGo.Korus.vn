@@ -257,15 +257,15 @@ await check('company + application hợp lệ đi hết đường tới payload 
     {
       name: 'Nguyễn A',
       phone: '+84900000000',
-      company: '  Công ty Đóng tàu VN-J  ',
-      application: 'shipbuilding',
+      company: '  Công ty May Mẫu  ',
+      application: 'tieu-chuan',
       message: 'cần hàn kết cấu lớn',
     },
     'idem-key-jjjjjjjjjjjj',
   );
 
-  assert.equal(params.get('company'), 'Công ty Đóng tàu VN-J', 'company phải có trên dây và đã cắt khoảng trắng');
-  assert.equal(params.get('application'), 'shipbuilding', 'application phải có trên dây');
+  assert.equal(params.get('company'), 'Công ty May Mẫu', 'company phải có trên dây và đã cắt khoảng trắng');
+  assert.equal(params.get('application'), 'tieu-chuan', 'application phải có trên dây');
 });
 
 await check('vắng company + application thì không có trường rỗng rác', async () => {
