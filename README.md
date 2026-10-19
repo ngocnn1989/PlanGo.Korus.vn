@@ -43,4 +43,4 @@ Xem `docs/RUNBOOK_DEPLOY_PLANGO.md` (Vercel, domain, go-live) và `docs/HUONG_DA
 
 ## Lead
 
-Form gửi `/api/leads` → Google Apps Script (`docs/apps-script/lead-webhook.gs`) → Google Sheet + email. Trường `application` = gói quan tâm (`co-ban | tieu-chuan | nang-cao | doanh-nghiep | undecided`). Biến môi trường trên Vercel: `LEAD_PROVIDER`, `GOOGLE_SHEET_WEBHOOK_URL`, `WEBHOOK_SECRET`, `LEAD_ALLOWED_ORIGINS`. Thiếu biến thì form không hiển thị (local mặc định).
+Form gửi `/api/leads` → Google Apps Script (`docs/apps-script/lead-webhook.gs`) → Google Sheet + email. Trường `application` = gói quan tâm (`co-ban | tieu-chuan | nang-cao | doanh-nghiep | undecided`). Biến môi trường trên Vercel: `LEAD_PROVIDER`, `GOOGLE_SHEET_WEBHOOK_URL`, `WEBHOOK_SECRET`, `LEAD_ALLOWED_ORIGINS`. Thiếu biến (vd. local) thì form và popup vẫn hiển thị; bấm gửi sẽ hiện hotline/Zalo, không gọi API.
