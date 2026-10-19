@@ -1,6 +1,6 @@
 # Hướng dẫn cấu hình kênh nhận lead PlanGo (Google Sheet + Apps Script)
 
-Cơ chế giống landing1: form → `/api/leads` (Vercel, kiểm tra origin + chống bot + idempotency) → Apps Script Web App → ghi vào **Google Sheet riêng của PlanGo** + gửi mail báo lead. Script: `docs/apps-script/lead-webhook.gs` (bản `plango-2026-10-19.3`).
+Cơ chế giống landing1: form → `/api/leads` (Vercel, kiểm tra origin + chống bot + idempotency) → Apps Script Web App → ghi vào **Google Sheet riêng của PlanGo** + gửi mail báo lead. Script: `docs/apps-script/lead-webhook.gs` (bản `plango-2026-10-19.4`).
 
 > Không dùng chung Sheet/webhook với landing1 (weldbot) — lead PlanGo sẽ lẫn vào lead robot hàn.
 
@@ -29,9 +29,9 @@ Cơ chế giống landing1: form → `/api/leads` (Vercel, kiểm tra origin + c
 | `LEAD_SHEET_NAME` | (tuỳ chọn) chỉ khi tab không tên `plango.korus.vn`. |
 
 3. Chạy tay **`kiemTraMail`** một lần → bấm **Authorize** (cấp quyền gửi mail) → kiểm hộp thư (cả Spam).
-4. Chạy tay **`kiemTraNhanh`** → log phải có `{"result":"success","row":N}`, Sheet có dòng "KIỂM TRA", hộp thư có mail `[PlanGo - Tự động] Lead mới: …`. Xoá dòng kiểm tra.
+4. Chạy tay **`kiemTraNhanh`** → log phải có `{"result":"success","row":N}`, Sheet có dòng "KIỂM TRA", hộp thư có mail `[PlanGo - Tự động] Lead mới: …`. Mail có dòng "Tỉnh/Thành: TP. Hồ Chí Minh". Xoá dòng kiểm tra.
 5. **Deploy → New deployment → Web app**: Execute as **Me**, Who has access **Anyone** → Deploy → chép **Web app URL** dạng `https://script.google.com/macros/s/<ID>/exec`.
-6. Mở URL đó bằng trình duyệt: phải thấy `"version":"plango-2026-10-19.3"`, `"sheetFound":true`, `"secretConfigured":true`, `"notifyConfigured":true`.
+6. Mở URL đó bằng trình duyệt: phải thấy `"version":"plango-2026-10-19.4"`, `"sheetFound":true`, `"secretConfigured":true`, `"notifyConfigured":true`.
 7. Mỗi lần sửa script: **Deploy → Manage deployments → Edit → Version: New version** (chỉ Save là bản cũ vẫn chạy). URL giữ nguyên.
 
 ## 3. Cấu hình Vercel (project PlanGo)

@@ -22,6 +22,8 @@
  * Đừng bao giờ thêm trường debug/warning vào phản hồi thành công.
  *
 
+ * Bản plango-2026-10-19.4: mail báo lead từ form web luôn có dòng Tỉnh/Thành
+ *   (bỏ trống thì ghi "(khách không chọn)").
  * Bản plango-2026-10-19.3: thêm themCotThieu() — chạy tay để thêm cột thiếu
  *   (vd "Tỉnh/Thành") ngay, không chờ lead đầu tiên.
  *
@@ -124,7 +126,7 @@ var PROVINCE_LABELS = {
   'ca-mau':      'Cà Mau'
 };
 
-var SCRIPT_VERSION = 'plango-2026-10-19.3';
+var SCRIPT_VERSION = 'plango-2026-10-19.4';
 var SITE_NAME = 'PlanGo.korus.vn';
 /**
  * Tab nhận lead, chọn theo TÊN chứ không theo vị trí: Web App không có "sheet
@@ -304,7 +306,7 @@ function buildRow(header, data) {
  * nhưng quên Deploy → New version, nên bản đang phục vụ vẫn là bản cũ.
  *
  * Kỳ vọng khi mở URL:
- *   {"version":"plango-2026-10-19.3","sheetFound":true,"missingColumns":[],"notifyConfigured":true,...}
+ *   {"version":"plango-2026-10-19.4","sheetFound":true,"missingColumns":[],"notifyConfigured":true,...}
  *   Lỗi "Script function not found: doGet"        ← ĐANG CHẠY BẢN CŨ, phải deploy lại
  *
  * Không trả dữ liệu lead, địa chỉ mail hay secret, nên mở công khai vẫn an toàn.
@@ -390,7 +392,7 @@ function oneLine(value, max) {
  * Facebook (Tổng hợp) để hai loại mail luôn cùng một mẫu. Văn bản thuần, gửi
  * Giám đốc: tiêu đề có sẵn tên + số điện thoại để đọc ngay ở hộp thư đến.
  *
- * lead: { name, phone, province, email, company, application, message, time, sourceLabel }
+ * lead: { name, phone, province?, email, company, application, message, time, sourceLabel }
  * sheetError khác rỗng: lead CHƯA vào sheet, mail là bản ghi duy nhất.
  */
 function buildLeadMail(lead, sheetError) {
@@ -401,7 +403,9 @@ function buildLeadMail(lead, sheetError) {
   var details = [
     ['Họ tên',                lead.name],
     ['Điện thoại',            lead.phone],
-    ['Tỉnh/Thành',            lead.province || ''],
+    // Form web luôn có trường này: khách bỏ trống vẫn hiện dòng để người nhận biết là không chọn.
+    // Lead từ nguồn khác (quét "Tổng hợp") không truyền province nên không hiện dòng.
+    ['Tỉnh/Thành',            lead.province === undefined ? '' : (lead.province || '(khách không chọn)')],
     ['Email',                 lead.email],
     ['Nhà máy',               lead.company],
     ['Gói quan tâm',          lead.application],

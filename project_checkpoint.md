@@ -45,7 +45,7 @@ Critical path: owner duyệt bản dựng → B-01 hạ tầng → G6 lead test 
 | B-01 | Blocker (G6/G7) | Owner tạo Sheet PlanGo + deploy Apps Script + đặt biến Vercel theo `docs/HUONG_DAN_LEAD_SHEET.md`; DNS plango.korus.vn; GTM ID | Owner |
 | D-10 | Decision | Owner 19/10/2026 giao session landing dựng video V5 trong `video-src/` (bổ sung D-05; `../marketing-video/` vẫn chỉ đọc) | Owner chat 19/10/2026 |
 | O-02 | Resolved 19/10 | Đã đánh giá + áp dụng phần hợp lý (`docs/DANH-GIA-DE-XUAT-TRUYEN-THONG.md`); không áp dụng S04 5 nhịp và 2 trường form. Đề xuất gốc §4.15 (section mới S01c/S04c, S04 5 nhịp, câu "không cần ERP", câu tăng ca, 2 trường form) và đổi tên 3 video S09 theo bản v3.1 đã giao | Owner |
-| D-11 | Decision | Form thêm Tỉnh/Thành (34 đơn vị từ 01/07/2025, `src/content/vn-provinces.ts`, không bắt buộc, dưới Số điện thoại); Apps Script `plango-2026-10-19.3` thêm cột (themCotThieu chạy tay) | Owner 19/10/2026 |
+| D-11 | Decision | Form thêm Tỉnh/Thành (34 đơn vị từ 01/07/2025, `src/content/vn-provinces.ts`, không bắt buộc, dưới Số điện thoại); Apps Script `plango-2026-10-19.4` thêm cột (themCotThieu chạy tay) | Owner 19/10/2026 |
 | D-12 | Fix | Nút "Cài đặt cookie": khi chưa bật tracking mở hộp thông báo (`SiteFooter`); có tracking mở banner như cũ | 19/10/2026 |
 | O-01 | Open | §8.2–8.7: mua đứt, chi phí AI, dịch vụ demo, nhắc Hưng Nhân, khóa gói trong license | Owner |
 
