@@ -33,7 +33,7 @@ Critical path: owner duyệt bản dựng → B-01 hạ tầng → G6 lead test 
 | ID | Loại | Nội dung | Nguồn |
 |---|---|---|---|
 | D-01 | Decision | Khung giá 3 gói + Doanh nghiệp theo §5 kế hoạch | Owner 19/10/2026 |
-| D-02 | Default | Hiển thị "từ … triệu/năm"; không nêu tên Hưng Nhân; CTA "Đặt lịch demo"; không quảng cáo dùng thử | Kế hoạch §8 |
+| D-02 | Default | Hiển thị "từ … triệu/tháng" (theo D-07); không nêu tên Hưng Nhân; CTA "Đặt lịch demo"; không quảng cáo dùng thử | Kế hoạch §8 |
 | D-03 | Decision | 4 lợi ích định tính gắn cơ chế; số liệu chờ đo thí điểm G9 | Owner 19/10/2026 |
 | D-04 | Decision | Repo chỉ chứa landing | Owner 19/10/2026 |
 | D-05 | Decision | Landing không sản xuất video; giữ `video-src/` làm dự phòng | Owner 19/10/2026 |
