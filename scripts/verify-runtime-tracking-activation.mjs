@@ -66,6 +66,8 @@ assert.match(astroConfig, /connect-src 'self' https:\/\/www\.googletagmanager\.c
 assert.match(astroConfig, /resources: \["'self'", 'https:\/\/www\.googletagmanager\.com', 'https:\/\/connect\.facebook\.net', 'https:\/\/capi-automation\.s3\.us-east-2\.amazonaws\.com'\]/);
 assert.doesNotMatch(astroConfig, /\*|'unsafe-eval'/);
 // Repo phẳng: không còn tiền tố web/ của monorepo gốc.
-assert.match(gitignore, /^\.env\*$/m);
+assert.match(gitignore, /^\.env$/m);
+assert.match(gitignore, /^\.env\.\*$/m);
+assert.match(gitignore, /^!\.env\.example$/m);
 assert.doesNotMatch(gitignore, /^!web\/\.env\.example$/m);
 console.log('runtime-tracking-activation: PASS (disabled, enablement, fallback, override, delay, denial, consent gate)');
