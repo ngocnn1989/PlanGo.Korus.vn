@@ -8,10 +8,11 @@ Video do session **Dự án hungnhan-garment** sản xuất (`HUNG-NHAN/marketin
 |---|---|---|---|
 | Hero (S01), nền tự chạy, tắt tiếng | `plango-hero-16x9.mp4` | `plango-hero-16x9.jpg` | H.264 yuv420p, `-movflags +faststart`, không cần âm thanh, lặp mượt, ≤ 4 MB |
 | Cách hoạt động (S04) | `plango-demo-16x9.mp4` | `plango-demo-16x9.jpg` | H.264 + AAC, faststart, ≤ 6 MB |
-| Video ngắn (S09) — V1 "Rải rác nhiều file" | `plango-v1-9x16.mp4` | `plango-v1-9x16.jpg` | H.264 + AAC, 9:16, ≤ 4 MB |
-| Video ngắn (S09) — V2 "Lập kế hoạch bằng chat" | `plango-v2-9x16.mp4` | `plango-v2-9x16.jpg` | như trên |
-| Video ngắn (S09) — V3 "Cách cũ · Cách mới" | `plango-v3-9x16.mp4` | `plango-v3-9x16.jpg` | như trên |
+| Video ngắn (S09) — V1 "23:55 — Khách hỏi ngày giao" | `plango-v1-9x16.mp4` | `plango-v1-9x16.jpg` | H.264 + AAC, 9:16, ≤ 4 MB |
+| Video ngắn (S09) — V2 "Một đơn gấp" | `plango-v2-9x16.mp4` | `plango-v2-9x16.jpg` | như trên |
+| Video ngắn (S09) — V3 "Trợ lý AI của phòng kế hoạch" | `plango-v3-9x16.mp4` | `plango-v3-9x16.jpg` | như trên |
 
+- 19/10/2026: V1–V3 (bản v3.1: 23:55 · Một đơn gấp · Trợ lý AI) đã đưa vào `public/media/` — encode web từ `_social.mp4`: `-vf scale=720:-2 -c:v libx264 -preset slow -crf 27 -pix_fmt yuv420p -c:a aac -b:a 96k -movflags +faststart` (1,0–1,5 MB/video); poster lấy `*_cover.jpg` hoặc khung 1,5 s.
 - Dùng bản `_social.mp4` (H.264) của kr-motion-video; bản `_small.mp4` là HEVC, một số trình duyệt không phát được.
 - Poster: JPEG ≤ 150 KB.
 - Section S09 chỉ hiện khi có ít nhất một video V1–V3.

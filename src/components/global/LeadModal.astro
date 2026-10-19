@@ -17,6 +17,7 @@
 import siteProfile from '../../config/site-profile.mjs';
 import { resolveRuntimeLeadActivation } from '../../config/runtime-lead-activation.mjs';
 import { landingCopy } from '../../content/landing-copy';
+import { provinceGroups } from '../../content/vn-provinces';
 
 const leadResolution = resolveRuntimeLeadActivation({ profile: siteProfile, env: {
   LEAD_PROVIDER: import.meta.env.LEAD_PROVIDER,
@@ -96,6 +97,20 @@ const consentAfter = consentParts.slice(1).join(lienHe.consentLink.label);
             <span class="lead-error-text"></span>
           </p>
         </div>
+
+      {/* Tỉnh/Thành: 34 đơn vị từ 01/07/2025, nhóm theo miền, nhãn kèm tỉnh cũ; không bắt buộc. */}
+      <div class="lead-field" data-field="province">
+        <label for="modal-lead-province" class="block text-sm font-medium text-gray-800 mb-1">{field('province').label}</label>
+        <select id="modal-lead-province" class="lead-input" name="province" autocomplete="address-level1" aria-describedby="modal-lead-province-hint">
+          <option value="">{field('province').placeholder}</option>
+          {provinceGroups().map((group) => (
+            <optgroup label={group.label}>
+              {group.options.map((option) => <option value={option.value}>{option.label}</option>)}
+            </optgroup>
+          ))}
+        </select>
+        <p id="modal-lead-province-hint" class="mt-1 text-xs text-gray-500">{lienHe.provinceHint}</p>
+      </div>
 
         <details class="lead-extra rounded-lg border border-gray-200 bg-gray-50/60">
           <summary class="lead-extra-summary cursor-pointer select-none px-3 py-2.5 text-sm font-medium text-gray-800">

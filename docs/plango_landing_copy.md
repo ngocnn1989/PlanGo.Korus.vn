@@ -152,3 +152,23 @@ PlanGo là phần mềm do Công ty Cổ phần Công nghệ KORUS phát triển
 3. FAQ 8 và nút "Xem demo trên dữ liệu mẫu": KORUS có sẵn bộ dữ liệu mẫu để demo (kế hoạch §8.4)?
 4. Dòng "mua bản quyền một lần" có hiển thị công khai không (§8.2)?
 5. Ma trận chức năng theo gói hiện **chưa được khóa kỹ thuật** trong license sản phẩm (§8.7) — chấp nhận ghi trên trang như điều khoản dịch vụ hay ẩn ma trận cho tới khi có khóa?
+
+---
+
+## r5 — Thay đổi 19/10/2026 (đánh giá đề xuất truyền thông)
+
+Chi tiết quyết định từng mục: `docs/DANH-GIA-DE-XUAT-TRUYEN-THONG.md`. Nguồn chữ chính thức vẫn là `src/content/plango-copy.ts`.
+
+- **Hero:** "Đơn gấp chen ngang, chuyền thiếu người, khách hỏi ngày giao? PlanGo nhận đơn hàng từ Excel, tính 2–3 phương án kế hoạch cho cả nhà máy và cho bạn thấy tải từng chuyền trên một bảng Gantt — rút ngắn thời gian lập kế hoạch, tận dụng công suất các chuyền may." · Dòng phụ: Giữ Excel quen thuộc · Số liệu do hệ thống tính · Dữ liệu lưu tại máy của nhà máy.
+- **S01c (mới) — Mỗi người trong nhà máy dùng PlanGo một cách:** GĐSX/phòng kế hoạch · Chủ doanh nghiệp · Quản đốc, chuyền trưởng · Tổng công ty nhiều nhà máy.
+- **S02:** "Mỗi lần đơn đổi là một lần xếp lại từ đầu?" — Đơn gấp chen ngang · Lao động đổi theo ngày · Khách hỏi ngày giao · Cuối tháng gom báo cáo.
+- **S03:** thêm "Xếp chuyền rồi mới biết vải chưa về → Đơn chỉ được xếp từ ngày vải, phụ liệu, tài liệu mẫu sẵn sàng" và "Gọi xưởng hỏi chuyền nào sắp trống → Ngày nhả chuyền do hệ thống tính từ phần việc còn lại và năng suất".
+- **S04b:** thêm "Hướng A ưu tiên giữ một đơn trên một chuyền. Hướng C có thể đề xuất tăng ca ngắn ở phần cuối đơn, trong giới hạn giờ bạn đặt trước."
+- **S04c (mới) — Khi xưởng có biến động:** Đơn gấp chen ngang · Thiếu người một chuyền · Vải, phụ liệu về trễ · Khách hỏi ngày giao.
+- **S05:** 3 nhóm Lập kế hoạch / Theo dõi / Báo cáo (thêm lịch làm việc, chờ NPL sẵn sàng, ngày nhả chuyền, lao động theo ngày, bổ sung đơn/chuyển lô).
+- **S06:** thêm "Nâng cấp không mất dữ liệu".
+- **S09:** video "23:55 — Khách hỏi ngày giao", "Một đơn gấp", "Trợ lý AI của phòng kế hoạch".
+- **FAQ:** thêm "Đơn gấp chen ngang thì làm thế nào?", "Chuyền thiếu người đột xuất…", "Nhà máy chưa có ERP…", "Có báo cáo để trình lãnh đạo không?".
+- **Form:** thêm "Tỉnh/Thành" dưới Số điện thoại (34 đơn vị từ 01/07/2025, nhóm theo miền, nhãn kèm tên tỉnh cũ, không bắt buộc).
+- **SEO description:** "PlanGo giúp nhà máy may lập kế hoạch chuyền bằng chat: nhập đơn từ Excel, chọn 2–3 phương án, theo dõi tải từng chuyền, xuất KHSX và BCTĐ."
+- **Không áp dụng:** S04 5 nhịp; 2 trường form "đang lập kế hoạch bằng" / "vai trò" (lý do trong file đánh giá).

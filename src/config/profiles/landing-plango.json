@@ -140,7 +140,7 @@
     },
     "home": {
       "title": "PlanGo — Phần mềm lập kế hoạch sản xuất may bằng chat | KORUS",
-      "description": "PlanGo giúp nhà máy may nhập đơn hàng từ Excel có kiểm duyệt, chọn phương án kế hoạch và theo dõi Gantt từng chuyền. Dữ liệu lưu tại máy của nhà máy.",
+      "description": "PlanGo giúp nhà máy may lập kế hoạch chuyền bằng chat: nhập đơn từ Excel, chọn 2–3 phương án, theo dõi tải từng chuyền, xuất KHSX và BCTĐ.",
       "hero_headline": "Lập kế hoạch chuyền may bằng chat",
       "hero_body": "Nhập đơn từ Excel, chọn phương án, theo dõi Gantt từng chuyền.",
       "hero_cta": "Đặt lịch demo",

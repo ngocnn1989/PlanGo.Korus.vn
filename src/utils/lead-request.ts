@@ -1,10 +1,11 @@
 import siteProfile from '../config/site-profile.mjs';
+import { PROVINCE_CODES } from '../content/vn-provinces';
 import { resolveRuntimeLeadActivation } from '../config/runtime-lead-activation.mjs';
 
 const MAX_CONTENT_LENGTH_BYTES = 16 * 1024;
-// Form thật gửi 7 trường: name, phone, company, application, message, email,
-// bot_trap. Ô tick `data_consent` đã bị gỡ khỏi giao diện, nhưng một client
-// cũ vẫn có thể gửi kèm nên phải tính là trường thứ 8. Ngưỡng 12 còn dư 4
+// Form thật gửi 8 trường: name, phone, province, company, application, message,
+// email, bot_trap. Ô tick `data_consent` đã bị gỡ khỏi giao diện, nhưng một client
+// cũ vẫn có thể gửi kèm nên phải tính là trường thứ 9. Ngưỡng 12 còn dư 3
 // chỗ. Nếu form về sau thêm trường, đếm lại ở đây trước khi sửa, vì vượt
 // ngưỡng là từ chối cả lead.
 const MAX_FIELDS = 12;
@@ -74,6 +75,8 @@ export type NormalizedLeadPayload = {
   // bị bỏ hẳn khỏi payload để không tạo cột rỗng ở nơi tiếp nhận.
   company?: string;
   application?: LeadApplication;
+  /** Mã tỉnh/thành (vn-provinces.ts). Tuỳ chọn; mã lạ bị bỏ, lead vẫn nhận. */
+  province?: string;
 };
 
 export type LeadRequestRejected = {
@@ -226,6 +229,13 @@ function normalizeCompany(value: FormDataEntryValue | null): string {
   return value.trim().slice(0, MAX_COMPANY_LENGTH).trim();
 }
 
+// Tỉnh/thành: chỉ nhận đúng 34 mã của vn-provinces.ts; khác thì bỏ khoá.
+function normalizeProvince(value: FormDataEntryValue | null): string {
+  if (typeof value !== 'string') return '';
+  const candidate = value.trim();
+  return PROVINCE_CODES.has(candidate) ? candidate : '';
+}
+
 // Chỉ chấp nhận đúng danh sách đóng. Mọi giá trị khác trả về chuỗi rỗng, và
 // bước dựng payload sẽ bỏ hẳn khoá đó.
 function normalizeApplication(value: FormDataEntryValue | null): LeadApplication | '' {
@@ -334,6 +344,7 @@ export function createLeadRequestGuard(dependencies: LeadRequestGuardDependencie
   const normalizedMessage = typeof message === 'string' ? message.trim() : '';
   const normalizedCompany = normalizeCompany(formData.get('company'));
   const normalizedApplication = normalizeApplication(formData.get('application'));
+  const normalizedProvince = normalizeProvince(formData.get('province'));
 
   if (!normalizedName || !hasValidContact(normalizedPhone, normalizedEmail)) {
     return result(400, 'invalid_request');
@@ -405,6 +416,7 @@ export function createLeadRequestGuard(dependencies: LeadRequestGuardDependencie
       consent_at: new Date().toISOString(),
       ...(normalizedCompany ? { company: normalizedCompany } : {}),
       ...(normalizedApplication ? { application: normalizedApplication } : {}),
+      ...(normalizedProvince ? { province: normalizedProvince } : {}),
     },
     reservation,
   };

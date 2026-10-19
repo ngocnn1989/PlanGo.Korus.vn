@@ -52,9 +52,32 @@ const { page_copy: pageCopy, contact, chat_widgets: chat } = siteProfile;
               ? <span aria-current="page" class="inline-flex min-h-[44px] items-center text-sm text-white">{link.label}</span>
               : <a href={link.href} class="inline-flex min-h-[44px] items-center text-sm text-brand-6 underline-offset-4 hover:text-white hover:underline">{link.label}</a>}</li>
           ))}
-          <li><button type="button" id={cookieButtonId} class="inline-flex min-h-[44px] cursor-pointer items-center text-left text-sm text-brand-6 underline-offset-4 hover:text-white hover:underline">{cookieLabel}</button></li>
+          <li><button type="button" id={cookieButtonId} data-cookie-settings aria-controls="cookie-info" aria-expanded="false" class="inline-flex min-h-[44px] cursor-pointer items-center text-left text-sm text-brand-6 underline-offset-4 hover:text-white hover:underline">{cookieLabel}</button></li>
         </ul>
       </nav>
     </div>
+    {/* Dự phòng khi CHƯA bật tracking (không có banner #tracking-consent): nút "Cài đặt cookie"
+        mở hộp thông báo này thay vì không phản hồi. Có tracking thì layout mở banner như cũ. */}
+    <div id="cookie-info" role="region" aria-label={cookieLabel} hidden data-cookie-info
+      class="mt-5 rounded-xl border border-white/15 bg-white/5 p-4 text-sm leading-relaxed text-brand-6">
+      <p>{footer.cookieInfo}</p>
+      {!isCurrentPage("/privacy") && <p class="mt-2"><a href="/privacy" class="font-semibold text-white underline-offset-4 hover:underline">{footer.cookieInfoLink}</a></p>}
+    </div>
   </div>
 </footer>
+
+<script>
+  // Chỉ chạy khi trang KHÔNG có banner đồng ý (tracking chưa bật).
+  if (!document.getElementById("tracking-consent")) {
+    const info = document.querySelector<HTMLElement>("[data-cookie-info]");
+    for (const button of document.querySelectorAll<HTMLButtonElement>("[data-cookie-settings]")) {
+      button.addEventListener("click", () => {
+        if (!info) return;
+        const open = info.hidden;
+        info.hidden = !open;
+        button.setAttribute("aria-expanded", String(open));
+        if (open) info.scrollIntoView({ block: "nearest" });
+      });
+    }
+  }
+</script>

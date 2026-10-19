@@ -1,7 +1,7 @@
 # Project Checkpoint — PlanGo Landing
 
 - Project/root: `HUNG-NHAN/PlanGo`
-- Updated at/owner/trigger: `2026-10-19` / Claude (Direct mode) / G6 phần không cần Sheet đã xong; favicon KORUS; chờ owner tạo Sheet PlanGo
+- Updated at/owner/trigger: `2026-10-19` / Claude (Direct mode) / G4b: nghiên cứu khách hàng, đề xuất chỉnh lý landing, video V5
 - Freshness: `current`
 - Overall state: `on_track`
 
@@ -22,6 +22,7 @@
 | G2 | Copy, facts (b1–b4, s1–s7, f1–f8), pricing | DONE | Owner duyệt 19/10 (Hero A, mặc định §3) | — |
 | G3 | Ảnh code-native D1–D9 (`design-src/` → `src/assets/plango/`) | DONE | contact sheet soát 19/10; icon SVG `components/plango/Icon.astro` | Owner duyệt hình trên bản dựng |
 | G4 | Video | ĐỔI CHỦ | Owner 19/10: session hungnhan-garment sản xuất; landing có khe nhúng (`docs/VIDEO_HANDOFF.md`); khung dự phòng `video-src/` | Nhận file vào `public/media/` |
+| G4b | Nghiên cứu khách hàng + đề xuất chỉnh lý landing + video V5 "Một vòng kế hoạch – tiến độ" (16:9 + 9:16, 30 s) | REVIEW | `docs/DE-XUAT-TRUYEN-THONG-PLANGO.md` (legal 0 lỗi); `video-src/v5-chat-demo/` (KICH-BAN.md, storyboard, legal final 55/55) | Owner duyệt đề xuất §4.15 + video; nếu đạt: chép `_social.mp4` 16:9 vào `public/media/plango-demo-16x9.mp4` |
 | G5 | Dựng trang S01–S11 + Pricing/Estimator/VideoSlot, SEO, llms, form gói | REVIEW | build OK; `npm run verify` exit 0; `verify:landing` PASS; check 0 lỗi; soát 1440/768/375 px | Owner duyệt bản dựng |
 | G6 | QA / SEO / lead test thật | PARTIAL | verify, verify:landing, verify:links (0 gãy), check 0 lỗi; mobile 375 không tràn; tải lần đầu mobile ~50 KB gzip; privacy/terms cập nhật KORUS 19/10 | Test lead thật sau khi có Sheet (B-01) |
 | G7 | Deploy Vercel + DNS, bật `indexable` | READY-TO-RUN | `docs/RUNBOOK_DEPLOY_PLANGO.md` (A preview có thể làm ngay, không cần Sheet) | Owner tạo project Vercel |
@@ -42,6 +43,10 @@ Critical path: owner duyệt bản dựng → B-01 hạ tầng → G6 lead test 
 | D-09 | Tech | Form + popup luôn hiển thị; thiếu cấu hình lead thì bấm gửi hiện hotline/Zalo (cờ `data-lead-enabled`) | 19/10/2026 |
 | D-06 | Tech | Trường lead `application` = gói quan tâm; quy mô ghi trong `message` (không đổi schema Sheet) | 19/10/2026 |
 | B-01 | Blocker (G6/G7) | Owner tạo Sheet PlanGo + deploy Apps Script + đặt biến Vercel theo `docs/HUONG_DAN_LEAD_SHEET.md`; DNS plango.korus.vn; GTM ID | Owner |
+| D-10 | Decision | Owner 19/10/2026 giao session landing dựng video V5 trong `video-src/` (bổ sung D-05; `../marketing-video/` vẫn chỉ đọc) | Owner chat 19/10/2026 |
+| O-02 | Resolved 19/10 | Đã đánh giá + áp dụng phần hợp lý (`docs/DANH-GIA-DE-XUAT-TRUYEN-THONG.md`); không áp dụng S04 5 nhịp và 2 trường form. Đề xuất gốc §4.15 (section mới S01c/S04c, S04 5 nhịp, câu "không cần ERP", câu tăng ca, 2 trường form) và đổi tên 3 video S09 theo bản v3.1 đã giao | Owner |
+| D-11 | Decision | Form thêm Tỉnh/Thành (34 đơn vị từ 01/07/2025, `src/content/vn-provinces.ts`, không bắt buộc, dưới Số điện thoại); Apps Script `plango-2026-10-19.2` thêm cột | Owner 19/10/2026 |
+| D-12 | Fix | Nút "Cài đặt cookie": khi chưa bật tracking mở hộp thông báo (`SiteFooter`); có tracking mở banner như cũ | 19/10/2026 |
 | O-01 | Open | §8.2–8.7: mua đứt, chi phí AI, dịch vụ demo, nhắc Hưng Nhân, khóa gói trong license | Owner |
 
 ## Next actions

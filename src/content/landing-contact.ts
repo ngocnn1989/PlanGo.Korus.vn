@@ -30,6 +30,12 @@ export const landingContact = {
         placeholder: 'Số điện thoại liên hệ',
       },
       {
+        name: 'province',
+        label: 'Tỉnh/Thành',
+        required: false,
+        placeholder: '— Không chọn —',
+      },
+      {
         name: 'company',
         label: 'Nhà máy / doanh nghiệp',
         required: false,
@@ -63,6 +69,7 @@ export const landingContact = {
       { value: 'undecided', label: 'Chưa xác định' },
     ],
     messageHint: 'Số chuyền và số phân xưởng giúp KORUS báo giá sát hơn.',
+    provinceHint: 'Không bắt buộc. Theo địa giới mới từ 01/07/2025 — tên tỉnh cũ ghi trong ngoặc.',
     phoneHint: 'Ví dụ: 0912 345 678 · 0912.345.678 · +84 912 345 678',
     mobileGroupLabel: 'Bổ sung quy mô nhà máy',
     // Dòng thông báo tĩnh đặt ngay dưới nút gửi (không có ô tick).

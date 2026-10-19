@@ -84,6 +84,13 @@ export const plangoProduct = {
     { id: 'f6', text: 'Bổ sung đơn hàng, chuyển/tách lô có xem trước và xác nhận', source: 'README.md (order supplement, bctd-lot-transition)' },
     { id: 'f7', text: 'Bản quyền theo máy, kiểm tra toàn vẹn khi chạy', source: 'docs/mcp-runtime-architecture.md (license, runtime integrity)' },
     { id: 'f8', text: 'Giữ Excel làm đầu vào, đầu ra quen thuộc', source: 'docs/project-overview-pdr.md — Mục tiêu sản phẩm' },
+    // Bổ sung 19/10/2026 theo docs/DE-XUAT-TRUYEN-THONG-PLANGO.md — đã đối chiếu mã nguồn.
+    { id: 'f9', text: 'Lịch làm việc, ngày nghỉ theo phân xưởng và chuyền', source: 'planner-core/src/planner_core/calendar/working_calendar.py' },
+    { id: 'f10', text: 'Không xếp đơn bắt đầu trước ngày vải, phụ liệu, tài liệu mẫu sẵn sàng', source: 'planning/workshop_optimizer.py (_candidate_start: max(ngày chuyền trống, ngày NPL về)); draft_candidate_audit.py (start_before_material_ready)' },
+    { id: 'f11', text: 'Ngày nhả chuyền do hệ thống tính từ phần việc còn lại và năng suất; chuyền thiếu dữ liệu không nhận đơn mới', source: 'docs/system-architecture.md (line_running_load, blocked_lines)' },
+    { id: 'f12', text: 'Bản cập nhật tự sao lưu dữ liệu trước khi cài', source: 'docs/end-user-guide-garment-planner-v3.md (Khi được cấp bản mới)' },
+    { id: 'f13', text: 'Lao động thực tế nhập theo chuyền, theo ngày; công suất tính lại theo số người có mặt', source: 'README.md (Operational cycle — shared line/day labor); docs/operator-guide.md' },
+    { id: 'f14', text: 'Hướng A ưu tiên giữ một đơn trên một chuyền; hướng C có thể đề xuất tăng ca ngắn ở phần cuối đơn, trong giới hạn giờ đặt trước', source: 'planning/workshop_optimizer.py (_first_single_line ở minimal_disruption; _tail_overtime ở deadline_recovery, max_overtime_hours mặc định 4)' },
   ] satisfies readonly PlanGoClaim[],
 
   /** Quy trình vận hành hằng ngày (hướng dẫn GĐSX). */

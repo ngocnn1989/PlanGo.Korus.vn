@@ -47,6 +47,9 @@ const landingCopySource = {
       call: { label: 'Gọi KORUS', href: `tel:${phoneRaw}` },
       contact: { label: 'Đặt lịch demo', href: '#tu-van' },
     },
+    cookieInfo:
+      'Trang hiện chưa bật công cụ đo lường (Google, Meta), nên không đặt cookie đo lường nào trên máy bạn. Khi bật, mục này sẽ cho bạn đồng ý hoặc từ chối.',
+    cookieInfoLink: 'Xem Chính sách bảo mật',
     iconLabels: {
       call: 'Gọi hotline PlanGo',
       zalo: 'Nhắn Zalo cho KORUS',

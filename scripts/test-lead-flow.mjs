@@ -39,7 +39,14 @@ const requestSource = await readFile(
   fileURLToPath(new URL('../src/utils/lead-request.ts', import.meta.url)),
   'utf8',
 );
+// vn-provinces.ts không có import nào: nạp kèm vào cùng module để PROVINCE_CODES
+// (danh sách đóng 34 tỉnh/thành) có mặt sau khi các dòng import bị bỏ.
+const provincesSource = await readFile(
+  fileURLToPath(new URL('../src/content/vn-provinces.ts', import.meta.url)),
+  'utf8',
+);
 const isolatedRequest = stripTypeScriptTypes(
+  provincesSource.replace(/^export /gm, '') + '\n' +
   requestSource
     .replace(/^import[^;]+;\r?\n/gm, '')
     .replace(/\nexport const guardLeadRequest[\s\S]*$/, '\n'),
@@ -294,6 +301,32 @@ await check('application giá trị lạ bị bỏ, lead vẫn thành công', as
   assert.equal(params.get('company'), 'Xưởng C', 'trường còn lại không được ảnh hưởng');
 });
 
+// --- province (Tỉnh/Thành, PlanGo 19/10/2026) ---------------------------------
+await check('province hợp lệ (1 trong 34 mã) đi tới payload gửi đi', async () => {
+  const { params } = await wireFor(
+    { name: 'Nguyễn P', phone: '+84900000010', province: 'ho-chi-minh' },
+    'idem-key-pppppppppppp',
+  );
+  assert.equal(params.get('province'), 'ho-chi-minh', 'province phải có trên dây');
+});
+
+await check('province mã lạ hoặc tên tỉnh cũ bị bỏ, lead vẫn thành công', async () => {
+  const { params } = await wireFor(
+    { name: 'Nguyễn Q', phone: '+84900000011', province: 'binh-duong' },
+    'idem-key-qqqqqqqqqqqq',
+  );
+  assert.equal(params.get('name'), 'Nguyễn Q', 'lead vẫn phải đi bình thường');
+  assert.equal(params.has('province'), false, 'mã ngoài 34 đơn vị phải bị bỏ');
+});
+
+await check('không chọn tỉnh thì không gửi khoá province rỗng', async () => {
+  const { params } = await wireFor(
+    { name: 'Nguyễn R', phone: '+84900000012', province: '' },
+    'idem-key-rrrrrrrrrrrr',
+  );
+  assert.equal(params.has('province'), false, 'không được gửi khoá province rỗng');
+});
+
 await check('company quá dài bị cắt đúng giới hạn, lead vẫn thành công', async () => {
   const { payload, params } = await wireFor(
     {
@@ -314,4 +347,4 @@ if (failures > 0) {
   console.error(`test-lead-flow: FAIL (${failures} test không đạt)`);
   process.exit(1);
 }
-console.log('test-lead-flow: PASS (12 test luồng lead)');
+console.log('test-lead-flow: PASS (15 test luồng lead, gồm 3 test Tỉnh/Thành)');

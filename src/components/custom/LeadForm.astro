@@ -10,6 +10,7 @@
  * chưa rõ kết quả do gián đoạn kết nối.
  */
 import { landingCopy } from '../../content/landing-copy';
+import { provinceGroups } from '../../content/vn-provinces';
 
 export interface Props {
   title?: string;
@@ -115,6 +116,20 @@ const id = (suffix: string) => `${formId}-${suffix}`;
           <svg class="lead-icon shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" /></svg>
           <span class="lead-error-text"></span>
         </p>
+      </div>
+
+      {/* Tỉnh/Thành: 34 đơn vị từ 01/07/2025, nhóm theo miền, nhãn kèm tỉnh cũ; không bắt buộc. */}
+      <div class="lead-field" data-field="province">
+        <label for={id('province')} class="block text-sm font-medium text-gray-800 mb-1">{field('province').label}</label>
+        <select id={id('province')} class="lead-input" name="province" autocomplete="address-level1" aria-describedby={id('province-hint')}>
+          <option value="">{field('province').placeholder}</option>
+          {provinceGroups().map((group) => (
+            <optgroup label={group.label}>
+              {group.options.map((option) => <option value={option.value}>{option.label}</option>)}
+            </optgroup>
+          ))}
+        </select>
+        <p id={id('province-hint')} class="mt-1 text-xs text-gray-500">{lienHe.provinceHint}</p>
       </div>
 
       {/* Bốn trường tùy chọn. Mở sẵn khi khách đến từ thẻ ứng dụng. */}

@@ -95,11 +95,12 @@ export function createGoogleSheetsLeadDispatchPort({ endpoint, secret = '', fetc
         // khi thực sự có giá trị: spread thẳng một khoá undefined vào
         // URLSearchParams sẽ tạo ra chuỗi "undefined" ở phía tiếp nhận. Các
         // trường cũ giữ nguyên hành vi luôn-gửi để không đổi hợp đồng cột.
-        const { company, application, ...core } = payload;
+        const { company, application, province, ...core } = payload;
         const wire: Record<string, string> = {
           ...core,
           ...(company ? { company } : {}),
           ...(application ? { application } : {}),
+          ...(province ? { province } : {}),
           idempotency_key: idempotencyKey,
           ...(secret ? { webhook_secret: secret } : {}),
         };

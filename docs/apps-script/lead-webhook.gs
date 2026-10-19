@@ -62,6 +62,7 @@ var COLUMNS = [
   { key: '_timestamp',      label: 'Thời gian' },
   { key: 'name',            label: 'Họ tên' },
   { key: 'phone',           label: 'Số điện thoại' },
+  { key: 'province',        label: 'Tỉnh/Thành' },
   { key: 'company',         label: 'Nhà máy' },
   { key: 'application',     label: 'Gói quan tâm' },
   { key: 'email',           label: 'Email' },
@@ -79,7 +80,48 @@ var APPLICATION_LABELS = {
   'undecided':    'Chưa xác định'
 };
 
-var SCRIPT_VERSION = 'plango-2026-10-19';
+/**
+ * Mã tỉnh/thành (trường province của form) → tên ghi vào sheet. 34 đơn vị từ
+ * 01/07/2025. SINH TỰ ĐỘNG từ src/content/vn-provinces.ts — sửa ở đó rồi sinh lại.
+ */
+var PROVINCE_LABELS = {
+  'ha-noi':      'Hà Nội',
+  'hai-phong':   'Hải Phòng',
+  'quang-ninh':  'Quảng Ninh',
+  'bac-ninh':    'Bắc Ninh',
+  'hung-yen':    'Hưng Yên',
+  'ninh-binh':   'Ninh Bình',
+  'phu-tho':     'Phú Thọ',
+  'thai-nguyen': 'Thái Nguyên',
+  'tuyen-quang': 'Tuyên Quang',
+  'lao-cai':     'Lào Cai',
+  'cao-bang':    'Cao Bằng',
+  'lang-son':    'Lạng Sơn',
+  'lai-chau':    'Lai Châu',
+  'dien-bien':   'Điện Biên',
+  'son-la':      'Sơn La',
+  'thanh-hoa':   'Thanh Hóa',
+  'nghe-an':     'Nghệ An',
+  'ha-tinh':     'Hà Tĩnh',
+  'quang-tri':   'Quảng Trị',
+  'hue':         'Huế',
+  'da-nang':     'Đà Nẵng',
+  'quang-ngai':  'Quảng Ngãi',
+  'gia-lai':     'Gia Lai',
+  'dak-lak':     'Đắk Lắk',
+  'khanh-hoa':   'Khánh Hòa',
+  'lam-dong':    'Lâm Đồng',
+  'ho-chi-minh': 'TP. Hồ Chí Minh',
+  'dong-nai':    'Đồng Nai',
+  'tay-ninh':    'Tây Ninh',
+  'can-tho':     'Cần Thơ',
+  'vinh-long':   'Vĩnh Long',
+  'dong-thap':   'Đồng Tháp',
+  'an-giang':    'An Giang',
+  'ca-mau':      'Cà Mau'
+};
+
+var SCRIPT_VERSION = 'plango-2026-10-19.2';
 var SITE_NAME = 'PlanGo.korus.vn';
 /**
  * Tab nhận lead, chọn theo TÊN chứ không theo vị trí: Web App không có "sheet
@@ -233,6 +275,7 @@ function buildRow(header, data) {
     _timestamp:      Utilities.formatDate(new Date(), 'Asia/Ho_Chi_Minh', 'dd/MM/yyyy HH:mm:ss'),
     name:            cell(data.name),
     phone:           cell(data.phone),
+    province:        PROVINCE_LABELS[cell(data.province)] || '',
     company:         cell(data.company),
     application:     APPLICATION_LABELS[application] || application,
     email:           cell(data.email),
@@ -258,7 +301,7 @@ function buildRow(header, data) {
  * nhưng quên Deploy → New version, nên bản đang phục vụ vẫn là bản cũ.
  *
  * Kỳ vọng khi mở URL:
- *   {"version":"plango-2026-10-19","sheetFound":true,"missingColumns":[],"notifyConfigured":true,...}
+ *   {"version":"plango-2026-10-19.2","sheetFound":true,"missingColumns":[],"notifyConfigured":true,...}
  *   Lỗi "Script function not found: doGet"        ← ĐANG CHẠY BẢN CŨ, phải deploy lại
  *
  * Không trả dữ liệu lead, địa chỉ mail hay secret, nên mở công khai vẫn an toàn.
@@ -344,7 +387,7 @@ function oneLine(value, max) {
  * Facebook (Tổng hợp) để hai loại mail luôn cùng một mẫu. Văn bản thuần, gửi
  * Giám đốc: tiêu đề có sẵn tên + số điện thoại để đọc ngay ở hộp thư đến.
  *
- * lead: { name, phone, email, company, application, message, time, sourceLabel }
+ * lead: { name, phone, province, email, company, application, message, time, sourceLabel }
  * sheetError khác rỗng: lead CHƯA vào sheet, mail là bản ghi duy nhất.
  */
 function buildLeadMail(lead, sheetError) {
@@ -355,6 +398,7 @@ function buildLeadMail(lead, sheetError) {
   var details = [
     ['Họ tên',                lead.name],
     ['Điện thoại',            lead.phone],
+    ['Tỉnh/Thành',            lead.province || ''],
     ['Email',                 lead.email],
     ['Nhà máy',               lead.company],
     ['Gói quan tâm',          lead.application],
@@ -409,6 +453,7 @@ function notifyNewLead(data, sheetError) {
     var mail = buildLeadMail({
       name:        cell(data.name),
       phone:       cell(data.phone),
+      province:    PROVINCE_LABELS[cell(data.province)] || '',
       email:       cell(data.email),
       company:     cell(data.company),
       application: APPLICATION_LABELS[application] || application,
@@ -931,6 +976,7 @@ function kiemTraNhanh() {
       webhook_secret:  secret,
       name:            'KIỂM TRA — xoá dòng này',
       phone:           '0900000000',
+      province:        'ho-chi-minh',
       company:         'Nhà máy may kiểm tra',
       application:     'tieu-chuan',
       email:           'kiemtra@example.com',
