@@ -138,7 +138,7 @@ Phối hợp: thư mục `marketing-video/` thuộc session *Dự án hungnhan-g
 | Đối tượng | Xưởng nhỏ, 1 phân xưởng | Nhà máy vừa, nhiều phân xưởng | Nhà máy lớn | Tập đoàn / nhiều nhà máy |
 | Số chuyền | đến 5 | 6–15 | 16–40 | > 40 hoặc nhiều nhà máy |
 | Số phân xưởng | 1 | đến 4 | không giới hạn trong 1 nhà máy | nhiều nhà máy |
-| Máy cài đặt (license) | 1 | 1 | 2 | theo thỏa thuận |
+| Máy cài đặt (license) | 1 | 1 | 1 (owner 25/10/2026) | theo thỏa thuận |
 | **Phí thuê bao (owner chốt r4)** | **từ 3 triệu/tháng** | **từ 5 triệu/tháng** | **từ 9 triệu/tháng** | Báo giá riêng |
 | **Phí triển khai 1 lần** | 8–12 triệu | 20–30 triệu | 40–60 triệu | Báo giá riêng |
 | Thêm chuyền ngoài hạn mức | 300–400 nghìn/chuyền/tháng | 250–350 nghìn | 200–300 nghìn | — |

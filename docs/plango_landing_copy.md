@@ -94,7 +94,7 @@ Phí thuê bao theo tháng cộng phí triển khai một lần. Thêm chuyền 
 | Đối tượng | Xưởng nhỏ, một phân xưởng | Nhà máy vừa, nhiều phân xưởng | Nhà máy lớn | Tập đoàn, nhiều nhà máy |
 | Số chuyền | 1–5 | 6–15 | 16–40 | trên 40 |
 | Phân xưởng | 1 | đến 4 | không giới hạn trong một nhà máy | nhiều nhà máy |
-| Máy cài đặt | 1 | 1 | 2 | theo thỏa thuận |
+| Máy cài đặt | 1 | 1 | 1 | theo thỏa thuận |
 | **Hiển thị trên trang** | **Từ 3 triệu/tháng** | **Từ 5 triệu/tháng** | **Từ 9 triệu/tháng** | **Báo giá riêng** |
 | Triển khai một lần | từ 8 triệu | từ 20 triệu | từ 40 triệu | — |
 | Thêm chuyền | 300–400 nghìn/chuyền/tháng | 250–350 nghìn | 200–300 nghìn | — |

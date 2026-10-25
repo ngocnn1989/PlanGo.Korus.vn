@@ -63,7 +63,7 @@ export const plangoPlans: readonly PlanGoPlan[] = [
     audience: 'Nhà máy lớn',
     lines: { min: 16, max: 40 },
     workshops: 'Không giới hạn trong một nhà máy',
-    licensedMachines: '2 máy',
+    licensedMachines: '1 máy',
     monthlyFrom: 9,
     setupFee: { min: 40, max: 60 },
     extraLinePerMonth: { min: 200, max: 300 },
