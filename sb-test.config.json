@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "cheap": [
+    {
+      "id": "verify",
+      "cmd": "npm run verify",
+      "match": ["astro.config.mjs", "package.json", "scripts/**", "src/**", "docs/plango_landing_copy.md"],
+      "cwd": "."
+    }
+  ],
+  "suites": [
+    {
+      "id": "build",
+      "runner": "custom",
+      "cwd": ".",
+      "run_at": "batch",
+      "cmd": "npm run build && npm run verify:landing && npm run verify:links",
+      "timeout_s": 900,
+      "env": { "SITE_PROFILE": "landing-plango" },
+      "inputs": ["astro.config.mjs", "package.json", "scripts/**", "src/**", "public/**"],
+      "reuse": false
+    }
+  ],
+  "changed": { "exclude": ["video-src/**", "media-archive/**"], "source_globs": ["src/**", "scripts/**"] },
+  "limits": { "fail_lines": 20, "summary_tests": 10, "heartbeat_s": 60, "long_run_s": { "task": 1800, "batch": 3600, "release": 7200 }, "slow_factor": 1.5 },
+  "batch": { "jobs": 1 },
+  "register": { "dir": "docs/test" }
+}

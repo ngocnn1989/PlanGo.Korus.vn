@@ -43,7 +43,7 @@ Làm theo `docs/HUONG_DAN_LEAD_SHEET.md` (tạo Sheet, dán `docs/apps-script/le
 
 ## E. Tracking (khi có GTM PlanGo)
 
-`PUBLIC_ENABLE_TRACKING=true`, `PUBLIC_GTM_ID=GTM-XXXX` → Redeploy. Sự kiện đẩy vào `dataLayer`: chuyển đổi gửi form (có receipt chống trùng), `estimator_use`, `video_play`, các nút có `data-cta`. Origin GA4/Meta đã có trong CSP; thêm nền tảng quảng cáo khác thì mở rộng `ORIGIN_POLICY` trong `scripts/normalize-vercel-csp-routes.mjs`, không tắt CSP.
+`PUBLIC_ENABLE_TRACKING=true`, `PUBLIC_GTM_ID=GTM-XXXX` → Redeploy. Sự kiện đẩy vào `dataLayer`: chuyển đổi gửi form (có receipt chống trùng), `estimator_use`, `video_play`, các nút có `data-cta`. Origin GA4, Meta và Google Ads (Conversion, Remarketing, Conversion Linker; thêm 25/11/2026, chỉ `www.google.com` và `www.google.com.vn`) đã có trong CSP; thêm nền tảng quảng cáo khác hoặc tên miền Google của nước khác thì làm theo mục 5 của `docs/RUNBOOK_TRIEN_KHAI.md`, không tắt CSP. Chế độ Preview của GTM chưa được mở trong CSP; kiểm thẻ bằng Tag Assistant.
 
 ## Video
 

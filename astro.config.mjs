@@ -36,9 +36,14 @@ export default defineConfig({
         // GA4 và Facebook Pixel gửi hit tới các origin khác GTM. Thiếu chúng
         // thì GTM vẫn tải được nhưng mọi hit đo lường bị chặn âm thầm.
         // capi-automation.s3...: nơi param builder (CAPI) gửi tham số đã dựng.
-        "connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://www.facebook.com https://connect.facebook.net https://capi-automation.s3.us-east-2.amazonaws.com",
-        // img-src 'self' data: sẽ chặn pixel fallback của GA4 và Meta.
-        "img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://www.facebook.com https://googleads.g.doubleclick.net",
+        // Google Ads (Conversion, Remarketing, Conversion Linker nạp qua GTM,
+        // 25/11/2026): www.google.com, www.google.com.vn, googleadservices,
+        // doubleclick, googlesyndication. CSP không cho ký tự đại diện ở đuôi
+        // tên miền nên tên miền Google theo quốc gia phải ghi từng cái; chiến
+        // dịch chỉ nhắm Việt Nam nên chỉ có .com.vn.
+        "connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://www.facebook.com https://connect.facebook.net https://capi-automation.s3.us-east-2.amazonaws.com https://www.google.com https://www.google.com.vn https://www.googleadservices.com https://googleads.g.doubleclick.net https://ad.doubleclick.net https://stats.g.doubleclick.net https://pagead2.googlesyndication.com",
+        // img-src 'self' data: sẽ chặn pixel fallback của GA4, Meta và Google Ads.
+        "img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://www.facebook.com https://googleads.g.doubleclick.net https://www.google.com https://www.google.com.vn https://www.googleadservices.com https://pagead2.googlesyndication.com",
         "font-src 'self' data:",
         // Meta Pixel dựng iframe ẩn tới www.facebook.com để đồng bộ định danh
         // (_fbp/_fbc). Thiếu origin này thì pixel không ghép được sự kiện với
@@ -48,7 +53,8 @@ export default defineConfig({
       scriptDirective: {
         // capi-automation.s3...: script param builder của Meta (CAPI) do mẫu
         // Meta Pixel chèn thêm. Thiếu origin này thì script bị chặn ở script-src.
-        resources: ["'self'", 'https://www.googletagmanager.com', 'https://connect.facebook.net', 'https://capi-automation.s3.us-east-2.amazonaws.com'],
+        // Ba origin cuối: script của thẻ Google Ads do GTM nạp (25/11/2026).
+        resources: ["'self'", 'https://www.googletagmanager.com', 'https://connect.facebook.net', 'https://capi-automation.s3.us-east-2.amazonaws.com', 'https://googleads.g.doubleclick.net', 'https://www.googleadservices.com', 'https://www.google.com'],
       },
       styleDirective: {
         resources: ["'self'", { resource: "'unsafe-inline'", kind: 'attribute' }],

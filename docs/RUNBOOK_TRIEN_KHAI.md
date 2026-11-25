@@ -115,6 +115,9 @@ Khi cần thêm nền tảng đo lường mới:
 
 1. Thêm origin vào `astro.config.mjs` ở đúng directive (`script-src`, `connect-src`, `img-src`, `frame-src`).
 2. Thêm cùng origin vào `ORIGIN_POLICY` trong `scripts/normalize-vercel-csp-routes.mjs`.
+3. Nếu đổi `script-src`: cập nhật regex so khớp mảng `resources` trong `scripts/verify-runtime-tracking-activation.mjs`.
+
+Không viết ký tự `*` ở bất kỳ đâu trong `astro.config.mjs`, kể cả trong comment: verifier ở bước 3 cấm ký tự này trong cả file. Tên miền Google theo quốc gia phải ghi từng cái (hiện có `www.google.com` và `www.google.com.vn`).
 
 **Mở rộng allowlist, không vô hiệu hóa guard.** Guard này chặn wildcard và `unsafe-inline`; bỏ nó là mở cửa cho XSS. Nếu quên bước 2, build sẽ fail — đó là hành vi đúng.
 

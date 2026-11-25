@@ -23,3 +23,6 @@ pnpm-debug.log*
 
 # Vercel build output
 .vercel/
+
+# sb-test run output
+.sb-test/

@@ -23,10 +23,24 @@ const CAPI = 'https://capi-automation.s3.us-east-2.amazonaws.com';
 
 // Origin nào được phép ở directive nào. Directive không có mặt ở đây thì không
 // được chứa bất kỳ origin bên ngoài nào.
+// Google Ads (Conversion, Remarketing, Conversion Linker nạp qua GTM). Duyệt
+// 25/11/2026 theo dev brief CSP Google Ads: Tag Manager báo site chặn đo lường
+// nên Google Ads không ghi nhận được chuyển đổi gửi form. Tên miền Google theo
+// quốc gia phải ghi từng cái (CSP không có ký tự đại diện ở đuôi tên miền).
+const GOOGLE = 'https://www.google.com';
+const GOOGLE_VN = 'https://www.google.com.vn';
+const ADSERVICES = 'https://www.googleadservices.com';
+const DOUBLECLICK_AD = 'https://ad.doubleclick.net';
+const DOUBLECLICK_STATS = 'https://stats.g.doubleclick.net';
+const SYNDICATION = 'https://pagead2.googlesyndication.com';
+
 const ORIGIN_POLICY = {
-  'script-src': new Set([GTM, FB_SDK, CAPI]),
-  'connect-src': new Set([GTM, GA, GA_ALT, GA_REGION, FB, FB_SDK, CAPI]),
-  'img-src': new Set([GTM, GA, GA_REGION, FB, DOUBLECLICK]),
+  'script-src': new Set([GTM, FB_SDK, CAPI, DOUBLECLICK, ADSERVICES, GOOGLE]),
+  'connect-src': new Set([
+    GTM, GA, GA_ALT, GA_REGION, FB, FB_SDK, CAPI,
+    GOOGLE, GOOGLE_VN, ADSERVICES, DOUBLECLICK, DOUBLECLICK_AD, DOUBLECLICK_STATS, SYNDICATION,
+  ]),
+  'img-src': new Set([GTM, GA, GA_REGION, FB, DOUBLECLICK, GOOGLE, GOOGLE_VN, ADSERVICES, SYNDICATION]),
   'frame-src': new Set([GTM, FB]),
   'form-action': new Set([FB]),
 };
@@ -193,6 +207,16 @@ async function synthetic() {
   assert.throws(() => normalizeVercelCspRoutes(withCsp(`${narrow}; default-src 'self' ${GA}`)));
   assert.throws(() => normalizeVercelCspRoutes(withCsp(`${narrow}; script-src 'self'`)));
   assert.throws(() => normalizeVercelCspRoutes(withCsp(`${narrow}; script-src-attr 'unsafe-inline'`)));
+  // Google Ads: origin đã duyệt ở đúng directive thì qua; đặt sai directive
+  // (script từ origin chỉ duyệt cho connect/img, hoặc vào frame-src) thì fail.
+  const withAds = narrow
+    .replace("script-src 'self'", `script-src 'self' ${DOUBLECLICK} ${ADSERVICES} ${GOOGLE}`)
+    .replace("connect-src 'self'", `connect-src 'self' ${GOOGLE} ${GOOGLE_VN} ${ADSERVICES} ${DOUBLECLICK} ${DOUBLECLICK_AD} ${DOUBLECLICK_STATS} ${SYNDICATION}`)
+    .replace("img-src 'self' data:", `img-src 'self' data: ${GOOGLE} ${GOOGLE_VN} ${ADSERVICES} ${SYNDICATION}`);
+  assert.doesNotThrow(() => normalizeVercelCspRoutes(withCsp(withAds)));
+  assert.throws(() => normalizeVercelCspRoutes(withCsp(narrow.replace("script-src 'self'", `script-src 'self' ${SYNDICATION}`))));
+  assert.throws(() => normalizeVercelCspRoutes(withCsp(narrow.replace("script-src 'self'", `script-src 'self' ${GOOGLE_VN}`))));
+  assert.throws(() => normalizeVercelCspRoutes(withCsp(`${narrow}; frame-src ${GOOGLE}`)));
   assert.throws(() => normalizeVercelCspRoutes({ routes: null }));
 
   await rm(root, { recursive: true, force: true });
