@@ -5,7 +5,7 @@ import siteProfile from '../config/site-profile.mjs';
 
 const title = "Chính sách bảo mật - " + siteProfile.brand.name;
 const description = "Chúng tôi thu thập gì, dùng để làm gì, gửi cho ai, và bạn có quyền gì với dữ liệu của mình.";
-const lastUpdated = "19/10/2026";
+const lastUpdated = "25/11/2026";
 
 const phone = siteProfile.contact?.phone;
 const hotlineEnabled = Boolean(phone?.enabled && phone?.raw);
@@ -40,7 +40,7 @@ const hotlineRaw = (hotlineEnabled && phone.raw) || '';
 					<h2 class="text-xl font-black text-gray-900 mb-3">Ai nhận được dữ liệu</h2>
 					<p class="mb-3">Chúng tôi dùng dịch vụ của bên thứ ba để vận hành trang này:</p>
 					<ul class="space-y-2 list-disc pl-5">
-						<li><strong>Google</strong> — lưu thông tin biểu mẫu và đo lường truy cập</li>
+						<li><strong>Google</strong> — lưu thông tin biểu mẫu, đo lường truy cập, đo hiệu quả quảng cáo trên Google và hiển thị lại quảng cáo cho người đã ghé trang (Google Ads)</li>
 						<li><strong>Meta</strong> — đo hiệu quả quảng cáo trên Facebook</li>
 						<li><strong>Vercel</strong> — hạ tầng lưu trữ website</li>
 					</ul>

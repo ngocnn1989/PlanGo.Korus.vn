@@ -60,7 +60,8 @@ Critical path: owner duyệt bản dựng → B-01 hạ tầng → G6 lead test 
 | D-13 | Decision | Bỏ phần video khỏi landing (hero dùng ảnh tĩnh, bỏ demo S04 và S09); file giữ ở `media-archive/`, không xoá | Owner 19/10/2026 |
 | D-12 | Fix | Nút "Cài đặt cookie": khi chưa bật tracking mở hộp thông báo (`SiteFooter`); có tracking mở banner như cũ | 19/10/2026 |
 | D-15 | Decision | Mở CSP cho Google Ads (Conversion, Remarketing, Conversion Linker qua GTM) theo `dev-brief-261125-0943-csp-google-ads-plango-website.md`: `connect-src` +7, `img-src` +4, `script-src` +3 origin (gồm `www.google.com`), `frame-src` không đổi; không mở GTM Preview. Sửa ở `astro.config.mjs`, `ORIGIN_POLICY`, `verify-runtime-tracking-activation.mjs`. Kiểm local 25/11: verify exit 0, build + verify:landing + verify:links exit 0, header 11 route khớp brief. CHƯA commit/deploy; sau deploy: curl header, Console, Tag Assistant, báo marketing gửi lead thử | Owner chat 25/11/2026 |
-| O-04 | Open | `/privacy` dòng Google mới ghi "lưu thông tin biểu mẫu và đo lường truy cập", chưa nêu đo hiệu quả quảng cáo/remarketing Google Ads. Owner duyệt câu chữ (liên quan O-03) rồi chạy `npm run legal` | Owner |
+| O-04 | Resolved 25/11 | `/privacy` dòng Google nêu thêm đo hiệu quả quảng cáo và hiển thị lại quảng cáo (Google Ads); ngày cập nhật 25/11/2026 | Owner chat 25/11/2026 |
+| O-05 | Open | Sau deploy D-15 (commit `52dc63e`): thẻ Google Ads đã chạy (request `googleads.g.doubleclick.net/pagead/viewthroughconversion`), Console hết vi phạm CSP của Google. Còn 4 vi phạm của Meta: script param builder từ `cdn.jsdelivr.net` và `unpkg.com` (URL ghi cứng trong mẫu thẻ Meta Pixel của GTM) và 2 endpoint cổng Conversions API (`…a.run.app/events`, `…on.aws/events`; pixel bật `optin_meta_enabled_capi`). Owner chọn: mở CSP hẹp hay tắt ở GTM/Events Manager | Owner |
 | O-01 | Open | §8.2–8.7: mua đứt, chi phí AI, dịch vụ demo, nhắc Hưng Nhân, khóa gói trong license | Owner |
 
 ## Next actions
